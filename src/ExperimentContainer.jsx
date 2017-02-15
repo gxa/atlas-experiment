@@ -14,7 +14,6 @@ const componentsPerTab = {
 }
 
 const makeTab = (name, props) => {
-  // TODO use React.createElement instead so that you can set displayName?
   const Tab = componentsPerTab[name]
   return () => (
     <Tab {...props} />

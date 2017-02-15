@@ -20,25 +20,169 @@
 </body>
 
 <script>
-  experimentPage.render({
-    atlasHost: "https://www.ebi.ac.uk",
-    experimentType:"RNASEQ_MRNA_BASELINE",
-    content: {
-      tabs: [
-        {
-          type: "heatmap",
-          name: "Heatmap",
-          props: {}
-        },
-        {
-          type: "experiment-design",
-          name: "Experiment Design",
-          props: {}
-        }
+experimentPage.render({
+      atlasHost: "https://www.ebi.ac.uk",
+      experimentType: "RNASEQ_MRNA_BASELINE",
+      content: {
+        tabs: [
+          {
+            type: "heatmap",
+            name: "Heatmap",
+            props: {
+              groups: [
+                {
+                  "name": "ORGANISM_PART",
+                  "selected": [
+    "endosperm and seed coat"
+  ],
+                  "groupings": [
+    [
+      "endosperm and seed coat",
+      [
+        "g2",
+        "g4",
+        "g1"
       ]
-    },
-    target: "root"
-  });
+    ],
+    [
+      "pericarp",
+      [
+        "g6",
+        "g7",
+        "g5"
+      ]
+    ]
+  ]
+},
+                {
+                  "name": "SAMPLING_TIME_POINT",
+                  "selected": "all",
+                  "groupings": [
+    [
+      "4 days after pollination",
+      [
+        "g2",
+        "g6"
+      ]
+    ],
+    [
+      "8 days after pollination",
+      [
+        "g4",
+        "g7"
+      ]
+    ],
+    [
+      "12 days after pollination",
+      [
+        "g1",
+        "g5"
+      ]
+    ]
+  ]
+},
+                {
+                  "name": "AGE",
+                  "selected": "all",
+                  "groupings": [
+    [
+      "4 day",
+      [
+        "g2",
+        "g6"
+      ]
+    ],
+    [
+      "8 day",
+      [
+        "g4",
+        "g7"
+      ]
+    ],
+    [
+      "12 day",
+      [
+        "g1",
+        "g5"
+      ]
+    ]
+  ]
+},
+                {
+                  "name": "CULTIVAR",
+                  "selected": "all",
+                  "groupings": [
+    [
+      "P271",
+      [
+        "g2",
+        "g4",
+        "g1",
+        "g6",
+        "g7",
+        "g5"
+      ]
+    ]
+  ]
+},
+                {
+                  "name": "GROWTH_CONDITION",
+                  "selected": "all",
+                  "groupings": [
+    [
+      "field study",
+      [
+        "g2",
+        "g4",
+        "g1",
+        "g6",
+        "g7",
+        "g5"
+      ]
+    ]
+  ]
+},
+                {
+                  "name": "INITIAL_TIME_POINT",
+                  "selected": "all",
+                  "groupings": [
+    [
+      "pollination",
+      [
+        "g2",
+        "g4",
+        "g1",
+        "g6",
+        "g7",
+        "g5"
+      ]
+    ]
+  ]
+},
+                {
+                  "name": "ORGANISM",
+                  "selected": "all",
+                  "groupings": [
+    [
+      "Triticum aestivum",
+      [
+        "g2",
+        "g4",
+        "g1",
+        "g6",
+        "g7",
+        "g5"
+      ]
+    ]
+  ]
+}
+]
+            },
+          }
+        ]
+      },
+            target: "root"
+})
 </script>
 
 </html>
