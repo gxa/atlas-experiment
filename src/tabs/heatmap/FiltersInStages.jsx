@@ -1,75 +1,7 @@
-const React = require(`react`);
-const Button = require(`react-bootstrap/lib/Button`);
-const Glyphicon = require(`react-bootstrap/lib/Glyphicon`);
-const xor = require(`lodash/xor`);
-const intersection = require(`lodash/intersection`)
-const curry = require(`lodash/curry`)
-require('./Components.less');
+import React from 'react'
+import {xor, intersection,curry} from 'lodash'
 import FlatFilter from './FlatFilter.jsx'
-
-const FilterPropTypes = {
- name: React.PropTypes.string.isRequired,
- values: React.PropTypes.arrayOf(React.PropTypes.string),
- selected: React.PropTypes.oneOfType([
-   React.PropTypes.oneOf(['all','ALL']),
-   React.PropTypes.arrayOf(React.PropTypes.string)
- ]),
- groupings: React.PropTypes.arrayOf((props, propName)=> {
-     const prop = props[propName];
-
-     if (prop === undefined) {
-         return new Error(`${propName} missing in ${props}`)
-     } else if (!Array.isArray(prop) || prop.length !==2) {
-         return new Error(`${prop} invalid: expected array of length two`)
-     } else if (typeof prop[0]!=="string"){
-         return new Error(`${prop[0]} should be a string representing name of the grouping`)
-     } else if (!Array.isArray(prop[1])) {
-         return new Error(`${prop[1]} should be an array with members of the grouping `)
-     }
- })
-}
-/*
-or! enforce gradual choice and make it clear that the options are narrowing down
-then provide a "swap order"
-
-Organism part
-selected : leg
-available: leg, lung, tooth, ear, eye
-
-Disease
-selected: trench foot
-available: trench foot, blisters
-other: asthma, bronchitis, cholera, dengue, Ebola
-
-
-xn "available" and "other" depend on whether or not there's x1 ... xn-1 in "selected" such that at least one gi has (x1 ... xn)
-
-
-const filters = [
-  {
-    name: "a or b",
-    selected: ["choice a"],
-    groupings: [["choice a", [1, 2, 3, 4, 5, 6, 7]], ["choice b", [8, 9]]]
-    },
-  {
-    name: "A or B or C",
-    selected: "all",
-    groupings: [["choice A", [1, 2, 3, 4, 5]], ["choice B", [6, 7, 8]], [
-      "choice C", [9]]]
-}
-]
-=>
-
-[{
-  "values": ["choice a", "choice b"],
-  "available": ["choice a", "choice b"],
-  "selected": ["choice a"]
-}, {
-  "values": ["choice A", "choice B", "choice C"],
-  "available": ["choice A", "choice B"],
-  "selected": ["choice A", "choice B"]
-}]
-*/
+import {FilterPropTypes} from './PropTypes.js'
 
 const valueOfSelectionSequence = (selections, allFilters) => (
   intersection.apply([],
@@ -126,6 +58,29 @@ const changeOneFilter = (filters, whichFilterChanges, newSelected) => (
   ))
 )
 
+const FiltersInStages = ({
+  propagateFilterSelection,
+  filters
+}) => (
+  <div>
+  {
+    createStagesFromFilters(filters)
+    .map((stage,ix) => (
+      <FlatFilter {...stage}
+      key={ix}
+      onNewSelected={(newSelected) => {
+        propagateFilterSelection(
+          changeOneFilter(filters, ix, newSelected)
+        )
+      }}/>
+    ))
+  }
+  </div>
+)
+
+
+export default FiltersInStages
+
 const FiltersAndTheirChoices = React.createClass({
   propTypes: {
       propagateFilterSelection: React.PropTypes.func.isRequired,
@@ -166,11 +121,10 @@ const FiltersAndTheirChoices = React.createClass({
       </div>
     )
   },
+
   componentDidUpdate() {
     this.props.propagateFilterSelection(
       this._currentlySelected()
     )
   }
 })
-
-export default FiltersAndTheirChoices
