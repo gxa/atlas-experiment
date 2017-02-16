@@ -58,6 +58,19 @@ const changeOneFilter = (filters, whichFilterChanges, newSelected) => (
   ))
 )
 
+// Not sure if I need this
+const windUpSelectedAll = (filters) => (
+  filters
+  .map((_filter) => (
+    Object.assign({}, _filter,
+      {selected:
+         _filter.selected.length == _filter.available.length
+         ? "all"
+         : _filter.selected
+       })
+  ))
+)
+
 const FiltersInStages = ({
   propagateFilterSelection,
   filters
@@ -70,7 +83,9 @@ const FiltersInStages = ({
       key={ix}
       onNewSelected={(newSelected) => {
         propagateFilterSelection(
-          changeOneFilter(filters, ix, newSelected)
+          windUpSelectedAll(
+            changeOneFilter(filters, ix, newSelected)
+          )
         )
       }}/>
     ))
