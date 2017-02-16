@@ -1,6 +1,6 @@
 import React from 'react'
 import {xor, intersection,curry} from 'lodash'
-import FlatFilter from './FlatFilter.jsx'
+import Filter from './OpenableCheckboxesFilter.jsx'
 import {FilterPropTypes} from './PropTypes.js'
 
 const valueOfSelectionSequence = (selections, allFilters) => (
@@ -66,7 +66,7 @@ const FiltersInStages = ({
   {
     createStagesFromFilters(filters)
     .map((stage,ix) => (
-      <FlatFilter {...stage}
+      <Filter {...stage}
       key={ix}
       onNewSelected={(newSelected) => {
         propagateFilterSelection(
@@ -80,51 +80,3 @@ const FiltersInStages = ({
 
 
 export default FiltersInStages
-
-const FiltersAndTheirChoices = React.createClass({
-  propTypes: {
-      propagateFilterSelection: React.PropTypes.func.isRequired,
-      filters: React.PropTypes.arrayOf(React.PropTypes.shape(FilterPropTypes)).isRequired
-  },
-
-  getInitialState() {
-    return {
-      filters: this.props.filters
-    }
-  },
-
-  _currentlySelected() {
-    return valueOfSelectionSequence(
-      createStagesFromFilters(this.state.filters)
-      .map((f)=> f.selected),
-      this.state.filters
-    )
-  },
-
-  render() {
-    const allFilters = this.state.filters
-    return (
-      <div>
-      <div>
-        {"Selected: "+JSON.stringify(this._currentlySelected())}
-      </div>
-      {
-        createStagesFromFilters(allFilters)
-        .map((stage,ix) => (
-          <FlatFilter {...stage}
-          key={ix}
-          onNewSelected={(newSelected) => {
-            this.setState({filters: changeOneFilter(allFilters, ix, newSelected)})
-          }}/>
-        ))
-      }
-      </div>
-    )
-  },
-
-  componentDidUpdate() {
-    this.props.propagateFilterSelection(
-      this._currentlySelected()
-    )
-  }
-})
