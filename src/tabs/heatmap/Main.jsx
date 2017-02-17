@@ -1,8 +1,7 @@
 import React from 'react'
-import ButtonOpeningOurModal from './OurModal.jsx'
 import FiltersInStages from './FiltersInStages.jsx'
 import {FilterPropTypes} from './PropTypes.js'
-import { addUrlProps, UrlQueryParamTypes, UrlUpdateTypes} from 'react-url-query'
+import { addUrlProps, UrlQueryParamTypes, UrlUpdateTypes, subquery} from 'react-url-query'
 import {isEqual} from 'lodash'
 import {Modal, Button, Glyphicon} from 'react-bootstrap/lib'
 import { Link} from 'react-router'
@@ -24,7 +23,7 @@ FiltersButton.propTypes = {
 const ModalWrapper = ({
   show,
   onCloseModal,
-  nextQueryParamsOnApply,
+  onClickApply,
   children
 }) => (
   <Modal show={show} onHide={onCloseModal} bsSize="large">
@@ -37,11 +36,8 @@ const ModalWrapper = ({
     }
     </Modal.Body>
     <Modal.Footer>
-      <Link to={{query: nextQueryParamsOnApply}}>
-      <Button bsStyle="primary" onClick={onCloseModal}
+      <Button bsStyle="primary" onClick={onClickApply}
           style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>Apply</Button>
-
-      </Link>
       <Button onClick={onCloseModal}
           style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>Close</Button>
     </Modal.Footer>
@@ -51,10 +47,9 @@ const ModalWrapper = ({
 ModalWrapper.propTypes = {
   show: React.PropTypes.bool.isRequired,
   onCloseModal: React.PropTypes.func.isRequired,
-  nextQueryParamsOnApply: React.PropTypes.shape({
-    filterFactors: React.PropTypes.object.isRequired
-  }).isRequired
+  onClickApply : React.PropTypes.func.isRequired
 }
+
 
 const overlayFilterFactorsObjectOnFilters = (filters, filterFactors) => {
   const filterFactorsCopy = {}
@@ -85,7 +80,6 @@ const makeFilterFactorsObject = (filtersInitially, filters) => {
       filterFactors[newF.name] = newF.selected
     }
   })
-
   return filterFactors
 }
 
@@ -93,6 +87,7 @@ const Heatmap = React.createClass({
   propTypes: {
     groups: React.PropTypes.arrayOf(React.PropTypes.shape(FilterPropTypes)).isRequired,
     filterFactors: React.PropTypes.object.isRequired,
+    onChangeFilterFactors: React.PropTypes.func.isRequired
   },
 
   getDefaultProps() {
@@ -129,8 +124,10 @@ const Heatmap = React.createClass({
         <ModalWrapper
           show={this.state.showModal}
           onCloseModal={()=> this.setState({ showModal: false})}
-          nextQueryParamsOnApply={{filterFactors: makeFilterFactorsObject(this.props.groups,this.state.filters)} } >
-
+          onClickApply={()=> {
+            this.setState({ showModal: false})
+            this.props.onChangeFilterFactors(makeFilterFactorsObject(this.props.groups,this.state.filters))
+          }} >
           <FiltersInStages
             filters={this.state.filters}
             propagateFilterSelection={(filters) => {

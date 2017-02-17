@@ -64,7 +64,7 @@ const windUpSelectedAll = (filters) => (
   .map((_filter) => (
     Object.assign({}, _filter,
       {selected:
-         _filter.selected.length == _filter.available.length
+         _filter.selected.length == _filter.groupings.length
          ? "all"
          : _filter.selected
        })
