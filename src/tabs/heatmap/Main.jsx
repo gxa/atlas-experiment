@@ -1,10 +1,14 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 import FiltersInStages from './FiltersInStages.jsx'
 import {FilterPropTypes} from './PropTypes.js'
-import { addUrlProps, UrlQueryParamTypes, UrlUpdateTypes, subquery} from 'react-url-query'
 import {isEqual} from 'lodash'
 import {Modal, Button, Glyphicon} from 'react-bootstrap/lib'
 import { Link} from 'react-router'
+import {determineSelectionFromFilters} from './Filters.js'
+import {render as renderHeatmap} from 'expression-atlas-heatmap-highcharts'
+import URI from 'urijs'
+
 
 
 const FiltersButton = ({
@@ -23,7 +27,7 @@ FiltersButton.propTypes = {
 const ModalWrapper = ({
   show,
   onCloseModal,
-  onClickApply,
+  nextQueryParamsOnApply,
   children
 }) => (
   <Modal show={show} onHide={onCloseModal} bsSize="large">
@@ -36,8 +40,11 @@ const ModalWrapper = ({
     }
     </Modal.Body>
     <Modal.Footer>
-      <Button bsStyle="primary" onClick={onClickApply}
+      <Link to={{query: nextQueryParamsOnApply}}>
+      <Button bsStyle="primary" onClick={onCloseModal}
           style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>Apply</Button>
+
+      </Link>
       <Button onClick={onCloseModal}
           style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>Close</Button>
     </Modal.Footer>
@@ -47,15 +54,16 @@ const ModalWrapper = ({
 ModalWrapper.propTypes = {
   show: React.PropTypes.bool.isRequired,
   onCloseModal: React.PropTypes.func.isRequired,
-  onClickApply : React.PropTypes.func.isRequired
+  nextQueryParamsOnApply: React.PropTypes.shape({
+    filterFactors: React.PropTypes.string.isRequired
+  }).isRequired
 }
-
 
 const overlayFilterFactorsObjectOnFilters = (filters, filterFactors) => {
   const filterFactorsCopy = {}
   Object.keys(filterFactors)
   .forEach((key) => {
-    filterFactors[key.toUpperCase()] = this.props.filterFactors[key]
+    filterFactorsCopy[key.toUpperCase()] = filterFactors[key]
   })
   return (
     filters
@@ -64,10 +72,6 @@ const overlayFilterFactorsObjectOnFilters = (filters, filterFactors) => {
         filterFactorsCopy[_filter.name.toUpperCase()] || "all"
     }))
   )
-}
-
-const urlPropsQueryConfig = {
-  filterFactors: { type: UrlQueryParamTypes.object , updateType: UrlUpdateTypes.pushIn }
 }
 
 const makeFilterFactorsObject = (filtersInitially, filters) => {
@@ -80,54 +84,73 @@ const makeFilterFactorsObject = (filtersInitially, filters) => {
       filterFactors[newF.name] = newF.selected
     }
   })
+
   return filterFactors
 }
 
-const Heatmap = React.createClass({
-  propTypes: {
-    groups: React.PropTypes.arrayOf(React.PropTypes.shape(FilterPropTypes)).isRequired,
-    filterFactors: React.PropTypes.object.isRequired,
-    onChangeFilterFactors: React.PropTypes.func.isRequired
+const prettyName = (name) => (
+  name
+  .toLowerCase()
+  .replace(/_/g," ")
+  .replace(/\w\S*/, (txt) => (txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()))
+)
+
+const FilterChoiceSummary = ({filters}) => (
+  <div>
+    {filters
+      .map((_filter)=>(
+      <div key={_filter.name}>
+        <h5>
+          {prettyName(_filter.name)}
+        </h5>
+          {["all","ALL"].indexOf(_filter.selected)>-1
+          ? <ul> ALL </ul>
+          : <ul>
+            {
+              _filter.selected.map((selected) => (
+                <li key={selected}>
+                {selected}
+                </li>
+              ))
+            }
+            </ul>
+          }
+      </div>
+    ))}
+  </div>
+)
+
+FilterChoiceSummary.propTypes = {
+  filters: React.PropTypes.arrayOf(React.PropTypes.shape(FilterPropTypes)).isRequired
+}
+
+const SidebarAndModal = React.createClass({
+  propTypes : {
+    filters: React.PropTypes.arrayOf(React.PropTypes.shape(FilterPropTypes)).isRequired
   },
 
-  getDefaultProps() {
-    return {
-      filterFactors:{}
-    }
-  },
   getInitialState() {
     return {
-      showModal:
-        false,
-      filters:
-        overlayFilterFactorsObjectOnFilters(this.props.groups, this.props.filterFactors)
+      showModal: false,
+      filters: this.props.filters
     }
-  },
-
-
-  _apply() {
-    this.props.onClickApply()
-    this.setState({ showModal: false })
   },
 
   _openModal() {
     this.setState({ showModal: true })
   },
 
-  render() {
+  render(){
     return (
       <div>
-      <h2> I am a heatmap </h2>
-      <div style={{width:"50%", backgroundColor: "fuchsia"}}>>
+        <FilterChoiceSummary filters={this.state.filters} />
         <FiltersButton onClickButton={this._openModal} />
 
         <ModalWrapper
           show={this.state.showModal}
           onCloseModal={()=> this.setState({ showModal: false})}
-          onClickApply={()=> {
-            this.setState({ showModal: false})
-            this.props.onChangeFilterFactors(makeFilterFactorsObject(this.props.groups,this.state.filters))
-          }} >
+          nextQueryParamsOnApply={{filterFactors: encodeURIComponent(JSON.stringify(makeFilterFactorsObject(this.props.filters,this.state.filters)))} } >
+
           <FiltersInStages
             filters={this.state.filters}
             propagateFilterSelection={(filters) => {
@@ -135,20 +158,68 @@ const Heatmap = React.createClass({
             }}/>
 
         </ModalWrapper>
-
-      </div>
-
-      <div style={{width:"50%", backgroundColor: "gainsboro"}}>
-        Heatmap goes here
-        Heatmap goes here
-        Heatmap goes here
-        Heatmap goes here
-        Heatmap goes here
-        Heatmap goes here
-      </div>
-      </div>
+    </div>
     )
   }
 })
 
-export default addUrlProps({urlPropsQueryConfig})(Heatmap);
+
+const Main = React.createClass({
+  propTypes : {
+    atlasHost: React.PropTypes.string.isRequired,
+    groups: React.PropTypes.arrayOf(React.PropTypes.shape(FilterPropTypes)).isRequired,
+    query: React.PropTypes.shape({
+      //TODO all in one object maybe?
+      filterFactors : React.PropTypes.string
+    }).isRequired
+  },
+
+  _getFilters() {
+    return (
+      overlayFilterFactorsObjectOnFilters(
+        this.props.groups,
+        JSON.parse(decodeURIComponent(this.props.query.filterFactors || "{}"))
+      )
+    )
+  },
+
+  render() {
+    const x = URI(this.props.atlasHost+"/gxa/fexperiments")
+
+    return (
+      <div className="row">
+      <div className="small-3 medium-2 columns" >
+      <SidebarAndModal
+        filters={this._getFilters()}
+      />
+      </div>
+
+      <div ref="heatmapBody" className="small-9 medium-10 columns"/>
+      </div>
+    )
+  },
+
+  _renderHeatmap(){
+    /*
+    Not using our widget as a component because it didn't work :(
+    There were issues with the highchart being a ref.
+    */
+    renderHeatmap({
+      atlasBaseURL: this.props.atlasHost,
+      isWidget:false,
+      params: 'geneQuery=zinc finger&species=mus%20musculus',
+      target: ReactDOM.findDOMNode(this.refs.heatmapBody)
+    })
+  },
+
+  componentDidMount(){
+    this._renderHeatmap()
+  },
+
+  componentDidUpdate() {
+    this._renderHeatmap()
+  }
+})
+
+
+export default Main;

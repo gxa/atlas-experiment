@@ -1,17 +1,10 @@
 import React from 'react'
 
 import { hashHistory,Router, Route, Link, IndexRedirect, withRouter } from 'react-router'
-import { configureUrlQuery } from 'react-url-query'
 
 import Heatmap from './tabs/heatmap/Main.jsx'
 import ExperimentDesign from './tabs/ExperimentDesign.jsx'
 import ExternalResource from './tabs/ExternalResource.jsx'
-
-configureUrlQuery({
-  history: hashHistory,
-  addRouterParams: true,
-});
-
 
 //coupled to ExperimentController.java
 const componentsPerTab = {
@@ -22,8 +15,8 @@ const componentsPerTab = {
 
 const makeTab = (name, props) => {
   const Tab = componentsPerTab[name]
-  return () => (
-    <Tab {...props} />
+  return ({location:{query}}) => (
+    <Tab query={query} {...props} />
   )
 }
 
@@ -31,18 +24,15 @@ const makeContainer = (tabNames) => {
 
   return ({children}) => (
     <div>
-      <h3>TABS below!</h3>
-      <ul>
+      <ul className="nav nav-tabs" role="tablist">
         {tabNames.map(tabName => (
-          <li key={tabName}>
+          <li title={tabName} role="presentation" key={tabName}>
             <Link to={tabName} activeStyle={{color:"red"}}>
               {tabName}
             </Link>
           </li>
         ))}
       </ul>
-
-      <h3>Children below!</h3>
         {children}
     </div>
   )
