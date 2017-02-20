@@ -4,7 +4,7 @@ import Sidebar from './QuerySelectingSidebar.jsx'
 import {FilterPropTypes, queryFromQueryObjects, queryObjectsFromQuery, QueryPropTypes} from './PropTypes.js'
 import {Link, withRouter} from 'react-router'
 import {determineSelectionFromFilters} from './Filters.js'
-import {render as renderHeatmap} from 'expression-atlas-heatmap-highcharts'
+import {ExpressionAtlasHeatmapHighcharts} from 'expression-atlas-heatmap-highcharts'
 import URI from 'urijs'
 
 
@@ -41,31 +41,16 @@ const Main = React.createClass({
             }
           />
         </div>
-        <div ref="heatmapBody" className="small-9 medium-10 columns"/>
+        <div className="small-9 medium-10 columns">
+          <ExpressionAtlasHeatmapHighcharts
+            options={{
+              atlasBaseURL: this.props.atlasHost,
+              isWidget:false,
+              params: 'geneQuery=zinc finger&species=mus%20musculus'
+            }} />
+        </div>
       </div>
     )
-  },
-
-  _renderHeatmap(){
-    /*
-    Not using our widget as a component because it didn't work :(
-    There were issues with the highchart being a ref.
-    TODO I think it's because of npm link and react not being a peer dependency i.e. easily solvable.
-    */
-    renderHeatmap({
-      atlasBaseURL: this.props.atlasHost,
-      isWidget:false,
-      params: 'geneQuery=zinc finger&species=mus%20musculus',
-      target: ReactDOM.findDOMNode(this.refs.heatmapBody)
-    })
-  },
-
-  componentDidMount(){
-    this._renderHeatmap()
-  },
-
-  componentDidUpdate() {
-    this._renderHeatmap()
   }
 })
 

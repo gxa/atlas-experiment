@@ -16,7 +16,7 @@ const FiltersButton = ({
   <Button bsSize="large" onClick={onClickButton}
       style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
     <Glyphicon glyph="equalizer"/>
-    <span style={{verticalAlign: `middle`}}> Filters</span>
+    <span style={{verticalAlign: `middle`}}> Select </span>
   </Button>
 )
 FiltersButton.propTypes = {
@@ -91,8 +91,8 @@ const SidebarAndModal = React.createClass({
           }}/>
 
         <h4>Filters</h4>
-        <FilterChoiceSummary filters={this.state.filters} />
         <FiltersButton onClickButton={this._openModal} />
+        <FilterChoiceSummary filters={this.state.filters} />
 
         <ModalWrapper
           show={this.state.showModal}
