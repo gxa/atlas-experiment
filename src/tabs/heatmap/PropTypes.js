@@ -33,7 +33,7 @@ const overlayFilterFactorsObjectOnFilters = (filters, filterFactors) => {
     filters
     .map((_filter) => Object.assign({}, _filter, {
       selected:
-        filterFactorsCopy[_filter.name.toUpperCase()] || "all"
+        filterFactorsCopy[_filter.name.toUpperCase()] || _filter.selected || "all"
     }))
   )
 }
