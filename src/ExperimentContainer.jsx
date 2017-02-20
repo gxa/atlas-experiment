@@ -41,6 +41,7 @@ const makeContainer = (tabNames) => {
 const ExperimentContainerRouter = ({
   atlasHost,
   experimentType,
+  species,
   tabs
 }) => {
   return (
@@ -53,7 +54,7 @@ const ExperimentContainerRouter = ({
             <Route
               key={tab.name}
               path={tab.name}
-              component={makeTab(tab.type, Object.assign({atlasHost, experimentType},tab.props))} />
+              component={makeTab(tab.type, Object.assign({atlasHost, experimentType,species},tab.props))} />
           ))
         }
         </Route>
@@ -67,6 +68,7 @@ const ExperimentContainerRouter = ({
 ExperimentContainerRouter.propTypes = {
   atlasHost: React.PropTypes.string.isRequired,
   experimentType: React.PropTypes.string.isRequired,
+  species: React.PropTypes.string.isRequired,
   tabs: React.PropTypes.arrayOf(React.PropTypes.shape({
     type: React.PropTypes.string.isRequired,
     name: React.PropTypes.string.isRequired,

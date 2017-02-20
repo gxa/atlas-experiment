@@ -9,7 +9,7 @@ exports.render = function(options){
   ReactDOM.render(
       React.createElement(
           ExperimentContainer,
-          Object.assign({atlasHost: options.atlasHost, experimentType: options.experimentType}, options.content || {})
+          Object.assign({atlasHost: options.atlasHost, experimentType: options.experimentType, species: options.species}, options.content || {})
       ),
       (typeof options.target === "string") ? document.getElementById(options.target) : options.target
   );
