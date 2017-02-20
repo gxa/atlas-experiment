@@ -1,5 +1,5 @@
 import React from 'react'
-
+import {isEqual} from 'lodash'
 
 const FilterPropTypes = {
  name: React.PropTypes.string.isRequired,
@@ -53,7 +53,7 @@ const makeFilterFactorsObject = (filtersInitially, filters) => {
 }
 
 const decode = (v, defaultV) => (
-  JSON.parse(decodeURIComponent(v === undefined ? v : defaultV))
+  JSON.parse(decodeURIComponent(v === undefined ? defaultV : v))
 )
 
 const encode = (v) => (
@@ -71,7 +71,7 @@ const queryFromQueryObjects = (initialQueryObjects, queryObjects) => ({
 
 const queryObjectsFromQuery = (initialQueryObjects, query) => ({
   specific: decode(query.specific , "true"),
-  geneQuery: decode(query.geneQuery , ""),
+  geneQuery: decode(query.geneQuery , "\"\""),
   filters: overlayFilterFactorsObjectOnFilters(
     initialQueryObjects.filters,
     decode(query.filterFactors, "{}")

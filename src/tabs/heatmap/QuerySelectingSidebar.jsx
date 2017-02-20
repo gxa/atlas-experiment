@@ -6,7 +6,7 @@ import {FilterPropTypes, QueryObjectsPropTypes} from './PropTypes.js'
 import {Modal, Button, Glyphicon} from 'react-bootstrap/lib'
 import GeneAutocomplete from 'gene-autocomplete'
 import Toggle from 'react-bootstrap-toggle'
-
+require('./bootstrap-toggle.min.css')
 
 
 
@@ -27,7 +27,6 @@ const ModalWrapper = ({
   show,
   onCloseModal,
   onClickApply,
-  nextQueryParamsOnApply,
   children
 }) => (
   <Modal show={show} onHide={onCloseModal} bsSize="large">
@@ -52,10 +51,7 @@ const ModalWrapper = ({
 ModalWrapper.propTypes = {
   show: React.PropTypes.bool.isRequired,
   onCloseModal: React.PropTypes.func.isRequired,
-  onClickApply: React.PropTypes.func.isRequired,
-  nextQueryParamsOnApply: React.PropTypes.shape({
-    filterFactors: React.PropTypes.string.isRequired
-  }).isRequired
+  onClickApply: React.PropTypes.func.isRequired
 }
 
 const SidebarAndModal = React.createClass({
@@ -68,7 +64,7 @@ const SidebarAndModal = React.createClass({
   getInitialState() {
     return {
       showModal: false,
-      filters: this.props.filters
+      filters: this.props.queryObjects.filters
     }
   },
 
@@ -77,7 +73,6 @@ const SidebarAndModal = React.createClass({
   },
 
   render(){
-
     return (
       <div>
         <h4>Gene(s)</h4>
@@ -89,11 +84,11 @@ const SidebarAndModal = React.createClass({
           }}/>
         <h4>Specificity</h4>
         <Toggle
+          size="l"
           active={this.props.queryObjects.specific}
           onClick={() => {
             this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {specific: !this.props.queryObjects.specific}))
-          }}
-        />
+          }}/>
 
         <h4>Filters</h4>
         <FilterChoiceSummary filters={this.state.filters} />

@@ -1,21 +1,19 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import FiltersInStages from './FiltersInStages.jsx'
-import FilterChoiceSummary from './FilterChoiceSummary.jsx'
+import Sidebar from './QuerySelectingSidebar.jsx'
 import {FilterPropTypes, queryFromQueryObjects, queryObjectsFromQuery, QueryPropTypes} from './PropTypes.js'
-import {Modal, Button, Glyphicon} from 'react-bootstrap/lib'
 import {Link, withRouter} from 'react-router'
 import {determineSelectionFromFilters} from './Filters.js'
 import {render as renderHeatmap} from 'expression-atlas-heatmap-highcharts'
 import URI from 'urijs'
-import GeneAutocomplete from 'gene-autocomplete'
+
 
 const Main = React.createClass({
   propTypes : {
     atlasHost: React.PropTypes.string.isRequired,
     species: React.PropTypes.string.isRequired,
     groups: React.PropTypes.arrayOf(React.PropTypes.shape(FilterPropTypes)).isRequired,
-    query: QueryShape.isRequired,
+    query: React.PropTypes.shape(QueryPropTypes).isRequired,
     router: React.PropTypes.object.isRequired
   },
 
@@ -32,7 +30,7 @@ const Main = React.createClass({
     return (
       <div className="row">
         <div className="small-3 medium-2 columns" >
-          <SidebarAndModal
+          <Sidebar
             geneSuggesterUrlTemplate={`${this.props.atlasHost}/gxa/json/suggestions?query={0}&species=${this.props.species}`}
             queryObjects={queryObjectsFromQuery(this._initialQueryObjects(), this.props.query)}
             onChangeQueryObjects={ (newQueryObjects) => {
