@@ -26,7 +26,6 @@ const Main = React.createClass({
   render() {
     //TODO make the right url from query
     const x = URI(this.props.atlasHost+"/gxa/fexperiments")
-
     return (
       <div className="row">
         <div className="small-3 medium-2 columns" >
@@ -34,9 +33,10 @@ const Main = React.createClass({
             geneSuggesterUrlTemplate={`${this.props.atlasHost}/gxa/json/suggestions?query={0}&species=${this.props.species}`}
             queryObjects={queryObjectsFromQuery(this._initialQueryObjects(), this.props.query)}
             onChangeQueryObjects={ (newQueryObjects) => {
-              this.props.router.push({
-                query: queryFromQueryObjects(this._initialQueryObjects(), newQueryObjects)
-              })
+              this.props.router.push(Object.assign({},
+                this.props.router.location,
+                {query: queryFromQueryObjects(this._initialQueryObjects(), newQueryObjects)}
+              ))
             }
             }
           />
