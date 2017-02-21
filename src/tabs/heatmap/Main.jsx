@@ -10,6 +10,7 @@ import URI from 'urijs'
 
 const Main = React.createClass({
   propTypes : {
+    experimentType: React.PropTypes.string.isRequired,
     atlasHost: React.PropTypes.string.isRequired,
     species: React.PropTypes.string.isRequired,
     groups: React.PropTypes.arrayOf(React.PropTypes.shape(FilterPropTypes)).isRequired,
@@ -18,9 +19,18 @@ const Main = React.createClass({
   },
 
   _initialQueryObjects(){
-    return (
-      {filters: this.props.groups}
-    )
+    return {
+      filters: this.props.groups,
+      cutoff:
+        this.props.experimentType.toLowerCase().indexOf('baseline') >-1
+        ? {
+          value: 0.5
+        }
+        : {
+          foldChange: 1.0,
+          pValue: 0.05
+        }
+    }
   },
 
   render() {

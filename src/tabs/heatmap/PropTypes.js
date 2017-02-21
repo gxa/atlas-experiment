@@ -63,10 +63,11 @@ const encode = (v) => (
 
 const queryFromQueryObjects = (initialQueryObjects, queryObjects) => ({
   specific: encode(queryObjects.specific),
-  geneQuery : encode(queryObjects.geneQuery),
-  filterFactors : encode(
+  geneQuery: encode(queryObjects.geneQuery),
+  filterFactors: encode(
       makeFilterFactorsObject(initialQueryObjects.filters,queryObjects.filters)
-    )
+    ),
+  cutoff: encode(queryObjects.cutoff)
 })
 
 const queryObjectsFromQuery = (initialQueryObjects, query) => ({
@@ -75,20 +76,36 @@ const queryObjectsFromQuery = (initialQueryObjects, query) => ({
   filters: overlayFilterFactorsObjectOnFilters(
     initialQueryObjects.filters,
     decode(query.filterFactors, "{}")
+  ),
+  cutoff: Object.assign({},
+    initialQueryObjects.cutoff,
+    decode(query.cutoff, "{}")
   )
 })
 
+const CutoffType = React.PropTypes.oneOfType([
+  React.PropTypes.shape({
+    value : React.PropTypes.number.isRequired
+  }),
+  React.PropTypes.shape({
+    foldChange : React.PropTypes.number.isRequired,
+    pValue: React.PropTypes.number.isRequired
+  })
+])
+
 const QueryObjectsPropTypes = {
-  filters: React.PropTypes.arrayOf(React.PropTypes.shape(FilterPropTypes)).isRequired,
+  specific: React.PropTypes.bool.isRequired,
   geneQuery: React.PropTypes.string.isRequired,
-  specific: React.PropTypes.bool.isRequired
+  filters: React.PropTypes.arrayOf(React.PropTypes.shape(FilterPropTypes)).isRequired,
+  cutoff: CutoffType.isRequired
 }
 
 const QueryPropTypes = {
   filterFactors : React.PropTypes.string,
   specific: React.PropTypes.string,
-  geneQuery: React.PropTypes.string
+  geneQuery: React.PropTypes.string,
+  cutoff: React.PropTypes.string
 }
 
 
-export {FilterPropTypes, queryFromQueryObjects, queryObjectsFromQuery, QueryObjectsPropTypes, QueryPropTypes}
+export {FilterPropTypes, queryFromQueryObjects, queryObjectsFromQuery, QueryObjectsPropTypes,CutoffType, QueryPropTypes}

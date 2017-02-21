@@ -1,7 +1,7 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import FiltersInStages from './FiltersInStages.jsx'
 import FilterChoiceSummary from './FilterChoiceSummary.jsx'
+import Cutoff from './Cutoff.jsx'
 import {FilterPropTypes, QueryObjectsPropTypes} from './PropTypes.js'
 import {Modal, Button, Glyphicon} from 'react-bootstrap/lib'
 import GeneAutocomplete from 'gene-autocomplete'
@@ -54,6 +54,8 @@ ModalWrapper.propTypes = {
   onClickApply: React.PropTypes.func.isRequired
 }
 
+
+
 const SidebarAndModal = React.createClass({
   propTypes : {
     geneSuggesterUrlTemplate: React.PropTypes.string.isRequired,
@@ -89,7 +91,13 @@ const SidebarAndModal = React.createClass({
           onClick={() => {
             this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {specific: !this.props.queryObjects.specific}))
           }}/>
-
+        <h4>Cutoff</h4>
+        <Cutoff
+          cutoff={this.props.queryObjects.cutoff}
+          onChangeCutoff={(newCutoff) => {
+            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {cutoff: newCutoff}))
+          }}
+        />
         <h4>Filters</h4>
         <FiltersButton onClickButton={this._openModal} />
         <FilterChoiceSummary filters={this.state.filters} />
