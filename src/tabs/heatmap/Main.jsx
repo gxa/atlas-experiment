@@ -18,18 +18,26 @@ const Main = React.createClass({
     router: React.PropTypes.object.isRequired
   },
 
+  _isBaseline(){
+    return this.props.experimentType.toLowerCase().indexOf('baseline') >-1
+  },
+
   _initialQueryObjects(){
     return {
       filters: this.props.groups,
       cutoff:
-        this.props.experimentType.toLowerCase().indexOf('baseline') >-1
+        this._isBaseline()
         ? {
           value: 0.5
         }
         : {
           foldChange: 1.0,
           pValue: 0.05
-        }
+        },
+      regulation:
+        this._isBaseline()
+        ? "OFF"
+        : "UP_DOWN"
     }
   },
 

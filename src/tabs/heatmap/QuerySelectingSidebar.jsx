@@ -2,6 +2,7 @@ import React from 'react'
 import FiltersInStages from './FiltersInStages.jsx'
 import FilterChoiceSummary from './FilterChoiceSummary.jsx'
 import Cutoff from './Cutoff.jsx'
+import Regulation from './Regulation.jsx'
 import {FilterPropTypes, QueryObjectsPropTypes} from './PropTypes.js'
 import {Modal, Button, Glyphicon} from 'react-bootstrap/lib'
 import GeneAutocomplete from 'gene-autocomplete'
@@ -75,6 +76,7 @@ const SidebarAndModal = React.createClass({
   },
 
   render(){
+    const showRegulation = ["UP","DOWN","UP_DOWN"].indexOf(this.props.queryObjects.regulation)>-1
     return (
       <div>
         <h4>Gene(s)</h4>
@@ -91,6 +93,15 @@ const SidebarAndModal = React.createClass({
           onClick={() => {
             this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {specific: !this.props.queryObjects.specific}))
           }}/>
+        {showRegulation &&
+          <h4>Regulation</h4>
+        }
+        {showRegulation &&
+          <Regulation
+          regulation={this.props.queryObjects.regulation}
+          onChangeRegulation={(newRegulation)=>{
+            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {regulation: newRegulation}))
+          }}/>}
         <h4>Cutoff</h4>
         <Cutoff
           cutoff={this.props.queryObjects.cutoff}

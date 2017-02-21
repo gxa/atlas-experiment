@@ -61,14 +61,17 @@ const encode = (v) => (
 )
 
 
-const queryFromQueryObjects = (initialQueryObjects, queryObjects) => ({
+const queryFromQueryObjects = (initialQueryObjects, queryObjects) => Object.assign({
   specific: encode(queryObjects.specific),
   geneQuery: encode(queryObjects.geneQuery),
   filterFactors: encode(
       makeFilterFactorsObject(initialQueryObjects.filters,queryObjects.filters)
     ),
   cutoff: encode(queryObjects.cutoff)
-})
+}, ["UP","DOWN","UP_DOWN"].indexOf(queryObjects.regulation)>-1
+    ? {regulation: encode(queryObjects.regulation)}
+    : {}
+)
 
 const queryObjectsFromQuery = (initialQueryObjects, query) => ({
   specific: decode(query.specific , "true"),
@@ -80,7 +83,8 @@ const queryObjectsFromQuery = (initialQueryObjects, query) => ({
   cutoff: Object.assign({},
     initialQueryObjects.cutoff,
     decode(query.cutoff, "{}")
-  )
+  ),
+  regulation: decode(query.regulation, `"${initialQueryObjects.regulation}"`)
 })
 
 const CutoffType = React.PropTypes.oneOfType([
@@ -93,19 +97,28 @@ const CutoffType = React.PropTypes.oneOfType([
   })
 ])
 
+const RegulationType = React.PropTypes.oneOf([
+  'OFF',
+  'UP',
+  'DOWN',
+  'UP_DOWN'
+])
+
 const QueryObjectsPropTypes = {
   specific: React.PropTypes.bool.isRequired,
   geneQuery: React.PropTypes.string.isRequired,
   filters: React.PropTypes.arrayOf(React.PropTypes.shape(FilterPropTypes)).isRequired,
-  cutoff: CutoffType.isRequired
+  cutoff: CutoffType.isRequired,
+  regulation: RegulationType.isRequired
 }
 
 const QueryPropTypes = {
   filterFactors : React.PropTypes.string,
   specific: React.PropTypes.string,
   geneQuery: React.PropTypes.string,
-  cutoff: React.PropTypes.string
+  cutoff: React.PropTypes.string,
+  regulation: React.PropTypes.string
 }
 
 
-export {FilterPropTypes, queryFromQueryObjects, queryObjectsFromQuery, QueryObjectsPropTypes,CutoffType, QueryPropTypes}
+export {FilterPropTypes, queryFromQueryObjects, queryObjectsFromQuery, QueryObjectsPropTypes,CutoffType,RegulationType, QueryPropTypes}
