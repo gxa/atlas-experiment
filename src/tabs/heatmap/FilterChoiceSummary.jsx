@@ -16,9 +16,8 @@ const FilterChoiceSummary = ({filters}) => (
         <h5>
           {prettyName(_filter.name)}
         </h5>
-          {["all","ALL"].indexOf(_filter.selected)>-1
-          ? <ul> ALL </ul>
-          : <ul>
+          {["all","ALL"].indexOf(_filter.selected)===-1
+          ? <ul>
             {
               _filter.selected.map((selected) => (
                 <li key={selected}>
@@ -27,6 +26,17 @@ const FilterChoiceSummary = ({filters}) => (
               ))
             }
             </ul>
+          : _filter.groupings.length < 2
+            ? <ul>
+              {
+                _filter.groupings.map((g)=>(
+                  <i key={g[0]}>
+                    {g[0]}
+                  </i>)
+                )
+              }
+              </ul>
+            : <ul> ALL </ul>
           }
       </div>
     ))}

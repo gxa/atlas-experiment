@@ -1,7 +1,8 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import FiltersInStages from './FiltersInStages.jsx'
 import FilterChoiceSummary from './FilterChoiceSummary.jsx'
+import Cutoff from './Cutoff.jsx'
+import Regulation from './Regulation.jsx'
 import {FilterPropTypes, QueryObjectsPropTypes} from './PropTypes.js'
 import {Modal, Button, Glyphicon} from 'react-bootstrap/lib'
 import GeneAutocomplete from 'gene-autocomplete'
@@ -54,6 +55,8 @@ ModalWrapper.propTypes = {
   onClickApply: React.PropTypes.func.isRequired
 }
 
+
+
 const SidebarAndModal = React.createClass({
   propTypes : {
     geneSuggesterUrlTemplate: React.PropTypes.string.isRequired,
@@ -73,6 +76,7 @@ const SidebarAndModal = React.createClass({
   },
 
   render(){
+    const showRegulation = ["UP","DOWN","UP_DOWN"].indexOf(this.props.queryObjects.regulation)>-1
     return (
       <div>
         <h4>Gene(s)</h4>
@@ -89,7 +93,22 @@ const SidebarAndModal = React.createClass({
           onClick={() => {
             this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {specific: !this.props.queryObjects.specific}))
           }}/>
-
+        {showRegulation &&
+          <h4>Regulation</h4>
+        }
+        {showRegulation &&
+          <Regulation
+          regulation={this.props.queryObjects.regulation}
+          onChangeRegulation={(newRegulation)=>{
+            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {regulation: newRegulation}))
+          }}/>}
+        <h4>Cutoff</h4>
+        <Cutoff
+          cutoff={this.props.queryObjects.cutoff}
+          onChangeCutoff={(newCutoff) => {
+            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {cutoff: newCutoff}))
+          }}
+        />
         <h4>Filters</h4>
         <FiltersButton onClickButton={this._openModal} />
         <FilterChoiceSummary filters={this.state.filters} />

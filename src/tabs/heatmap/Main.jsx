@@ -10,6 +10,7 @@ import URI from 'urijs'
 
 const Main = React.createClass({
   propTypes : {
+    experimentType: React.PropTypes.string.isRequired,
     atlasHost: React.PropTypes.string.isRequired,
     species: React.PropTypes.string.isRequired,
     groups: React.PropTypes.arrayOf(React.PropTypes.shape(FilterPropTypes)).isRequired,
@@ -17,16 +18,32 @@ const Main = React.createClass({
     router: React.PropTypes.object.isRequired
   },
 
+  _isBaseline(){
+    return this.props.experimentType.toLowerCase().indexOf('baseline') >-1
+  },
+
   _initialQueryObjects(){
-    return (
-      {filters: this.props.groups}
-    )
+    return {
+      filters: this.props.groups,
+      cutoff:
+        this._isBaseline()
+        ? {
+          value: 0.5
+        }
+        : {
+          foldChange: 1.0,
+          pValue: 0.05
+        },
+      regulation:
+        this._isBaseline()
+        ? "OFF"
+        : "UP_DOWN"
+    }
   },
 
   render() {
     //TODO make the right url from query
     const x = URI(this.props.atlasHost+"/gxa/fexperiments")
-
     return (
       <div className="row">
         <div className="small-3 medium-2 columns" >
@@ -34,9 +51,10 @@ const Main = React.createClass({
             geneSuggesterUrlTemplate={`${this.props.atlasHost}/gxa/json/suggestions?query={0}&species=${this.props.species}`}
             queryObjects={queryObjectsFromQuery(this._initialQueryObjects(), this.props.query)}
             onChangeQueryObjects={ (newQueryObjects) => {
-              this.props.router.push({
-                query: queryFromQueryObjects(this._initialQueryObjects(), newQueryObjects)
-              })
+              this.props.router.push(Object.assign({},
+                this.props.router.location,
+                {query: queryFromQueryObjects(this._initialQueryObjects(), newQueryObjects)}
+              ))
             }
             }
           />
