@@ -10,6 +10,7 @@ import URI from 'urijs'
 
 const Main = React.createClass({
   propTypes : {
+    experimentAccession: React.PropTypes.string.isRequired,
     experimentType: React.PropTypes.string.isRequired,
     atlasHost: React.PropTypes.string.isRequired,
     species: React.PropTypes.string.isRequired,
@@ -42,8 +43,6 @@ const Main = React.createClass({
   },
 
   render() {
-    //TODO make the right url from query
-    const x = URI(this.props.atlasHost+"/gxa/fexperiments")
     return (
       <div className="row">
         <div className="small-3 medium-2 columns" >
@@ -64,7 +63,9 @@ const Main = React.createClass({
             options={{
               atlasBaseURL: this.props.atlasHost,
               isWidget:false,
-              params: 'geneQuery=zinc finger&species=mus%20musculus'
+              isMultiExperiment:false,
+              isDifferential: this.props.experimentType.toUpperCase().indexOf("DIFFERENTIAL")>-1,
+              sourceURL: URI(this.props.atlasHost+"/gxa/json/experiments/"+this.props.experimentAccession).toString()
             }} />
         </div>
       </div>
