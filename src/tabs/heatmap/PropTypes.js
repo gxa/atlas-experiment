@@ -120,5 +120,4 @@ const QueryPropTypes = {
   regulation: React.PropTypes.string
 }
 
-
 export {FilterPropTypes, queryFromQueryObjects, queryObjectsFromQuery, QueryObjectsPropTypes,CutoffType,RegulationType, QueryPropTypes}
