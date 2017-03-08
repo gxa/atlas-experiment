@@ -5,6 +5,8 @@ import { hashHistory,Router, Route, Link, IndexRedirect, withRouter } from 'reac
 import Heatmap from './tabs/heatmap/Main.jsx'
 import ExperimentDesign from './tabs/ExperimentDesign.jsx'
 import ExternalResource from './tabs/ExternalResource.jsx'
+import StaticTable from './tabs/StaticTable.jsx'
+
 
 const Dummy = () => (
   <div>
@@ -19,7 +21,7 @@ const componentsPerTab = {
   'heatmap' : Heatmap,
   'experiment-design' : ExperimentDesign,
   'external-resource' : ExternalResource,
-  'dummy' : Dummy
+  'static-table' : StaticTable
 }
 
 const makeTab = (name, props) => {
