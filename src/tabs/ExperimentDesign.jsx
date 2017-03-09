@@ -1,61 +1,83 @@
 import React from 'react'
 import ReactTable from 'react-table'
 import 'react-table/react-table.css'
+import {uniq, curry} from 'lodash'
+import toPlural from 'pluralize'
 
 /*
 - do or do not gray out the non-analysed rows? maybe cursive them or something? maybe do add extra column?
 - provide a "style" object instead?
 */
 
+const aggregateText = (name, vals) => {
+  const xs = uniq(vals)
+  return (
+    xs.length < 3
+    ? xs.join(", ")
+    : toPlural(name.toLowerCase() , xs.length, true)
+  )
+}
+
+//http://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript
+const toTitleCase = (str) => str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+
+
 const ExperimentDesign = ({
   data,
-  headers
+  headers,
+  options={}
 }) => (
   <ReactTable
     columns={
-      headers.map((headerGroup,ix)=> ({
-        header: headerGroup.name,
-        columns: headerGroup.values.map((header, jx) => ({
-          header: header,
-          id: ix*1000 +jx +1,
-          accessor: r => r.values[ix][jx]
-        }))
-      }))
+      headers.map((headerGroup,ix)=> (
+        {
+          header: headerGroup.name,
+          columns:
+            headerGroup.values.map((header, jx) => ({
+              aggregate: curry(aggregateText, 2)(headerGroup.name || "value"),
+              header: header,
+              id: ix*1000 +jx +1,
+              accessor: r => r.values[ix][jx],
+            }))
+        }
+      ))
     }
+    className="-striped"
+    style={{fontSize: "small", padding: "7px 0px"}}
     data={data}
+    {...options}
   />
 )
 
 const BaselineExperimentDesign = ({
-  showAnalysedOnly,
   data,
   headers
 }) => (
   ExperimentDesign({
     data:
-      data.filter(({properties, values}) => (
-      ! showAnalysedOnly || properties.analysed
-    )).map(({properties, values}) => ({
-      colour: properties.analysed ? "" : "gray",
-      values: values
-    })),
-    headers})
+      data
+      .map(({properties, values}) => ({
+        values: [[properties.analysed? "Yes" : "No"]].concat(values)
+      })),
+    headers:
+      [{name:"", values: ["Analysed"]}].concat(headers)
+    })
 )
 
 const DifferentialExperimentDesign = ({
-  contrastToShow,
   data,
   headers
 }) => (
   ExperimentDesign({
     data:
-      data.filter(({properties, values}) => (
-      true || properties.contrastName === contrastToShow //TODO
-    )).map(({properties, values}) => ({
-      colour: {"reference": "#FFC266" , "test" : "#82CDCD"}[properties.referenceOrTest] || "",
-      values: values
+      data.map(({properties, values}) => ({
+      values: [[properties.contrastName || "N/A", toTitleCase(properties.referenceOrTest || "")]].concat(values)
     })),
-    headers})
+    headers: [{name: "", values: ["Contrast", "Reference/Test"]}].concat(headers),
+    options: {
+      pivotBy: [1]
+    }
+  })
 )
 
 const commonPropTypes = {
@@ -69,7 +91,6 @@ const commonPropTypes = {
           referenceOrTest: React.PropTypes.oneOf(["reference", "test", ""])
         }).isRequired
     ]),
-    colour: React.PropTypes.string.isRequired,
     values: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string.isRequired).isRequired).isRequired
   }).isRequired).isRequired,
   headers: React.PropTypes.arrayOf(React.PropTypes.shape({
@@ -87,7 +108,7 @@ const ExperimentDesignTab = ({
   headers
 }) => (
   isDifferential
-  ? DifferentialExperimentDesign(Object.assign({contrastToShow:""}, {data,headers})) //TODO
+  ? DifferentialExperimentDesign({data,headers})
   : BaselineExperimentDesign({data,headers})
 )
 
