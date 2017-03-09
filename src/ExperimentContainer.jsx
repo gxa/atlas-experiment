@@ -66,7 +66,10 @@ const ExperimentContainerRouter = ({
             <Route
               key={tab.name}
               path={tab.name}
-              component={makeTab(tab.type, Object.assign({atlasHost, experimentAccession, experimentType, species},tab.props))} />
+              component={makeTab(tab.type,
+                Object.assign({atlasHost, experimentAccession, experimentType, species},
+                  {isDifferential: experimentType.toLowerCase().indexOf('differential') >-1},
+                  tab.props))} />
           ))
         }
         </Route>

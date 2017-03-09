@@ -35,7 +35,7 @@ const heatmapCallbackParametersFromQueryObjects = ({
 const Main = React.createClass({
   propTypes : {
     experimentAccession: React.PropTypes.string.isRequired,
-    experimentType: React.PropTypes.string.isRequired,
+    isDifferential: React.PropTypes.bool.isRequired,
     atlasHost: React.PropTypes.string.isRequired,
     species: React.PropTypes.string.isRequired,
     groups: React.PropTypes.arrayOf(React.PropTypes.shape(FilterPropTypes)).isRequired,
@@ -43,15 +43,11 @@ const Main = React.createClass({
     router: React.PropTypes.object.isRequired
   },
 
-  isDifferential(){
-    return this.props.experimentType.toLowerCase().indexOf('differential') >-1
-  },
-
   _initialQueryObjects(){
     return {
       filters: this.props.groups,
       cutoff:
-        this.isDifferential()
+        this.props.isDifferential
         ? {
           foldChange: 1.0,
           pValue: 0.05
@@ -61,7 +57,7 @@ const Main = React.createClass({
         }
       ,
       regulation:
-        this.isDifferential()
+        this.props.isDifferential
         ? "UP_DOWN"
         : "OFF"
     }
@@ -90,10 +86,10 @@ const Main = React.createClass({
               atlasBaseURL: this.props.atlasHost,
               isWidget:false,
               isMultiExperiment:false,
-              isDifferential: this.isDifferential(),
+              isDifferential: this.props.isDifferential,
               sourceURL:
                 URI(this.props.atlasHost+"/gxa/json/experiments/"+this.props.experimentAccession)
-                .addQuery(heatmapCallbackParametersFromQueryObjects(queryObjects, this.isDifferential()))
+                .addQuery(heatmapCallbackParametersFromQueryObjects(queryObjects, this.props.isDifferential))
                 .toString()
             }} />
         </div>
