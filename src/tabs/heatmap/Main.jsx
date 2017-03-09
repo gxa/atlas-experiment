@@ -7,10 +7,35 @@ import {determineSelectionFromFilters} from './Filters.js'
 import {ExpressionAtlasHeatmapHighcharts} from 'expression-atlas-heatmap-highcharts'
 import URI from 'urijs'
 
+// should be in sync with backend - see ExperimentPageRequestPreferencesPropertyNamesTest.java
+const heatmapCallbackParametersFromQueryObjects = ({
+  specific,
+  geneQuery,
+  filters,
+  cutoff,
+  regulation
+}, isDifferential) => Object.assign(
+  {
+    specific,
+    geneQuery,
+    selectedColumnIds: determineSelectionFromFilters(filters)
+  },
+  isDifferential && regulation!=="OFF"
+  ? {regulation} : {},
+  isDifferential
+    ? {
+      cutoff: cutoff.pValue,
+      foldChangeCutoff: cutoff.foldChange
+    }
+    : {
+      cutoff: cutoff.value
+    }
+)
 
 const Main = React.createClass({
   propTypes : {
-    experimentType: React.PropTypes.string.isRequired,
+    experimentAccession: React.PropTypes.string.isRequired,
+    isDifferential: React.PropTypes.bool.isRequired,
     atlasHost: React.PropTypes.string.isRequired,
     species: React.PropTypes.string.isRequired,
     groups: React.PropTypes.arrayOf(React.PropTypes.shape(FilterPropTypes)).isRequired,
@@ -18,38 +43,34 @@ const Main = React.createClass({
     router: React.PropTypes.object.isRequired
   },
 
-  _isBaseline(){
-    return this.props.experimentType.toLowerCase().indexOf('baseline') >-1
-  },
-
   _initialQueryObjects(){
     return {
       filters: this.props.groups,
       cutoff:
-        this._isBaseline()
+        this.props.isDifferential
         ? {
-          value: 0.5
-        }
-        : {
           foldChange: 1.0,
           pValue: 0.05
-        },
+        }
+        : {
+          value: 0.5
+        }
+      ,
       regulation:
-        this._isBaseline()
-        ? "OFF"
-        : "UP_DOWN"
+        this.props.isDifferential
+        ? "UP_DOWN"
+        : "OFF"
     }
   },
 
   render() {
-    //TODO make the right url from query
-    const x = URI(this.props.atlasHost+"/gxa/fexperiments")
+    const queryObjects = queryObjectsFromQuery(this._initialQueryObjects(), this.props.query)
     return (
       <div className="row">
         <div className="small-3 medium-2 columns" >
           <Sidebar
             geneSuggesterUrlTemplate={`${this.props.atlasHost}/gxa/json/suggestions?query={0}&species=${this.props.species}`}
-            queryObjects={queryObjectsFromQuery(this._initialQueryObjects(), this.props.query)}
+            queryObjects={queryObjects}
             onChangeQueryObjects={ (newQueryObjects) => {
               this.props.router.push(Object.assign({},
                 this.props.router.location,
@@ -64,7 +85,12 @@ const Main = React.createClass({
             options={{
               atlasBaseURL: this.props.atlasHost,
               isWidget:false,
-              params: 'geneQuery=zinc finger&species=mus%20musculus'
+              isMultiExperiment:false,
+              isDifferential: this.props.isDifferential,
+              sourceURL:
+                URI(this.props.atlasHost+"/gxa/json/experiments/"+this.props.experimentAccession)
+                .addQuery(heatmapCallbackParametersFromQueryObjects(queryObjects, this.props.isDifferential))
+                .toString()
             }} />
         </div>
       </div>

@@ -13,23 +13,27 @@ const valueOfSelectionSequence = (selections, allFilters) => (
   )
 )
 
+const selectedInFilter = (_filter) => (
+  _filter.selected === "all" || _filter.selected === "ALL"
+  ? _filter.groupings.map((a)=>a[0])
+  : _filter.selected
+)
+
 const stageFromNextFilter = (allFilters, acc, nextFilter) => {
   const values = nextFilter.groupings.map((g) => g[0])
   let available;
   if(!acc.length){
     available = values;
   } else {
-    const optionsStillLeft = valueOfSelectionSequence(acc.map((f)=> f.selected) , allFilters)
+    const optionsStillLeft = valueOfSelectionSequence(acc.map(selectedInFilter) , allFilters)
     const choiceStillFeasible = (optionsForChoice) => (
       intersection(optionsStillLeft,optionsForChoice).length >0
     )
     available = values.filter((value)=> choiceStillFeasible(nextFilter.groupings.find((g)=>g[0]==value)[1]))
   }
 
-  const selectedIntended =
-    nextFilter.selected === "all" || nextFilter.selected === "ALL"
-    ? nextFilter.groupings.map((a)=>a[0])
-    : nextFilter.selected
+  const selectedIntended = selectedInFilter(nextFilter)
+
   return acc.concat([{
     name: nextFilter.name,
     values: values,
@@ -47,7 +51,7 @@ const createStagesFromFilters = (filters) => (
 )
 
 const determineSelectionFromFilters = (filters) => (
-  valueOfSelectionSequence(filters.map((_filter)=> _filter.selected), filters)
+  valueOfSelectionSequence(filters.map(selectedInFilter), filters)
 )
 
 export {createStagesFromFilters, determineSelectionFromFilters}

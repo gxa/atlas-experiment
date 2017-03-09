@@ -1,0 +1,5 @@
+.rt-td:hover {
+  overflow: visible;
+  white-space: normal;
+  width: auto;
+}

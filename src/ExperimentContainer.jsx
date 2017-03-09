@@ -3,14 +3,25 @@ import React from 'react'
 import { hashHistory,Router, Route, Link, IndexRedirect, withRouter } from 'react-router'
 
 import Heatmap from './tabs/heatmap/Main.jsx'
-import ExperimentDesign from './tabs/ExperimentDesign.jsx'
+import ExperimentDesign from './tabs/experiment-design/Main.jsx'
 import ExternalResource from './tabs/ExternalResource.jsx'
+import StaticTable from './tabs/StaticTable.jsx'
+
+
+const Dummy = () => (
+  <div>
+    Dummy component TODO
+  </div>
+)
+Dummy.propTypes={}
+
 
 //coupled to ExperimentController.java
 const componentsPerTab = {
   'heatmap' : Heatmap,
   'experiment-design' : ExperimentDesign,
-  'external-resource' : ExternalResource
+  'external-resource' : ExternalResource,
+  'static-table' : StaticTable
 }
 
 const makeTab = (name, props) => {
@@ -40,6 +51,7 @@ const makeContainer = (tabNames) => {
 
 const ExperimentContainerRouter = ({
   atlasHost,
+  experimentAccession,
   experimentType,
   species,
   tabs
@@ -54,7 +66,10 @@ const ExperimentContainerRouter = ({
             <Route
               key={tab.name}
               path={tab.name}
-              component={makeTab(tab.type, Object.assign({atlasHost, experimentType,species},tab.props))} />
+              component={makeTab(tab.type,
+                Object.assign({atlasHost, experimentAccession, experimentType, species},
+                  {isDifferential: experimentType.toLowerCase().indexOf('differential') >-1},
+                  tab.props))} />
           ))
         }
         </Route>
@@ -67,6 +82,7 @@ const ExperimentContainerRouter = ({
 // componentsPerTab.hasOwnProperty(tab.type)
 ExperimentContainerRouter.propTypes = {
   atlasHost: React.PropTypes.string.isRequired,
+  experimentAccession: React.PropTypes.string.isRequired,
   experimentType: React.PropTypes.string.isRequired,
   species: React.PropTypes.string.isRequired,
   tabs: React.PropTypes.arrayOf(React.PropTypes.shape({
