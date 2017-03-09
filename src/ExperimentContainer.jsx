@@ -3,7 +3,7 @@ import React from 'react'
 import { hashHistory,Router, Route, Link, IndexRedirect, withRouter } from 'react-router'
 
 import Heatmap from './tabs/heatmap/Main.jsx'
-import ExperimentDesign from './tabs/ExperimentDesign.jsx'
+import ExperimentDesign from './tabs/experiment-design/Main.jsx'
 import ExternalResource from './tabs/ExternalResource.jsx'
 import StaticTable from './tabs/StaticTable.jsx'
 
