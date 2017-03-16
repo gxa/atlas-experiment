@@ -1,26 +1,17 @@
 import React from 'react'
 
-import { hashHistory,Router, Route, Link, IndexRedirect, withRouter } from 'react-router'
+import { hashHistory, Router, Route, Link, IndexRedirect, withRouter } from 'react-router'
 
 import Heatmap from './tabs/heatmap/Main.jsx'
 import ExperimentDesign from './tabs/experiment-design/Main.jsx'
-import ExternalResource from './tabs/ExternalResource.jsx'
+import Resources from './tabs/resources/Main.jsx'
 import StaticTable from './tabs/StaticTable.jsx'
-
-
-const Dummy = () => (
-  <div>
-    Dummy component TODO
-  </div>
-)
-Dummy.propTypes={}
-
 
 //coupled to ExperimentController.java
 const componentsPerTab = {
   'heatmap' : Heatmap,
   'experiment-design' : ExperimentDesign,
-  'external-resource' : ExternalResource,
+  'resources' : Resources,
   'static-table' : StaticTable
 }
 
