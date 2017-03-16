@@ -7,8 +7,8 @@ const Table = ({data}) => (
         data.map(row => (
           <tr>
             {
-              row.map( el => (
-                <td>
+              row.map( (el,ix) => (
+                <td key={ix}>
                   <div dangerouslySetInnerHTML={{__html: el}} />
                 </td>
               ))
