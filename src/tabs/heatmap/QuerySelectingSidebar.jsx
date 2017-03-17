@@ -42,8 +42,10 @@ const ModalWrapper = ({
     }
     </Modal.Body>
     <Modal.Footer>
+      { onClickApply &&
       <Button bsStyle="primary" onClick={onClickApply}
           style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>Apply</Button>
+      }
 
       <Button onClick={onCloseModal}
           style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>Close</Button>
@@ -54,7 +56,7 @@ const ModalWrapper = ({
 ModalWrapper.propTypes = {
   show: React.PropTypes.bool.isRequired,
   onCloseModal: React.PropTypes.func.isRequired,
-  onClickApply: React.PropTypes.func.isRequired
+  onClickApply: React.PropTypes.func
 }
 
 
@@ -71,7 +73,6 @@ const SidebarAndModal = React.createClass({
   getInitialState() {
     return {
       showModal: "",
-      cutoff: this.props.queryObjects.cutoff,
       filters: this.props.queryObjects.filters
     }
   },
@@ -111,18 +112,15 @@ const SidebarAndModal = React.createClass({
             <ModalWrapper
               title={"Cutoff - distribution of genes"}
               show={this.state.showModal == "cutoff"}
-              onCloseModal={()=> this.setState({ showModal: ""})}
-              onClickApply={() => {
-                this.setState({ showModal: "cutoff"})
-                this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {cutoff: newCutoff}))
-              }} >
+              onCloseModal={()=> this.setState({ showModal: ""})}>
 
               <CutoffDistribution
-                cutoff={this.state.cutoff}
-                genesDistributedByCutoffUrl={this.props.genesDistributedByCutoffUrl}
-                propagateFilterSelection={(cutoff) => {
-                  this.setState({cutoff})
-                }}/>
+                cutoff={this.props.queryObjects.cutoff}
+                onChangeCutoff={(newCutoff) => {
+                  this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {cutoff: newCutoff}))
+                  this.setState({showModal:""})
+                }}
+                genesDistributedByCutoffUrl={this.props.genesDistributedByCutoffUrl}/>
 
             </ModalWrapper>
           </div>

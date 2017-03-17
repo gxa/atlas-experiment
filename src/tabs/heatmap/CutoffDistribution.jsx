@@ -15,25 +15,54 @@ const cumulativeDistributionPoints= ({bins, values}) => {
   }).filter(({x,y}) => y>0 && x > 0)
 }
 
-const CutoffDistribution = ({cutoff, histogram}) => (
+const CutoffDistribution = ({cutoff,onChangeCutoff, histogram}) => (
   <div>
   {`Current value: ${cutoff.value}`}
   <ReactHighcharts
     config={{
+      title: "",
       xAxis: {
+        title: {
+          text: 'Cutoff value'
+        },
+        crosshair: true,
         type: 'logarithmic'
+      },
+      tooltip: {
+        pointFormat: '<span style="color:{point.color};cursor: crosshair;">\u25CF</span> Select cutoff: <b>{point.y}</b><br/>'
+      },
+      yAxis: {
+        title: {
+          text: '# genes'
+        },
       },
       type:"line",
       series:[{
-        name:"Genes passing cutoffs",
-        data: cumulativeDistributionPoints(histogram)
-      }]
+        cursor:"pointer",
+        name:"Genes expressed in this experiment at value higher than cutoff",
+        data: cumulativeDistributionPoints(histogram),
+        events : {
+          click: (event) => {
+            onChangeCutoff({value: event.point.x})
+          }
+        }
+      }],
+      tooltip: {
+        useHTML: true,
+        formatter: function() {
+          return `<div>Select cutoff: <b> ${this.x}</b> (${this.y} genes past this cutoff)</div>`
+        }
+      },
+      credits: {
+        enabled: false
+      },
     }} />
   </div>
 )
 
 CutoffDistribution.propTypes = {
   cutoff: CutoffType,
+  onChangeCutoff: React.PropTypes.func.isRequired,
   histogram: React.PropTypes.shape({
     bins: React.PropTypes.arrayOf(React.PropTypes.number.isRequired).isRequired,
     values: React.PropTypes.arrayOf(React.PropTypes.number.isRequired).isRequired
@@ -42,7 +71,7 @@ CutoffDistribution.propTypes = {
 
 class CutoffDistributionLoader extends Component {
   render() {
-    const { genesDistributedByCutoffFetch , loadingGifUrl, cutoff} = this.props
+    const { genesDistributedByCutoffFetch , loadingGifUrl, cutoff, onChangeCutoff} = this.props
 
     if (genesDistributedByCutoffFetch.pending) {
       return <img src={loadingGifUrl}/>
@@ -55,7 +84,8 @@ class CutoffDistributionLoader extends Component {
     } else if (genesDistributedByCutoffFetch.fulfilled) {
       return (
         <CutoffDistribution
-        cutoff={cutoff} histogram={genesDistributedByCutoffFetch.value} />
+        histogram={genesDistributedByCutoffFetch.value}
+        {...{cutoff, onChangeCutoff}} />
       )
     }
   }
