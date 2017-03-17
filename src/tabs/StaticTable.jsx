@@ -4,11 +4,11 @@ const Table = ({data}) => (
   <table>
     <tbody>
       {
-        data.map(row => (
-          <tr>
+        data.map((row, ix) => (
+          <tr key={ix}>
             {
-              row.map( (el,ix) => (
-                <td key={ix}>
+              row.map( (el,jx) => (
+                <td key={jx}>
                   <div dangerouslySetInnerHTML={{__html: el}} />
                 </td>
               ))
