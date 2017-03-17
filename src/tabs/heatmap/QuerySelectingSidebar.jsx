@@ -2,6 +2,7 @@ import React from 'react'
 import FiltersInStages from './FiltersInStages.jsx'
 import FilterChoiceSummary from './FilterChoiceSummary.jsx'
 import Cutoff from './Cutoff.jsx'
+import CutoffDistribution from './CutoffDistribution.jsx'
 import Regulation from './Regulation.jsx'
 import {FilterPropTypes, QueryObjectsPropTypes} from './PropTypes.js'
 import {Modal, Button, Glyphicon} from 'react-bootstrap/lib'
@@ -11,7 +12,7 @@ require('./bootstrap-toggle.min.css')
 
 
 
-const FiltersButton = ({
+const OpenerButton = ({
   onClickButton
 }) => (
   <Button bsSize="large" onClick={onClickButton}
@@ -20,11 +21,12 @@ const FiltersButton = ({
     <span style={{verticalAlign: `middle`}}> Select </span>
   </Button>
 )
-FiltersButton.propTypes = {
+OpenerButton.propTypes = {
   onClickButton : React.PropTypes.func.isRequired
 }
 
 const ModalWrapper = ({
+  title,
   show,
   onCloseModal,
   onClickApply,
@@ -32,7 +34,7 @@ const ModalWrapper = ({
 }) => (
   <Modal show={show} onHide={onCloseModal} bsSize="large">
     <Modal.Header closeButton>
-      <Modal.Title>Filters</Modal.Title>
+      <Modal.Title>{title}</Modal.Title>
     </Modal.Header>
     <Modal.Body>
     {
@@ -60,19 +62,18 @@ ModalWrapper.propTypes = {
 const SidebarAndModal = React.createClass({
   propTypes : {
     geneSuggesterUrlTemplate: React.PropTypes.string.isRequired,
+    genesDistributedByCutoffUrl: React.PropTypes.string.isRequired,
+    loadingGifUrl: React.PropTypes.string.isRequired,
     queryObjects: React.PropTypes.shape(QueryObjectsPropTypes).isRequired,
     onChangeQueryObjects: React.PropTypes.func.isRequired
   },
 
   getInitialState() {
     return {
-      showModal: false,
+      showModal: "",
+      cutoff: this.props.queryObjects.cutoff,
       filters: this.props.queryObjects.filters
     }
-  },
-
-  _openModal() {
-    this.setState({ showModal: true })
   },
 
   render(){
@@ -103,6 +104,30 @@ const SidebarAndModal = React.createClass({
             this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {regulation: newRegulation}))
           }}/>}
         <h4>Cutoff</h4>
+        {this.props.genesDistributedByCutoffUrl
+          && (
+          <div>
+            <OpenerButton onClickButton={()=> this.setState({ showModal: "cutoff" })} />
+            <ModalWrapper
+              title={"Cutoff - distribution of genes"}
+              show={this.state.showModal == "cutoff"}
+              onCloseModal={()=> this.setState({ showModal: ""})}
+              onClickApply={() => {
+                this.setState({ showModal: "cutoff"})
+                this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {cutoff: newCutoff}))
+              }} >
+
+              <CutoffDistribution
+                cutoff={this.state.cutoff}
+                genesDistributedByCutoffUrl={this.props.genesDistributedByCutoffUrl}
+                propagateFilterSelection={(cutoff) => {
+                  this.setState({cutoff})
+                }}/>
+
+            </ModalWrapper>
+          </div>
+          )
+        }
         <Cutoff
           cutoff={this.props.queryObjects.cutoff}
           onChangeCutoff={(newCutoff) => {
@@ -110,14 +135,15 @@ const SidebarAndModal = React.createClass({
           }}
         />
         <h4>Filters</h4>
-        <FiltersButton onClickButton={this._openModal} />
+        <OpenerButton onClickButton={()=> this.setState({ showModal: "filters" })} />
         <FilterChoiceSummary filters={this.state.filters} />
 
         <ModalWrapper
-          show={this.state.showModal}
-          onCloseModal={()=> this.setState({ showModal: false})}
+          title={"Filters"}
+          show={this.state.showModal == "filters"}
+          onCloseModal={()=> this.setState({ showModal: ""})}
           onClickApply={() => {
-            this.setState({ showModal: false})
+            this.setState({ showModal: "filters"})
             this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {filters: this.state.filters}))
           }} >
 

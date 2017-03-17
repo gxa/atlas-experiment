@@ -39,6 +39,7 @@ const Main = React.createClass({
     atlasHost: React.PropTypes.string.isRequired,
     species: React.PropTypes.string.isRequired,
     groups: React.PropTypes.arrayOf(React.PropTypes.shape(FilterPropTypes)).isRequired,
+    genesDistributedByCutoffUrl:React.PropTypes.string.isRequired,
     query: React.PropTypes.shape(QueryPropTypes).isRequired,
     router: React.PropTypes.object.isRequired
   },
@@ -70,6 +71,8 @@ const Main = React.createClass({
         <div className="small-3 medium-2 columns" >
           <Sidebar
             geneSuggesterUrlTemplate={`${this.props.atlasHost}/gxa/json/suggestions?query={0}&species=${this.props.species}`}
+            genesDistributedByCutoffUrl={this.props.isDifferential? "" : this.props.genesDistributedByCutoffUrl}
+            loadingGifUrl={`${this.props.atlasHost}/gxa/resources/images/loading.gif`}
             queryObjects={queryObjects}
             onChangeQueryObjects={ (newQueryObjects) => {
               this.props.router.push(Object.assign({},
