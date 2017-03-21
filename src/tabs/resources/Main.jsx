@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect, PromiseState } from 'react-refetch'
 import ResourceType from './ResourcePropTypes.js'
+import Icon from './Icon.jsx'
 import {uniq} from 'lodash'
 
 const whichSection = (value) => value.group.split("/")[0]
@@ -30,6 +31,7 @@ const ResourcesSection = ({name, values}) => {
               <li key={ix}>
                 <a href={value.url}>
                 <p>
+                  <Icon type={value.type} />
                   {value.description}
                 </p>
                 </a>
@@ -49,6 +51,7 @@ const ResourcesSection = ({name, values}) => {
                     <li key={jx} style={{marginLeft:"1.25rem"}}>
                       <a href={value.url}>
                       <div>
+                        <Icon type={value.type} />
                         {value.description}
                       </div>
                       </a>
