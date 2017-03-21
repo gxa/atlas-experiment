@@ -36,6 +36,7 @@ const Main = React.createClass({
   propTypes : {
     experimentAccession: React.PropTypes.string.isRequired,
     isDifferential: React.PropTypes.bool.isRequired,
+    isRnaSeq: React.PropTypes.bool.isRequired,
     atlasHost: React.PropTypes.string.isRequired,
     species: React.PropTypes.string.isRequired,
     groups: React.PropTypes.arrayOf(React.PropTypes.shape(FilterPropTypes)).isRequired,
@@ -54,7 +55,7 @@ const Main = React.createClass({
           pValue: 0.05
         }
         : {
-          value: 0.5
+          value: this.props.isRnaSeq? 0.5 : 1e-6
         }
       ,
       regulation:

@@ -59,7 +59,9 @@ const ExperimentContainerRouter = ({
               path={tab.name}
               component={makeTab(tab.type,
                 Object.assign({atlasHost, experimentAccession, experimentType, species},
-                  {isDifferential: experimentType.toLowerCase().indexOf('differential') >-1},
+                  {isDifferential: experimentType.toLowerCase().indexOf('differential') >-1,
+                   isRnaSeq: experimentType.toLowerCase().replace("_","").indexOf('rnaseq') >-1
+                },
                   tab.props))} />
           ))
         }

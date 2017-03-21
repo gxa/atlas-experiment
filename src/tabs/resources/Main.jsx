@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect, PromiseState } from 'react-refetch'
 import ResourceType from './ResourcePropTypes.js'
-import {Large as LargeResource, Small as SmallResource} from './Resource.jsx'
+import Icon from './Icon.jsx'
 import {uniq} from 'lodash'
 
 const whichSection = (value) => value.group.split("/")[0]
@@ -22,31 +22,48 @@ const ResourcesSection = ({name, values}) => {
   )))
 
   return (
-    <div className="row">
+    <div className="row" style={{fontSize:"larger"}}>
       <h3>{name}</h3>
+      <ul style={{listStyle: "none"}}>
         {
           subsections.filter(el=>el).length <2
           ? values.map((value, ix, self) => (
-              <LargeResource key={ix}
-                className={"small-12 medium-6 large-4 columns " + (ix === self.length -1 ? "end" : "")}
-                {...value} />
+              <li key={ix}>
+                <a href={value.url}>
+                <p>
+                  <Icon type={value.type} />
+                  {value.description}
+                </p>
+                </a>
+              </li>
             ))
-          : subsections.map((subsectionName) => (
-              <div className="row" key={subsectionName}>
-                <h5>{subsectionName}</h5>
+          : subsections.map((subsectionName, ix) => (
+              <li key={ix}>
+              <ul style={{listStyle: "none", marginLeft:"0rem"}}>
+                <i>{
+                  subsectionName}
+                </i>
                 {
                   values.filter((value) => (
                     subsectionName === whichSubsection(value)
                   ))
-                  .map((value, ix, self) => (
-                      <SmallResource key={ix}
-                        className={"small-12 medium-6 columns " + (ix === self.length -1 ? "end" : "")}
-                        {...value} />
+                  .map((value, jx, self) => (
+                    <li key={jx} style={{marginLeft:"1.25rem"}}>
+                      <a href={value.url}>
+                      <div>
+                        <Icon type={value.type} />
+                        {value.description}
+                      </div>
+                      </a>
+                    </li>
                   ))
                 }
-              </div>
+              </ul>
+              <br/>
+              </li>
           ))
         }
+      </ul>
     </div>
   )
 }
