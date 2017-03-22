@@ -81,10 +81,10 @@ const SidebarAndModal = React.createClass({
     const showRegulation = ["UP","DOWN","UP_DOWN"].indexOf(this.props.queryObjects.regulation)>-1
     return (
       <div>
-        <h4>Gene(s)</h4>
+        <h4>Genes</h4>
         <GeneAutocomplete
           suggesterUrlTemplate={this.props.geneSuggesterUrlTemplate}
-          value={this.props.queryObjects.geneQuery}
+          values={this.props.queryObjects.geneQuery}
           onGeneChosen={(newGeneChosen)=>{
             this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {geneQuery: newGeneChosen}))
           }}/>

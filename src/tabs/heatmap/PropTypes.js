@@ -73,9 +73,15 @@ const queryFromQueryObjects = (initialQueryObjects, queryObjects) => Object.assi
     : {}
 )
 
+const packStringsIntoArrays = (stringOrArray) => (
+  typeof stringOrArray == 'string'
+  ? [{value: stringOrArray}]
+  : stringOrArray
+)
+
 const queryObjectsFromQuery = (initialQueryObjects, query) => ({
   specific: decode(query.specific , "true"),
-  geneQuery: decode(query.geneQuery , "\"\""),
+  geneQuery: packStringsIntoArrays(decode(query.geneQuery , "[]")),
   filters: overlayFilterFactorsObjectOnFilters(
     initialQueryObjects.filters,
     decode(query.filterFactors, "{}")
@@ -106,7 +112,10 @@ const RegulationType = React.PropTypes.oneOf([
 
 const QueryObjectsPropTypes = {
   specific: React.PropTypes.bool.isRequired,
-  geneQuery: React.PropTypes.string.isRequired,
+  geneQuery: React.PropTypes.arrayOf(React.PropTypes.shape({
+    value: React.PropTypes.string.isRequired,
+    category: React.PropTypes.string
+  }).isRequired).isRequired,
   filters: React.PropTypes.arrayOf(React.PropTypes.shape(FilterPropTypes)).isRequired,
   cutoff: CutoffType.isRequired,
   regulation: RegulationType.isRequired
