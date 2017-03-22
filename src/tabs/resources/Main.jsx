@@ -16,7 +16,7 @@ const whichSubsection = (value) => {
 }
 
 
-const ResourcesSection = ({name, values}) => {
+const ResourcesSection = ({name, values, pathToFolderWithBundledResources}) => {
   const subsections = uniq(values.map((value)=> (
     whichSubsection(value)
   )))
@@ -31,7 +31,7 @@ const ResourcesSection = ({name, values}) => {
               <li key={ix}>
                 <a href={value.url}>
                 <p>
-                  <Icon type={value.type} />
+                  <Icon type={value.type} {...{pathToFolderWithBundledResources}}  />
                   {value.description}
                 </p>
                 </a>
@@ -51,7 +51,7 @@ const ResourcesSection = ({name, values}) => {
                     <li key={jx} style={{marginLeft:"1.25rem"}}>
                       <a href={value.url}>
                       <div>
-                        <Icon type={value.type} />
+                        <Icon type={value.type} {...{pathToFolderWithBundledResources}} />
                         {value.description}
                       </div>
                       </a>
@@ -68,7 +68,7 @@ const ResourcesSection = ({name, values}) => {
   )
 }
 
-const ResourcesList = ({values}) => {
+const ResourcesList = ({values, pathToFolderWithBundledResources}) => {
   const sections = uniq(values.map((value)=> (
     whichSection(value)
   )))
@@ -83,7 +83,7 @@ const ResourcesList = ({values}) => {
               values.filter((value) => (
                 sectionName === whichSection(value)
               ))
-            } />
+            } {...{pathToFolderWithBundledResources}}/>
         ))
       }
     </div>
@@ -91,13 +91,15 @@ const ResourcesList = ({values}) => {
 
 }
 
-ResourcesList.propTypes = React.PropTypes.arrayOf(React.PropTypes.shape(
-  ResourceType
-).isRequired).isRequired
+ResourcesList.propTypes = {
+  values: React.PropTypes.arrayOf(React.PropTypes.shape(ResourceType)).isRequired,
+  pathToFolderWithBundledResources: React.PropTypes.string.isRequired
+}
+
 
 class ResourcesTab extends Component {
   render() {
-    const { resourcesFetch , atlasHost} = this.props
+    const { resourcesFetch , atlasHost, pathToFolderWithBundledResources} = this.props
 
     if (resourcesFetch.pending) {
       return <img src={atlasHost + "/gxa/resources/images/loading.gif"}/>
@@ -108,7 +110,10 @@ class ResourcesTab extends Component {
         </div>
       )
     } else if (resourcesFetch.fulfilled) {
-      return <ResourcesList values={resourcesFetch.value} />
+      return (
+        <ResourcesList values={resourcesFetch.value}
+        {...{pathToFolderWithBundledResources}} />
+      )
     }
   }
 }
