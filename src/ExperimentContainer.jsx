@@ -6,13 +6,15 @@ import Heatmap from './tabs/heatmap/Main.jsx'
 import ExperimentDesign from './tabs/experiment-design/Main.jsx'
 import Resources from './tabs/resources/Main.jsx'
 import StaticTable from './tabs/StaticTable.jsx'
+import QCReport from './tabs/qc-report/Main.jsx'
 
 //coupled to ExperimentController.java
 const componentsPerTab = {
   'heatmap' : Heatmap,
   'experiment-design' : ExperimentDesign,
   'resources' : Resources,
-  'static-table' : StaticTable
+  'static-table' : StaticTable,
+  'qc-report' : QCReport
 }
 
 const makeTab = (name, props) => {
