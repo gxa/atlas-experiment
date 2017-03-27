@@ -61,48 +61,59 @@ const Filter = React.createClass({
       this.props.values
       .filter((value)=> this.props.available.indexOf(value) == -1)
     return (
-      <div className="filterBody">
-        <div className="groupName"
-           onClick={this.toggleOpen}
-           href="#">
-           {prettyName(this.props.name)}
-           {
-             <Glyphicon style={{fontSize: `x-small`, paddingLeft: `5px`}} glyph={this.state.open? "menu-up" : "menu-down"}/>
-           }
+      this.props.values.length == 1
+      ? <div className="filterBody">
+          <span>
+         {prettyName(this.props.name)+": "}
+          </span>
+          <i>
+            {
+              this.props.values[0]
+            }
+          </i>
         </div>
-        {this.state.open &&
-          <div className="options">
-          {this.props.available
-            .map((value) => (
-            <div className="option" key={value}>
-              <input type="checkbox"
-                value={value}
-                onChange={(evt)=>this.toggleOne(value, evt)}
-                checked={this.props.selected.indexOf(value)>-1}
-                />
-                <span> {value}</span>
-            </div>
-          ))}
-          { (unavailable.length > 7 && !this.state.showAll)
-            ? <span onClick={this.toggleShowAll} style={{cursor:"pointer"}}>
-                {`+ ${unavailable.length} excluded (show)`}
-              </span>
-            : unavailable
+      : <div className="filterBody">
+          <div className="groupName"
+             onClick={this.toggleOpen}
+             href="#">
+             {prettyName(this.props.name)}
+             {
+               <Glyphicon style={{fontSize: `x-small`, paddingLeft: `5px`}} glyph={this.state.open? "menu-up" : "menu-down"}/>
+             }
+          </div>
+          {this.state.open &&
+            <div className="options">
+            {this.props.available
               .map((value) => (
               <div className="option" key={value}>
                 <input type="checkbox"
                   value={value}
-                  checked={false}
-                  disabled={true}
+                  onChange={(evt)=>this.toggleOne(value, evt)}
+                  checked={this.props.selected.indexOf(value)>-1}
                   />
-                  <span style={{color:"grey"}}> {value}</span>
+                  <span> {value}</span>
               </div>
-          ))
+            ))}
+            { (unavailable.length > 7 && !this.state.showAll)
+              ? <span onClick={this.toggleShowAll} style={{cursor:"pointer"}} className="excluded">
+                  {`+ ${unavailable.length} excluded (show)`}
+                </span>
+              : unavailable
+                .map((value) => (
+                <div className="option" key={value}>
+                  <input type="checkbox"
+                    value={value}
+                    checked={false}
+                    disabled={true}
+                    />
+                    <span className="excluded"> {value}</span>
+                </div>
+            ))
+            }
+            {this.state.showAll && <i onClick={this.toggleShowAll} style={{cursor:"pointer"}}> (... show less) </i>}
+            </div>
           }
-          {this.state.showAll && <span onClick={this.toggleShowAll} style={{cursor:"pointer"}}> (... show less) </span>}
-          </div>
-        }
-      </div>
+        </div>
     )
   }
 })
