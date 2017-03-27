@@ -28,10 +28,10 @@ const makeContainer = (tabNames) => {
 
   return ({children}) => (
     <div>
-      <ul className="nav nav-tabs" role="tablist">
+      <ul className="tabs" data-tabs role="tablist">
         {tabNames.map(tabName => (
-          <li title={tabName} role="presentation" key={tabName}>
-            <Link to={tabName} activeStyle={{color:"red"}}>
+          <li title={tabName} role="presentation" key={tabName} className="tabs-title">
+            <Link to={tabName} style={{fontSize: "medium"}} activeStyle={{color:"white", background:"#666"}}>
               {tabName}
             </Link>
           </li>
