@@ -8,14 +8,17 @@ const ExperimentDesignTab = ({
   table
 }) => (
   <div>
-  <a href={downloadUrl} style={{padding:"10px"}} >
-    Download
-  </a>
-  {
-    isDifferential
-    ? DifferentialExperimentDesign(table)
-    : BaselineExperimentDesign(table)
-  }
+    <div style={{textAlign:"right"}}>
+      <a className="button" style={{margin:"0px"}} href={downloadUrl}>
+        <span className="glyphicon glyphicon-download-alt" style={{marginRight:"0.5rem"}}></span>
+        Download
+      </a>
+    </div>
+    {
+      isDifferential
+      ? DifferentialExperimentDesign(table)
+      : BaselineExperimentDesign(table)
+    }
   </div>
 )
 
