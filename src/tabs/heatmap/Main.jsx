@@ -1,36 +1,15 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Sidebar from './QuerySelectingSidebar.jsx'
-import {FilterPropTypes, queryFromQueryObjects, queryObjectsFromQuery, QueryPropTypes} from './PropTypes.js'
+import {toQuery as queryFromQueryObjects, fromQuery as queryObjectsFromQuery,
+  toBaselineRequestPreferences, toDifferentialRequestPreferences} from './CreateQueryObjects.js'
+import {FilterPropTypes, QueryPropTypes} from './PropTypes.js'
 import {Link, withRouter} from 'react-router'
 import {determineSelectionFromFilters} from './column-filters/Filters.js'
 import {ExpressionAtlasHeatmapHighcharts} from 'expression-atlas-heatmap-highcharts'
 import URI from 'urijs'
 
-// should be in sync with backend - see ExperimentPageRequestPreferencesPropertyNamesTest.java
-const heatmapCallbackParametersFromQueryObjects = ({
-  specific,
-  geneQuery,
-  filters,
-  cutoff,
-  regulation
-}, isDifferential) => Object.assign(
-  {
-    specific,
-    geneQuery,
-    selectedColumnIds: determineSelectionFromFilters(filters)
-  },
-  isDifferential && regulation!=="OFF"
-  ? {regulation} : {},
-  isDifferential
-    ? {
-      cutoff: cutoff.pValue,
-      foldChangeCutoff: cutoff.foldChange
-    }
-    : {
-      cutoff: cutoff.value
-    }
-)
+
 
 const Main = React.createClass({
   propTypes : {
@@ -93,7 +72,9 @@ const Main = React.createClass({
               isDifferential: this.props.isDifferential,
               sourceURL:
                 URI(this.props.atlasHost+"/gxa/json/experiments/"+this.props.experimentAccession)
-                .addQuery(heatmapCallbackParametersFromQueryObjects(queryObjects, this.props.isDifferential))
+                .addQuery((this.props.isDifferential
+                  ? toDifferentialRequestPreferences
+                  : toBaselineRequestPreferences)(queryObjects))
                 .toString()
             }} />
         </div>
