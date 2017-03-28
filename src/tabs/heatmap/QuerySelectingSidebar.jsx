@@ -1,6 +1,5 @@
 import React from 'react'
-import FiltersInStages from './FiltersInStages.jsx'
-import FilterChoiceSummary from './FilterChoiceSummary.jsx'
+import {Main as HeatmapColumnsChoice, Summary as HeatmapColumnsSummary} from './column-filters/Main.jsx'
 import Cutoff from './Cutoff.jsx'
 import CutoffDistribution from './CutoffDistribution.jsx'
 import Regulation from './Regulation.jsx'
@@ -134,7 +133,7 @@ const SidebarAndModal = React.createClass({
         />
         <h4>Filters</h4>
         <OpenerButton onClickButton={()=> this.setState({ showModal: "filters" })} />
-        <FilterChoiceSummary filters={this.state.filters} />
+        <HeatmapColumnsSummary filters={this.state.filters} />
 
         <ModalWrapper
           title={"Filters"}
@@ -145,7 +144,7 @@ const SidebarAndModal = React.createClass({
             this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {filters: this.state.filters}))
           }} >
 
-          <FiltersInStages
+          <HeatmapColumnsChoice
             filters={this.state.filters}
             propagateFilterSelection={(filters) => {
               this.setState({filters})

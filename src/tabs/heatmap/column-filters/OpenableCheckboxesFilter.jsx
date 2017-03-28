@@ -1,7 +1,7 @@
 const React = require(`react`);
 const Button = require(`react-bootstrap/lib/Button`);
 const Glyphicon = require(`react-bootstrap/lib/Glyphicon`);
-const PropTypes = require(`./PropTypes.js`);
+const PropTypes = require(`../PropTypes.js`);
 const xor = require(`lodash/xor`);
 require('./Components.less');
 

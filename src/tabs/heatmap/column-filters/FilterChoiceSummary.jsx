@@ -1,5 +1,5 @@
 import React from 'react'
-import {FilterPropTypes} from './PropTypes.js'
+import {FilterPropTypes} from '../PropTypes.js'
 
 const prettyName = (name) => (
   name

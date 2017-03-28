@@ -1,6 +1,6 @@
 import React from 'react'
 import Filter from './OpenableCheckboxesFilter.jsx'
-import {FilterPropTypes} from './PropTypes.js'
+import {FilterPropTypes} from '../PropTypes.js'
 import {createStagesFromFilters} from './Filters.js'
 
 

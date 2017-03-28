@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import Sidebar from './QuerySelectingSidebar.jsx'
 import {FilterPropTypes, queryFromQueryObjects, queryObjectsFromQuery, QueryPropTypes} from './PropTypes.js'
 import {Link, withRouter} from 'react-router'
-import {determineSelectionFromFilters} from './Filters.js'
+import {determineSelectionFromFilters} from './column-filters/Filters.js'
 import {ExpressionAtlasHeatmapHighcharts} from 'expression-atlas-heatmap-highcharts'
 import URI from 'urijs'
 
