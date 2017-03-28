@@ -85,8 +85,8 @@ const SidebarAndModal = React.createClass({
         <GeneAutocomplete
           suggesterUrlTemplate={this.props.geneSuggesterUrlTemplate}
           values={this.props.queryObjects.geneQuery}
-          onGeneChosen={(newGeneChosen)=>{
-            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {geneQuery: newGeneChosen}))
+          onChangeValues={(newValues)=>{
+            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {geneQuery: newValues}))
           }}/>
         <h4>Specificity</h4>
         <Toggle
@@ -141,7 +141,7 @@ const SidebarAndModal = React.createClass({
           show={this.state.showModal == "filters"}
           onCloseModal={()=> this.setState({ showModal: ""})}
           onClickApply={() => {
-            this.setState({ showModal: "filters"})
+            this.setState({ showModal: ""})
             this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {filters: this.state.filters}))
           }} >
 
