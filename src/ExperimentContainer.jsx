@@ -28,10 +28,10 @@ const makeContainer = (tabNames) => {
 
   return ({children}) => (
     <div>
-      <ul className="nav nav-tabs" role="tablist">
+      <ul className="tabs" data-tabs role="tablist">
         {tabNames.map(tabName => (
-          <li title={tabName} role="presentation" key={tabName}>
-            <Link to={tabName} activeStyle={{color:"red"}}>
+          <li title={tabName} role="presentation" key={tabName} className="tabs-title">
+            <Link to={tabName} style={{fontSize: "medium"}} activeStyle={{color:"white", background:"#666"}}>
               {tabName}
             </Link>
           </li>
@@ -44,6 +44,7 @@ const makeContainer = (tabNames) => {
 
 const ExperimentContainerRouter = ({
   atlasHost,
+  pathToFolderWithBundledResources,
   experimentAccession,
   experimentType,
   species,
@@ -60,11 +61,21 @@ const ExperimentContainerRouter = ({
               key={tab.name}
               path={tab.name}
               component={makeTab(tab.type,
-                Object.assign({atlasHost, experimentAccession, experimentType, species},
-                  {isDifferential: experimentType.toLowerCase().indexOf('differential') >-1,
-                   isRnaSeq: experimentType.toLowerCase().replace("_","").indexOf('rnaseq') >-1
-                },
-                  tab.props))} />
+                Object.assign(
+                  {
+                    atlasHost,
+                    pathToFolderWithBundledResources,
+                    experimentAccession,
+                    experimentType,
+                    species
+                  },
+                  {
+                    isDifferential:
+                      experimentType.toLowerCase().indexOf('differential') >-1,
+                    isRnaSeq:
+                      experimentType.toLowerCase().replace("_","").indexOf('rnaseq') >-1
+                  },tab.props)
+                )} />
           ))
         }
         </Route>
@@ -72,11 +83,9 @@ const ExperimentContainerRouter = ({
   )
 }
 
-// TODO custom validation for tabs to ensure
-// tabs nonempty
-// componentsPerTab.hasOwnProperty(tab.type)
 ExperimentContainerRouter.propTypes = {
   atlasHost: React.PropTypes.string.isRequired,
+  pathToFolderWithBundledResources: React.PropTypes.string.isRequired,
   experimentAccession: React.PropTypes.string.isRequired,
   experimentType: React.PropTypes.string.isRequired,
   species: React.PropTypes.string.isRequired,

@@ -1,5 +1,4 @@
 import React from 'react'
-import {isEqual} from 'lodash'
 
 const FilterPropTypes = {
  name: React.PropTypes.string.isRequired,
@@ -23,70 +22,6 @@ const FilterPropTypes = {
  })
 }
 
-const overlayFilterFactorsObjectOnFilters = (filters, filterFactors) => {
-  const filterFactorsCopy = {}
-  Object.keys(filterFactors)
-  .forEach((key) => {
-    filterFactorsCopy[key.toUpperCase()] = filterFactors[key]
-  })
-  return (
-    filters
-    .map((_filter) => Object.assign({}, _filter, {
-      selected:
-        filterFactorsCopy[_filter.name.toUpperCase()] || _filter.selected || "all"
-    }))
-  )
-}
-
-const makeFilterFactorsObject = (filtersInitially, filters) => {
-  const filterFactors = {}
-
-  filtersInitially
-  .forEach((f)=> {
-    const newF = filters.find((_f)=>_f.name === f.name) || Object.assign({},f)
-    if(!isEqual(new Set(f.selected), new Set(newF.selected))){
-      filterFactors[newF.name] = newF.selected
-    }
-  })
-
-  return filterFactors
-}
-
-const decode = (v, defaultV) => (
-  JSON.parse(decodeURIComponent(v === undefined ? defaultV : v))
-)
-
-const encode = (v) => (
-  encodeURIComponent(JSON.stringify(v))
-)
-
-
-const queryFromQueryObjects = (initialQueryObjects, queryObjects) => Object.assign({
-  specific: encode(queryObjects.specific),
-  geneQuery: encode(queryObjects.geneQuery),
-  filterFactors: encode(
-      makeFilterFactorsObject(initialQueryObjects.filters,queryObjects.filters)
-    ),
-  cutoff: encode(queryObjects.cutoff)
-}, ["UP","DOWN","UP_DOWN"].indexOf(queryObjects.regulation)>-1
-    ? {regulation: encode(queryObjects.regulation)}
-    : {}
-)
-
-const queryObjectsFromQuery = (initialQueryObjects, query) => ({
-  specific: decode(query.specific , "true"),
-  geneQuery: decode(query.geneQuery , "\"\""),
-  filters: overlayFilterFactorsObjectOnFilters(
-    initialQueryObjects.filters,
-    decode(query.filterFactors, "{}")
-  ),
-  cutoff: Object.assign({},
-    initialQueryObjects.cutoff,
-    decode(query.cutoff, "{}")
-  ),
-  regulation: decode(query.regulation, `"${initialQueryObjects.regulation}"`)
-})
-
 const CutoffType = React.PropTypes.oneOfType([
   React.PropTypes.shape({
     value : React.PropTypes.number.isRequired
@@ -106,7 +41,10 @@ const RegulationType = React.PropTypes.oneOf([
 
 const QueryObjectsPropTypes = {
   specific: React.PropTypes.bool.isRequired,
-  geneQuery: React.PropTypes.string.isRequired,
+  geneQuery: React.PropTypes.arrayOf(React.PropTypes.shape({
+    value: React.PropTypes.string.isRequired,
+    category: React.PropTypes.string
+  }).isRequired).isRequired,
   filters: React.PropTypes.arrayOf(React.PropTypes.shape(FilterPropTypes)).isRequired,
   cutoff: CutoffType.isRequired,
   regulation: RegulationType.isRequired
@@ -120,4 +58,4 @@ const QueryPropTypes = {
   regulation: React.PropTypes.string
 }
 
-export {FilterPropTypes, queryFromQueryObjects, queryObjectsFromQuery, QueryObjectsPropTypes,CutoffType,RegulationType, QueryPropTypes}
+export {FilterPropTypes, QueryObjectsPropTypes,CutoffType,RegulationType, QueryPropTypes}

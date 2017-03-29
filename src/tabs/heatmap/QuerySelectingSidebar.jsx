@@ -1,6 +1,5 @@
 import React from 'react'
-import FiltersInStages from './FiltersInStages.jsx'
-import FilterChoiceSummary from './FilterChoiceSummary.jsx'
+import {Main as HeatmapColumnsChoice, Summary as HeatmapColumnsSummary} from './column-filters/Main.jsx'
 import Cutoff from './Cutoff.jsx'
 import CutoffDistribution from './CutoffDistribution.jsx'
 import Regulation from './Regulation.jsx'
@@ -81,12 +80,12 @@ const SidebarAndModal = React.createClass({
     const showRegulation = ["UP","DOWN","UP_DOWN"].indexOf(this.props.queryObjects.regulation)>-1
     return (
       <div>
-        <h4>Gene(s)</h4>
+        <h4>Genes</h4>
         <GeneAutocomplete
           suggesterUrlTemplate={this.props.geneSuggesterUrlTemplate}
-          value={this.props.queryObjects.geneQuery}
-          onGeneChosen={(newGeneChosen)=>{
-            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {geneQuery: newGeneChosen}))
+          values={this.props.queryObjects.geneQuery}
+          onChangeValues={(newValues)=>{
+            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {geneQuery: newValues}))
           }}/>
         <h4>Specificity</h4>
         <Toggle
@@ -134,18 +133,18 @@ const SidebarAndModal = React.createClass({
         />
         <h4>Filters</h4>
         <OpenerButton onClickButton={()=> this.setState({ showModal: "filters" })} />
-        <FilterChoiceSummary filters={this.state.filters} />
+        <HeatmapColumnsSummary filters={this.state.filters} />
 
         <ModalWrapper
           title={"Filters"}
           show={this.state.showModal == "filters"}
           onCloseModal={()=> this.setState({ showModal: ""})}
           onClickApply={() => {
-            this.setState({ showModal: "filters"})
+            this.setState({ showModal: ""})
             this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {filters: this.state.filters}))
           }} >
 
-          <FiltersInStages
+          <HeatmapColumnsChoice
             filters={this.state.filters}
             propagateFilterSelection={(filters) => {
               this.setState({filters})

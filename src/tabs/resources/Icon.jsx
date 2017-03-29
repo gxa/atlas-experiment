@@ -1,4 +1,6 @@
 import React from 'react'
+import Url from 'url'
+import Path from 'path'
 import ResourcePropTypes from './ResourcePropTypes.js'
 
 const htmlEntity = (type) => {
@@ -13,7 +15,7 @@ const htmlEntity = (type) => {
   )
 }
 
-const icon = (type) => {
+const icon = (type, pathToFolderWithBundledResources) => {
   const maybeImg = [
     ["icon-gsea-reactome", require("./assets/gsea_reactome-icon.png")],
     ["icon-gsea-interpro", require("./assets/gsea_interpro-icon.png")],
@@ -28,21 +30,26 @@ const icon = (type) => {
   ))
 
   return (
-    !! maybeImg && <img style={{marginRight: "0.25rem"}}src={maybeImg[1]} />
+    !! maybeImg && <img style={{marginRight: "0.25rem"}}src={
+      Url.resolve(
+          pathToFolderWithBundledResources,
+          maybeImg[1]
+      )} />
   )
 }
 
 
-const Icon = ({type}) => {
+const Icon = ({type, pathToFolderWithBundledResources}) => {
   return (
     htmlEntity(type)
-    || icon(type)
+    || icon(type, pathToFolderWithBundledResources)
     || <span style={{marginLeft: "0.5rem",marginRight: "0.5rem"}}> &middot; </span>
   )
 
 }
 Icon.propTypes = {
-  type: ResourcePropTypes.type
+  type: ResourcePropTypes.type,
+  pathToFolderWithBundledResources: React.PropTypes.string.isRequired
 }
 
 export default Icon
