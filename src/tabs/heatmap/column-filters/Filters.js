@@ -13,9 +13,11 @@ const valueOfSelectionSequence = (selections, allFilters) => (
   )
 )
 
+const _idsInGrouping = (_filter) => _filter.groupings.map((a)=>a[0])
+
 const selectedInFilter = (_filter) => (
   _filter.selected === "all" || _filter.selected === "ALL"
-  ? _filter.groupings.map((a)=>a[0])
+  ? _idsInGrouping(_filter)
   : _filter.selected
 )
 
@@ -54,4 +56,8 @@ const determineSelectionFromFilters = (filters) => (
   valueOfSelectionSequence(filters.map(selectedInFilter), filters)
 )
 
-export {createStagesFromFilters, determineSelectionFromFilters}
+const determineAvailableFromFilters = (filters) => (
+  valueOfSelectionSequence(filters.map(_idsInGrouping), filters)
+)
+
+export {createStagesFromFilters, determineSelectionFromFilters, determineAvailableFromFilters}
