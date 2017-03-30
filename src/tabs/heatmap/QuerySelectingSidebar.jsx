@@ -3,7 +3,7 @@ import {Main as HeatmapColumnsChoice, Summary as HeatmapColumnsSummary} from './
 import Cutoff from './Cutoff.jsx'
 import CutoffDistribution from './CutoffDistribution.jsx'
 import Regulation from './Regulation.jsx'
-import {FilterPropTypes, QueryObjectsPropTypes} from './PropTypes.js'
+import {ColumnGroupPropTypes, QueryObjectsPropTypes} from './PropTypes.js'
 import {Modal, Button, Glyphicon} from 'react-bootstrap/lib'
 import GeneAutocomplete from 'gene-autocomplete'
 import Toggle from 'react-bootstrap-toggle'
@@ -62,9 +62,11 @@ ModalWrapper.propTypes = {
 
 const SidebarAndModal = React.createClass({
   propTypes : {
+    isDifferential: React.PropTypes.bool.isRequired,
     geneSuggesterUrlTemplate: React.PropTypes.string.isRequired,
     genesDistributedByCutoffUrl: React.PropTypes.string.isRequired,
     loadingGifUrl: React.PropTypes.string.isRequired,
+    columnGroups: React.PropTypes.arrayOf(React.PropTypes.shape(ColumnGroupPropTypes)).isRequired,
     queryObjects: React.PropTypes.shape(QueryObjectsPropTypes).isRequired,
     onChangeQueryObjects: React.PropTypes.func.isRequired
   },
@@ -72,12 +74,13 @@ const SidebarAndModal = React.createClass({
   getInitialState() {
     return {
       showModal: "",
-      filters: this.props.queryObjects.filters
+      selectedColumnIds: this.props.queryObjects.selectedColumnIds
     }
   },
 
   render(){
     const showRegulation = ["UP","DOWN","UP_DOWN"].indexOf(this.props.queryObjects.regulation)>-1
+    const columnsName = this.props.isDifferential ? "Comparisons" : "Assay Groups"
     return (
       <div>
         <h4>Genes</h4>
@@ -131,23 +134,24 @@ const SidebarAndModal = React.createClass({
             this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {cutoff: newCutoff}))
           }}
         />
-        <h4>Filters</h4>
-        <OpenerButton onClickButton={()=> this.setState({ showModal: "filters" })} />
-        <HeatmapColumnsSummary filters={this.state.filters} />
+        <h4>{columnsName}</h4>
+        <OpenerButton onClickButton={()=> this.setState({ showModal: "columns" })} />
+        <HeatmapColumnsSummary columnGroups={this.props.columnGroups} selectedColumnIds={this.state.selectedColumnIds}/>
 
         <ModalWrapper
-          title={"Filters"}
-          show={this.state.showModal == "filters"}
+          title={columnsName}
+          show={this.state.showModal == "columns"}
           onCloseModal={()=> this.setState({ showModal: ""})}
           onClickApply={() => {
             this.setState({ showModal: ""})
-            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {filters: this.state.filters}))
+            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {selectedColumnIds: this.state.selectedColumnIds}))
           }} >
 
           <HeatmapColumnsChoice
-            filters={this.state.filters}
-            propagateFilterSelection={(filters) => {
-              this.setState({filters})
+            columnGroups={this.props.columnGroups}
+            selectedColumnIds={this.state.selectedColumnIds}
+            onNewSelectedColumnIds={(selectedColumnIds) => {
+              this.setState({selectedColumnIds})
             }}/>
 
         </ModalWrapper>
