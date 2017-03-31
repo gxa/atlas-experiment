@@ -1,7 +1,7 @@
 import React from 'react'
 import {Glyphicon} from 'react-bootstrap/lib'
 import {ColumnGroupPropTypes} from '../PropTypes.js'
-import {xor, difference, intersection, union} from 'lodash'
+import {xor, difference, intersection, union,isEqual} from 'lodash'
 require('./Components.less');
 
 /*
@@ -101,9 +101,6 @@ const CheckboxGrouping = ({text, selection, onToggle}) => (
 )
 CheckboxGrouping.propTypes = GroupingPropTypes
 
-/*
-TODO make this hide excessive groupings :)
-*/
 const PlainSectionBody = ({groupings, selectedIds, onNewSelectedIds}) => (
   <div className="sectionBody">
     {
@@ -224,14 +221,31 @@ class Section extends React.Component {
 
 
   render() {
-    const headerName = prettyName(this.props.name)+": "
+    const {name, groupings, availableIds} = this.props
+    const {open} = this.state
+    const headerName = prettyName(name)+": "
     if(this.props.groupings.length == 1) {
       return (
         <div className="gxaSection">
           <span className="title">
             {headerName}
           </span>
-          <ReadOnlyGrouping {...makeGroupingProps(this.props, this.props.groupings[0])} />
+          <ReadOnlyGrouping {...makeGroupingProps(this.props, groupings[0])} />
+        </div>
+      )
+    } else if (
+      groupings.length == 2
+      && isEqual(new Set(groupings[0][1]), new Set(availableIds))
+      && isEqual(new Set(groupings[1][1]), new Set(availableIds))){
+      return (
+        <div className="gxaSection">
+          <span className="title">
+            {headerName}
+          </span>
+          <ReadOnlyGrouping
+            {...makeGroupingProps(this.props, groupings[0])}
+            text={`${groupings[0][0]} vs ${groupings[1][0]}`}
+             />
         </div>
       )
     } else {
@@ -244,11 +258,11 @@ class Section extends React.Component {
              href="#">
              {headerName}
              {
-               <Glyphicon style={{fontSize: `x-small`, paddingLeft: `5px`}} glyph={this.state.open? "menu-up" : "menu-down"}/>
+               <Glyphicon style={{fontSize: `x-small`, paddingLeft: `5px`}} glyph={open? "menu-up" : "menu-down"}/>
              }
           </div>
           {
-            this.state.open && (this.props.groupings.length > 10
+            open && (groupings.length > 10
             ? <SectionBodyWithCollapsableLinks {...this.props} />
             : <PlainSectionBody {...this.props} />)
           }
