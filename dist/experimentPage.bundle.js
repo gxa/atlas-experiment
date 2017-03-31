@@ -1003,6 +1003,8 @@ webpackJsonp_name_([1],[
 
 	var _pluralize2 = _interopRequireDefault(_pluralize);
 
+	var _lib = __webpack_require__(32);
+
 	var _PropTypes = __webpack_require__(498);
 
 	var _ColumnFiltersSection = __webpack_require__(499);
@@ -1051,6 +1053,40 @@ webpackJsonp_name_([1],[
 	      'h5',
 	      null,
 	      determineColumnNameFromFirstGroup(availableColumnIds, columnGroups[0]) + ' selected currently: ' + selectedColumnIds.length + ' / ' + availableColumnIds.length
+	    ),
+	    _react2.default.createElement(
+	      _lib.ButtonGroup,
+	      null,
+	      _react2.default.createElement(
+	        _lib.Button,
+	        {
+	          bsSize: 'xsmall',
+	          onClick: function onClick() {
+	            onNewSelectedColumnIds(availableColumnIds);
+	          },
+	          style: { textTransform: 'unset', letterSpacing: 'unset', height: 'unset' } },
+	        _react2.default.createElement(_lib.Glyphicon, { glyph: 'plus' }),
+	        _react2.default.createElement(
+	          'span',
+	          { style: { verticalAlign: 'middle' } },
+	          ' Choose all'
+	        )
+	      ),
+	      _react2.default.createElement(
+	        _lib.Button,
+	        {
+	          bsSize: 'xsmall',
+	          onClick: function onClick() {
+	            onNewSelectedColumnIds([]);
+	          },
+	          style: { textTransform: 'unset', letterSpacing: 'unset', height: 'unset' } },
+	        _react2.default.createElement(_lib.Glyphicon, { glyph: 'minus' }),
+	        _react2.default.createElement(
+	          'span',
+	          { style: { verticalAlign: 'middle' } },
+	          ' Remove all'
+	        )
+	      )
 	    ),
 	    _react2.default.createElement(
 	      'div',
@@ -18746,6 +18782,8 @@ webpackJsonp_name_([1],[
 	  value: true
 	});
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(1);
@@ -18866,9 +18904,6 @@ webpackJsonp_name_([1],[
 	};
 	CheckboxGrouping.propTypes = GroupingPropTypes;
 
-	/*
-	TODO make this hide excessive groupings :)
-	*/
 	var PlainSectionBody = function PlainSectionBody(_ref4) {
 	  var groupings = _ref4.groupings,
 	      selectedIds = _ref4.selectedIds,
@@ -19015,7 +19050,13 @@ webpackJsonp_name_([1],[
 	    value: function render() {
 	      var _this4 = this;
 
-	      var headerName = prettyName(this.props.name) + ": ";
+	      var _props2 = this.props,
+	          name = _props2.name,
+	          groupings = _props2.groupings,
+	          availableIds = _props2.availableIds;
+	      var open = this.state.open;
+
+	      var headerName = prettyName(name) + ": ";
 	      if (this.props.groupings.length == 1) {
 	        return _react2.default.createElement(
 	          'div',
@@ -19025,7 +19066,20 @@ webpackJsonp_name_([1],[
 	            { className: 'title' },
 	            headerName
 	          ),
-	          _react2.default.createElement(ReadOnlyGrouping, makeGroupingProps(this.props, this.props.groupings[0]))
+	          _react2.default.createElement(ReadOnlyGrouping, makeGroupingProps(this.props, groupings[0]))
+	        );
+	      } else if (groupings.length == 2 && (0, _lodash.isEqual)(new Set(groupings[0][1]), new Set(availableIds)) && (0, _lodash.isEqual)(new Set(groupings[1][1]), new Set(availableIds))) {
+	        return _react2.default.createElement(
+	          'div',
+	          { className: 'gxaSection' },
+	          _react2.default.createElement(
+	            'span',
+	            { className: 'title' },
+	            headerName
+	          ),
+	          _react2.default.createElement(ReadOnlyGrouping, _extends({}, makeGroupingProps(this.props, groupings[0]), {
+	            text: groupings[0][0] + ' vs ' + groupings[1][0]
+	          }))
 	        );
 	      } else {
 	        return _react2.default.createElement(
@@ -19042,9 +19096,9 @@ webpackJsonp_name_([1],[
 	              },
 	              href: '#' },
 	            headerName,
-	            _react2.default.createElement(_lib.Glyphicon, { style: { fontSize: 'x-small', paddingLeft: '5px' }, glyph: this.state.open ? "menu-up" : "menu-down" })
+	            _react2.default.createElement(_lib.Glyphicon, { style: { fontSize: 'x-small', paddingLeft: '5px' }, glyph: open ? "menu-up" : "menu-down" })
 	          ),
-	          this.state.open && (this.props.groupings.length > 10 ? _react2.default.createElement(SectionBodyWithCollapsableLinks, this.props) : _react2.default.createElement(PlainSectionBody, this.props))
+	          open && (groupings.length > 10 ? _react2.default.createElement(SectionBodyWithCollapsableLinks, this.props) : _react2.default.createElement(PlainSectionBody, this.props))
 	        );
 	      }
 	    }
