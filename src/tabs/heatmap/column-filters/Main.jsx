@@ -1,6 +1,7 @@
 import React from 'react'
 import {intersection, union, isEqual} from 'lodash'
 import pluralize from 'pluralize'
+import {Button, ButtonGroup, Glyphicon} from 'react-bootstrap/lib'
 import {ColumnGroupPropTypes} from '../PropTypes.js'
 import Section from './ColumnFiltersSection.jsx'
 
@@ -44,6 +45,26 @@ const Main = ({columnGroups, selectedColumnIds, onNewSelectedColumnIds}) => {
           `${determineColumnNameFromFirstGroup(availableColumnIds, columnGroups[0])} selected currently: ${selectedColumnIds.length} / ${availableColumnIds.length}`
         }
       </h5>
+      <ButtonGroup>
+        <Button
+          bsSize="xsmall"
+          onClick={() => {
+            onNewSelectedColumnIds(availableColumnIds)
+          }}
+          style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
+          <Glyphicon glyph="plus"/>
+          <span style={{verticalAlign: `middle`}}> Choose all</span>
+        </Button>
+        <Button
+          bsSize="xsmall"
+          onClick={() => {
+            onNewSelectedColumnIds([])
+          }}
+          style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
+          <Glyphicon glyph="minus"/>
+          <span style={{verticalAlign: `middle`}}> Remove all</span>
+        </Button>
+      </ButtonGroup>
       <div>
       {
         columnGroups.map((group)=>(
