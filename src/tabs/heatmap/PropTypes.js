@@ -1,12 +1,7 @@
 import React from 'react'
 
-const FilterPropTypes = {
+const ColumnGroupPropTypes = {
  name: React.PropTypes.string.isRequired,
- values: React.PropTypes.arrayOf(React.PropTypes.string),
- selected: React.PropTypes.oneOfType([
-   React.PropTypes.oneOf(['all','ALL']),
-   React.PropTypes.arrayOf(React.PropTypes.string)
- ]),
  groupings: React.PropTypes.arrayOf((props, propName)=> {
      const prop = props[propName];
 
@@ -19,8 +14,18 @@ const FilterPropTypes = {
      } else if (!Array.isArray(prop[1])) {
          return new Error(`${prop[1]} should be an array with members of the grouping `)
      }
- })
+ }).isRequired
 }
+
+const InitialColumnGroupPropTypes = Object.assign({},
+  ColumnGroupPropTypes,
+  {
+    selected: React.PropTypes.oneOfType([
+      React.PropTypes.oneOf(['all','ALL']),
+      React.PropTypes.arrayOf(React.PropTypes.string)
+    ])
+  }
+)
 
 const CutoffType = React.PropTypes.oneOfType([
   React.PropTypes.shape({
@@ -45,7 +50,7 @@ const QueryObjectsPropTypes = {
     value: React.PropTypes.string.isRequired,
     category: React.PropTypes.string
   }).isRequired).isRequired,
-  filters: React.PropTypes.arrayOf(React.PropTypes.shape(FilterPropTypes)).isRequired,
+  selectedColumnIds: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
   cutoff: CutoffType.isRequired,
   regulation: RegulationType.isRequired
 }
@@ -58,4 +63,4 @@ const QueryPropTypes = {
   regulation: React.PropTypes.string
 }
 
-export {FilterPropTypes, QueryObjectsPropTypes,CutoffType,RegulationType, QueryPropTypes}
+export {ColumnGroupPropTypes,InitialColumnGroupPropTypes, QueryObjectsPropTypes,CutoffType,RegulationType, QueryPropTypes}

@@ -1,37 +1,111 @@
-import {isEqual} from 'lodash'
-import {determineSelectionFromFilters} from './column-filters/Filters.js'
+import {isEqual, intersection, isEmpty} from 'lodash'
 
-const overlayFilterFactorsObjectOnFilters = (filters, filterFactors) => {
-  const filterFactorsCopy = {}
-  Object.keys(filterFactors)
-  .forEach((key) => {
-    filterFactorsCopy[key.toUpperCase()] = filterFactors[key]
-  })
-  return (
-    filters
-    .map((_filter) => Object.assign({}, _filter, {
-      selected:
-        filterFactorsCopy[_filter.name.toUpperCase()] || _filter.selected || "all"
-    }))
+/*
+1) The filter selection is read in from the filter factors stored in the URL as follows:
+- filter factors empty or none - use default filters
+- some values - select these filters, and default other filters to "all"
+The set of selected ids S is then an intersection of selected values in each filter.
+
+2) The filter factors are written to the URL , for a set of selected ids S', as follows:
+- for each type, the filter factor values are initially the filter factor values that intersect with S'
+- try extend each type to all if it doesnt change the selected set S', for simpler URLs
+
+We'd wish that:
+1.2 ~= identity on sets of selected ids
+2.1 ~= identity on URL strings
+but it's not quite true.
+
+Let X be any set of selected ids. Then 1.2(X) contains X.
+Let S be a set reachable from startinng from nothing/all/initial position and then toggling filters.
+I think that
+2.1.2(S) = 2(S) i.e. for all urls that come up naturally the back-and-forth doesn't change them
+1.2(S) = S
+
+I'm assuming each filter is a partition but I'm not sure whether it's essential.
+
+The initial filters and the filters later are different - we don't use "selected" since
+we select the set, but it is convenient for curators to provide initial selections
+like they are used to.
+*/
+
+const idsSelectedInInitialFilter = ({name, groupings, selected}) => (
+  [].concat.apply([],
+    ["all", "ALL"].indexOf(selected) > -1
+      ? groupings
+        .map((g) => g[1])
+      : groupings
+        .filter((g) => selected.indexOf(g[0]) > -1 )
+        .map((g) => g[1])
+    )
+)
+
+const fakeAnInitialFilter = ({name, groupings} , filterFactors) => (
+  {name, groupings, selected: filterFactors[name] || "all"}
+)
+
+const selectedIdsFromFilterFactors = (filters, filterFactors) => (
+  intersection.apply([],
+    filters.map((_filter) => (
+      idsSelectedInInitialFilter(fakeAnInitialFilter(_filter, filterFactors))
+    ))
   )
+)
+
+const selectedColumnIdsFromInitialGroups = (initialFilters) => (
+  intersection.apply([],initialFilters.map(idsSelectedInInitialFilter))
+)
+
+
+const copyWithOnePropertyDifferent = (objectToCopy, newPropertyName, newPropertyValue) => {
+  const result = Object.assign({}, objectToCopy)
+  result[newPropertyName] = newPropertyValue
+  return result
 }
 
-const makeFilterFactorsObject = (filtersInitially, filters) => {
+
+const makeFilterFactorsGivenSelectedIds = (filters, selectedIds) => {
   const filterFactors = {}
 
-  filtersInitially
-  .forEach((f)=> {
-    const newF = filters.find((_f)=>_f.name === f.name) || Object.assign({},f)
-    if(!isEqual(new Set(f.selected), new Set(newF.selected))){
-      filterFactors[newF.name] = newF.selected
+  filters
+  .forEach(({name, groupings, values}) => {
+    filterFactors[name] =
+      groupings
+      .filter((g) => (
+        intersection(selectedIds, g[1]).length
+      ))
+      .map((g) => g[0])
+  })
+  /*
+    If a factor value is behaving the same as "all", make it all.
+    .sort() tries to keep behaviour deterministic.
+  */
+  Object.keys(filterFactors)
+  .sort()
+  .forEach((factorType) => {
+    if(isEqual(
+      new Set(selectedIds),
+      new Set(selectedIdsFromFilterFactors(
+        filters,
+        copyWithOnePropertyDifferent(filterFactors, factorType, "all")
+      ))
+    )) {
+      filterFactors[factorType] = "all"
     }
   })
 
-  return filterFactors
+  const sparserFilterFactors = {}
+  Object.keys(filterFactors)
+  .forEach((factorType) => {
+    if(["all", "ALL"].indexOf(filterFactors[factorType]) == -1){
+      sparserFilterFactors[factorType] = filterFactors[factorType]
+    }
+  })
+
+  return sparserFilterFactors
 }
 
 const decode = (v, defaultV) => (
-  JSON.parse(decodeURIComponent(v === undefined ? defaultV : v))
+  v === undefined ? defaultV : JSON.parse(decodeURIComponent(v))
 )
 
 const encode = (v) => (
@@ -39,11 +113,11 @@ const encode = (v) => (
 )
 
 
-const toQuery = (initialQueryObjects, queryObjects) => Object.assign({
+const toQuery = ({groups}, queryObjects) => Object.assign({
   specific: encode(queryObjects.specific),
   geneQuery: encode(queryObjects.geneQuery),
   filterFactors: encode(
-      makeFilterFactorsObject(initialQueryObjects.filters,queryObjects.filters)
+      makeFilterFactorsGivenSelectedIds(groups,queryObjects.selectedColumnIds)
     ),
   cutoff: encode(queryObjects.cutoff)
 }, ["UP","DOWN","UP_DOWN"].indexOf(queryObjects.regulation)>-1
@@ -57,33 +131,49 @@ const packStringsIntoArrays = (stringOrArray) => (
   : stringOrArray
 )
 
-const fromQuery = (initialQueryObjects, query) => ({
-  specific: decode(query.specific , "true"),
-  geneQuery: packStringsIntoArrays(decode(query.geneQuery , "[]")),
-  filters: overlayFilterFactorsObjectOnFilters(
-    initialQueryObjects.filters,
-    decode(query.filterFactors, "{}")
-  ),
-  cutoff: Object.assign({},
-    initialQueryObjects.cutoff,
-    decode(query.cutoff, "{}")
-  ),
-  regulation: decode(query.regulation, `"${initialQueryObjects.regulation}"`)
+const defaultRegulation = ({isDifferential}) => (
+  isDifferential
+  ? "UP_DOWN"
+  : "OFF"
+)
+
+const defaultCutoff = ({isDifferential, isRnaSeq}) => (
+  isDifferential
+  ? {
+    foldChange: 1.0,
+    pValue: 0.05
+  }
+  : {
+    value: isRnaSeq? 0.5 : 1e-6
+  }
+)
+
+const fromConfigAndQuery = (config, query) => ({
+  specific: decode(query.specific , true),
+  geneQuery: packStringsIntoArrays(decode(query.geneQuery , [])),
+  selectedColumnIds:
+      isEmpty(query.filterFactors)
+        ? selectedColumnIdsFromInitialGroups(config.groups)
+        : selectedIdsFromFilterFactors(config.groups,decode(query.filterFactors))
+      ,
+  cutoff: decode(query.cutoff, defaultCutoff(config)),
+  regulation: decode(query.regulation, defaultRegulation(config))
 })
+
 
 // should be in sync with backend - see ExperimentPageRequestPreferencesPropertyNamesTest.java
 // see QueryPropTypes from PropTypes.js
 const heatmapCallbackParametersFromQueryObjects = ({
   specific,
   geneQuery,
-  filters,
+  selectedColumnIds,
   cutoff,
   regulation
 }, isDifferential) => Object.assign(
   {
     specific,
     geneQuery,
-    selectedColumnIds: determineSelectionFromFilters(filters)
+    selectedColumnIds
   },
   isDifferential && regulation!=="OFF"
   ? {regulation} : {},
@@ -102,7 +192,7 @@ const toDifferentialRequestPreferences = (queryObjects) => heatmapCallbackParame
 
 export {
   toQuery,
-  fromQuery,
+  fromConfigAndQuery,
   toBaselineRequestPreferences,
   toDifferentialRequestPreferences
 }
