@@ -1,5 +1,5 @@
 import React from 'react'
-import {Button,Glyphicon} from 'react-bootstrap/lib'
+import {Glyphicon} from 'react-bootstrap/lib'
 import {ColumnGroupPropTypes} from '../PropTypes.js'
 import {xor, difference, intersection, union} from 'lodash'
 require('./Components.less');
