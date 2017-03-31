@@ -105,7 +105,7 @@ CheckboxGrouping.propTypes = GroupingPropTypes
 TODO make this hide excessive groupings :)
 */
 const PlainSectionBody = ({groupings, selectedIds, onNewSelectedIds}) => (
-  <div className="groupingsInColumnsSectionBody">
+  <div className="sectionBody">
     {
       groupings.map((grouping) => (
         <CheckboxGrouping {...makeGroupingProps({selectedIds,onNewSelectedIds}, grouping)} />
@@ -113,6 +113,7 @@ const PlainSectionBody = ({groupings, selectedIds, onNewSelectedIds}) => (
     }
   </div>
 )
+PlainSectionBody.propTypes = CommonPropTypes
 
 const filterGroupingsBySelections = ({selectedIds}, selectionsAllowed, groupings) => (
   groupings
@@ -121,49 +122,97 @@ const filterGroupingsBySelections = ({selectedIds}, selectionsAllowed, groupings
   ))
 )
 
-class SectionBody extends React.Component {
+const SELECTION_DESCRIPTIONS = {}
+SELECTION_DESCRIPTIONS[SELECTION.UNSELECTED] = "currently not selected"
+SELECTION_DESCRIPTIONS[SELECTION.PARTIAL] = "partially selected"
+SELECTION_DESCRIPTIONS[SELECTION.SELECTED] = ""
+
+const SelectionOption = ({selection,isCurrentlyShown,groupingsForThisSelection}) => (
+  <span className="linksForToggleShow">
+    {
+      `${groupingsForThisSelection.length} options ${SELECTION_DESCRIPTIONS[selection]} - ${isCurrentlyShown?"hide":"show"} ...`
+    }
+  </span>
+)
+
+SelectionOption.propTypes = {
+  selection: React.PropTypes.oneOf(SELECTION_LIST).isRequired,
+  isCurrentlyShown: React.PropTypes.bool.isRequired,
+  groupingsForThisSelection: ColumnGroupPropTypes.groupings
+}
+
+class SectionBodyWithCollapsableLinks extends React.Component {
+  _countUnselected() {
+    return filterGroupingsBySelections(this.props, [SELECTION.UNSELECTED], this.props.groupings).length
+  }
+  _countPartiallySelected() {
+    return filterGroupingsBySelections(this.props, [SELECTION.PARTIAL], this.props.groupings).length
+  }
+  _countSelected() {
+    return filterGroupingsBySelections(this.props, [SELECTION.SELECTED], this.props.groupings).length
+  }
   constructor(props) {
     super(props)
+
     this.state = {
-      selectionsToShow:
-        difference(SELECTION_LIST, this.props.togglableSelectionGroups)
+      showUnselected:
+        this._countUnselected() < 7,
+      showPartiallySelected:
+        this._countPartiallySelected() < 7
     }
   }
 
   render() {
+    const { groupings, selectedIds, onNewSelectedIds } = this.props
+    const { showUnselected, showPartiallySelected} = this.state
+    const unselectedGroupingsCount = this._countUnselected()
+    const partiallySelectedGroupingsCount = this._countPartiallySelected()
+    const selectedGroupingsCount = this._countSelected()
     return (
       <div className="sectionBody">
-        <div className="linksForToggleShow">
+        {
+          filterGroupingsBySelections(
+            {selectedIds},
+            [].concat(
+              showUnselected ? [SELECTION.UNSELECTED] : [],
+              showPartiallySelected ? [SELECTION.PARTIAL] : [],
+              [SELECTION.SELECTED]
+            ),
+            groupings
+          )
+          .map((grouping) => (
+            <CheckboxGrouping {...makeGroupingProps({selectedIds,onNewSelectedIds}, grouping)} />
+          ))
+        }
+        { !!unselectedGroupingsCount &&
+          <span className="linkForToggleShow" onClick={()=>{
+            this.setState(({showUnselected})=>({showUnselected:!showUnselected}))
+          }}>
+            {
+              showUnselected
+              ? `(hide unselected)`
+              : `${selectedGroupingsCount ? "+ ": ""}${unselectedGroupingsCount} unselected (show...)`
+            }
+          </span>
+        }
+        <br/>
+        { !!partiallySelectedGroupingsCount &&
+          <span className="linkForToggleShow"  onClick={()=>{
+            this.setState(({showPartiallySelected})=>({showPartiallySelected:!showPartiallySelected}))
+          }}>
           {
-            this.props.togglableSelectionGroups
-            .map((selection) => (
-              <span key={selection}
-                onClick={() => {
-                  this.setState(({selectionsToShow})=>({
-                    selectionsToShow: xor(selectionsToShow, selection)
-                  }))
-              }}>
-                  {`toggle ${selection} TODO nice text including off/on and how many hidden / shown`}
-              </span>
-            ))
+            showPartiallySelected
+            ? `(hide partially selected)`
+            : `${selectedGroupingsCount ? "+ ": ""}${this._countPartiallySelected()} partially selected (show...)`
           }
-        </div>
-        <div className="groupingsInColumns">
-          {
-            filterGroupingsBySelections(this.props, this.state.selectionsToShow, this.props.groupings)
-            .map((grouping) => (
-              <CheckboxGrouping {...makeGroupingProps(this.props, grouping)} />
-            ))
-          }
-        </div>
+          </span>
+        }
       </div>
     )
   }
 }
 
-SectionBody.propTypes = Object.assign({},CommonPropTypes, {
-  togglableSelectionGroups: React.PropTypes.arrayOf(React.PropTypes.oneOf(SELECTION_LIST)).isRequired
-})
+SectionBodyWithCollapsableLinks.propTypes = CommonPropTypes
 
 class Section extends React.Component {
   constructor(props) {
@@ -189,18 +238,20 @@ class Section extends React.Component {
       return (
         <div className="gxaSection">
           <div className="title openable"
-             onClick={this.toggleOpen}
+             onClick={()=>{
+               this.setState(({open})=>({open:!open}))
+             }}
              href="#">
              {headerName}
              {
                <Glyphicon style={{fontSize: `x-small`, paddingLeft: `5px`}} glyph={this.state.open? "menu-up" : "menu-down"}/>
              }
           </div>
-          <SectionBody {...this.props}
-            togglableSelectionGroups={SELECTION_LIST.filter((selection)=> (
-              filterGroupingsBySelections(this.props, [selection], this.props.groupings)
-              .length > 20
-            ))} />
+          {
+            this.state.open && (this.props.groupings.length > 10
+            ? <SectionBodyWithCollapsableLinks {...this.props} />
+            : <PlainSectionBody {...this.props} />)
+          }
         </div>
       )
     }
