@@ -1,5 +1,6 @@
 import React from 'react'
-import {intersection, union} from 'lodash'
+import {intersection, union, isEqual} from 'lodash'
+import pluralize from 'pluralize'
 import {ColumnGroupPropTypes} from '../PropTypes.js'
 import Section from './ColumnFiltersSection.jsx'
 
@@ -14,13 +15,33 @@ const determineAvailableColumns = (columnGroups) => (
   )
 )
 
+const prettyName = (name) => (
+  name
+  .replace(/_/g," ")
+  .toLowerCase()
+  .replace(/\w\S*/, (txt) => (txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()))
+)
+
+const determineColumnNameFromFirstGroup = (availableColumnIds, group) => {
+  const groupingValues = group.groupings.map((g)=> g[1])
+  if (isEqual(
+    new Set(availableColumnIds),
+    new Set([].concat.apply([], groupingValues))
+  ) && groupingValues.every((ids)=> ids.length == 1)){
+    return pluralize(prettyName(group.name))
+  } else {
+    return "Data columns"
+  }
+}
+
+
 const Main = ({columnGroups, selectedColumnIds, onNewSelectedColumnIds}) => {
   const availableColumnIds = determineAvailableColumns(columnGroups)
   return (
     <div>
       <h5>
         {
-          `Data columns selected currently: ${selectedColumnIds.length} / ${availableColumnIds.length}`
+          `${determineColumnNameFromFirstGroup(availableColumnIds, columnGroups[0])} selected currently: ${selectedColumnIds.length} / ${availableColumnIds.length}`
         }
       </h5>
       <div>
