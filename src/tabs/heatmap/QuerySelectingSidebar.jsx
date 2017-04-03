@@ -139,10 +139,21 @@ const SidebarAndModal = React.createClass({
             this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {regulation: newRegulation}))
           }}/>}
         <h4>Cutoff</h4>
+        <Cutoff
+          cutoff={this.props.queryObjects.cutoff}
+          onChangeCutoff={(newCutoff) => {
+            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {cutoff: newCutoff}))
+          }}
+        />
         {this.props.genesDistributedByCutoffUrl
           && (
           <div>
-            <OpenerButton onClickButton={()=> this.setState({ showModal: "cutoff" })} />
+            <a href="#" onClick={()=> this.setState({ showModal: "cutoff"})} style={{marginBottom:"0.5rem", fontSize:"85%"}}>
+              <Glyphicon glyph="stats"/>
+              <span style={{marginLeft:"0.25rem"}}>
+              {`See distribution`}
+              </span>
+            </a>
             <ModalWrapper
               title={"Cutoff - distribution of genes"}
               show={this.state.showModal == "cutoff"}
@@ -160,12 +171,6 @@ const SidebarAndModal = React.createClass({
           </div>
           )
         }
-        <Cutoff
-          cutoff={this.props.queryObjects.cutoff}
-          onChangeCutoff={(newCutoff) => {
-            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {cutoff: newCutoff}))
-          }}
-        />
         <h4>{columnsName}</h4>
         <OpenerButton onClickButton={()=> this.setState({ showModal: "columns" })} />
         <HeatmapColumnsSummary

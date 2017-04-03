@@ -2,7 +2,6 @@ import React from 'react'
 import {CutoffType} from './PropTypes.js'
 import NumericInput from 'react-numeric-input'
 
-
 const settingsFor = (cutoffName) => (
   Object.assign(
     cutoffName === 'foldChange'
@@ -22,6 +21,8 @@ const settingsFor = (cutoffName) => (
   )
 )
 
+
+
 const keyValuePair = (key, value) => {
   const result = {}
   result[key] = value
@@ -33,7 +34,7 @@ const Cutoff = ({cutoff, onChangeCutoff}) => (
     {Object.keys(cutoff).map((cutoffName) => (
       <div key={cutoffName}>
         <h5>
-          {cutoffName}
+          {`Above ${cutoffName}:`}
         </h5>
         <NumericInput
           className="form-control"
