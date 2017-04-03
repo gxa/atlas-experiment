@@ -3,10 +3,10 @@ import {Main as HeatmapColumnsChoice, Summary as HeatmapColumnsSummary} from './
 import Cutoff from './Cutoff.jsx'
 import CutoffDistribution from './CutoffDistribution.jsx'
 import Regulation from './Regulation.jsx'
+import Specificity from './Specificity.jsx'
 import {ColumnGroupPropTypes, QueryObjectsPropTypes} from './PropTypes.js'
 import {Modal, Button, Glyphicon} from 'react-bootstrap/lib'
 import GeneAutocomplete from 'gene-autocomplete'
-import Toggle from 'react-bootstrap-toggle'
 import {intersection, union, isEqual} from 'lodash'
 import pluralize from 'pluralize'
 require('./bootstrap-toggle.min.css')
@@ -123,26 +123,25 @@ const SidebarAndModal = React.createClass({
             this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {geneQuery: newValues}))
           }}/>
         <h4>Specificity</h4>
-        <Toggle
-          size="l"
-          active={this.props.queryObjects.specific}
-          onClick={() => {
-            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {specific: !this.props.queryObjects.specific}))
-          }}/>
+        <Specificity
+          specific={this.props.queryObjects.specific}
+          onChangeSpecific={(specific)=>{
+            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {specific}))
+          }} />
         {showRegulation &&
           <h4>Regulation</h4>
         }
         {showRegulation &&
           <Regulation
           regulation={this.props.queryObjects.regulation}
-          onChangeRegulation={(newRegulation)=>{
-            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {regulation: newRegulation}))
+          onChangeRegulation={(regulation)=>{
+            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {regulation}))
           }}/>}
         <h4>Cutoff</h4>
         <Cutoff
           cutoff={this.props.queryObjects.cutoff}
-          onChangeCutoff={(newCutoff) => {
-            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {cutoff: newCutoff}))
+          onChangeCutoff={(cutoff) => {
+            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {cutoff}))
           }}
         />
         {this.props.genesDistributedByCutoffUrl
