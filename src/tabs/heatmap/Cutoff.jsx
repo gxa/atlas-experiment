@@ -33,9 +33,9 @@ const Cutoff = ({cutoff, onChangeCutoff}) => (
   <div>
     {Object.keys(cutoff).map((cutoffName) => (
       <div key={cutoffName}>
-        <h5>
+        <div>
           {`Above ${cutoffName}:`}
-        </h5>
+        </div>
         <NumericInput
           className="form-control"
         value={cutoff[cutoffName]}

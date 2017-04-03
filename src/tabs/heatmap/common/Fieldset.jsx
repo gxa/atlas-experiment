@@ -38,7 +38,7 @@ const Fieldset = (props) => (
 Fieldset.propTypes = {
   value: React.PropTypes.any.isRequired,
   onChangeValue: React.PropTypes.func.isRequired,
-  options: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string.isRequired).isRequired).isRequired //[[name,value]]
+  options: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.any.isRequired).isRequired).isRequired //[[name,value]]
 }
 
 export default Fieldset
