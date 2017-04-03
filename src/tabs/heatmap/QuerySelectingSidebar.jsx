@@ -89,6 +89,16 @@ const determineColumnNameFromFirstGroup = (availableColumnIds, group) => {
   }
 }
 
+const HeaderWithHint = ({header, hint}) => (
+  <div>
+    <h4 style={{marginBottom:"0rem"}}>
+      {header}
+    </h4>
+    <div style={{fontSize:"smaller", fontStyle:"italic"}}>
+      {`(${hint})`}
+    </div>
+  </div>
+)
 
 const SidebarAndModal = React.createClass({
   propTypes : {
@@ -115,29 +125,24 @@ const SidebarAndModal = React.createClass({
 
     return (
       <div>
-        <h4>Genes</h4>
+        <HeaderWithHint header="Genes" hint="Y Axis" />
         <GeneAutocomplete
           suggesterUrlTemplate={this.props.geneSuggesterUrlTemplate}
           values={this.props.queryObjects.geneQuery}
           onChangeValues={(newValues)=>{
             this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {geneQuery: newValues}))
           }}/>
-        <h4>Specificity</h4>
         <Specificity
           specific={this.props.queryObjects.specific}
           onChangeSpecific={(specific)=>{
             this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {specific}))
           }} />
         {showRegulation &&
-          <h4>Regulation</h4>
-        }
-        {showRegulation &&
           <Regulation
           regulation={this.props.queryObjects.regulation}
           onChangeRegulation={(regulation)=>{
             this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {regulation}))
           }}/>}
-        <h4>Cutoff</h4>
         <Cutoff
           cutoff={this.props.queryObjects.cutoff}
           onChangeCutoff={(cutoff) => {
@@ -170,7 +175,9 @@ const SidebarAndModal = React.createClass({
           </div>
           )
         }
-        <h4>{columnsName}</h4>
+        <br/>
+        <HeaderWithHint header={columnsName} hint="X Axis" />
+
         <OpenerButton onClickButton={()=> this.setState({ showModal: "columns" })} />
         <HeatmapColumnsSummary
           columnGroups={this.props.columnGroups}
