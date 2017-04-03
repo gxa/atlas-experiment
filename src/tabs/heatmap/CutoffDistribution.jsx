@@ -25,7 +25,6 @@ const CutoffDistribution = ({cutoff,onChangeCutoff, histogram}) => (
         title: {
           text: 'Cutoff value'
         },
-        crosshair: true,
         type: 'logarithmic'
       },
       tooltip: {

@@ -24,7 +24,7 @@ const Main = React.createClass({
   render() {
     const queryObjects = queryObjectsFromConfigAndQuery(this.props, this.props.query)
     return (
-      <div className="row">
+      <div className="row expanded">
         <div className="small-3 medium-2 columns" >
           <Sidebar
             isDifferential={this.props.isDifferential}

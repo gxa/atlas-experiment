@@ -1,30 +1,15 @@
 import React from 'react'
 import {RegulationType} from './PropTypes.js'
-import {DropdownButton,MenuItem} from 'react-bootstrap/lib'
+import Fieldset from './common/Fieldset.jsx'
 
-
-const menuText = {
-  "UP_DOWN" : "Any regulation",
-  "UP" : "Up-regulated only",
-  "DOWN" : "Down-regulated only"
-}
-
-const menuItem = (regulation, key) => (
-  <MenuItem eventKey={key} active={key === regulation}>
-    {menuText[key]}
-  </MenuItem>
-)
-
-
-const Regulation = ({regulation, onChangeRegulation}) => (
-  <DropdownButton
-    title={menuText[regulation]}
-    id={"regulation-dropdown"}
-    onSelect={onChangeRegulation}>
-    {menuItem(regulation, "UP_DOWN")}
-    {menuItem(regulation, "UP")}
-    {menuItem(regulation, "DOWN")}
-  </DropdownButton>
+const Regulation = ({regulation,onChangeRegulation}) => (
+  <Fieldset value={regulation}
+    onChangeValue={onChangeRegulation}
+    options={[
+      ["UP_DOWN", "Any regulation"],
+      ["UP", "Up-regulated only"],
+      ["DOWN", "Down-regulated only"]
+    ]} />
 )
 
 Regulation.propTypes = {

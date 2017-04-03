@@ -1,27 +1,32 @@
 import {isEqual, intersection, isEmpty} from 'lodash'
 
 /*
-1) The filter selection is read in from the filter factors stored in the URL as follows:
+1) filterFactors -> selectedColumnIds
+The filter selection is read in from the filter factors stored in the URL as follows:
 - filter factors empty or none - use default filters
 - some values - select these filters, and default other filters to "all"
 The set of selected ids S is then an intersection of selected values in each filter.
 
-2) The filter factors are written to the URL , for a set of selected ids S', as follows:
+2) selectedColumnIds -> filterFactors
+The filter factors are written to the URL , for a set of selected ids S', as follows:
 - for each type, the filter factor values are initially the filter factor values that intersect with S'
 - try extend each type to all if it doesnt change the selected set S', for simpler URLs
-
+_____
 We'd wish that:
 1.2 ~= identity on sets of selected ids
 2.1 ~= identity on URL strings
-but it's not quite true.
+and it's not quite true but it's actually not too bad.
 
 Let X be any set of selected ids. Then 1.2(X) contains X.
-Let S be a set reachable from startinng from nothing/all/initial position and then toggling filters.
-I think that
-2.1.2(S) = 2(S) i.e. for all urls that come up naturally the back-and-forth doesn't change them
-1.2(S) = S
 
-I'm assuming each filter is a partition but I'm not sure whether it's essential.
+Observe that when the filter selection is F1...Fn, F1...Fi are experimental factors for the experiment.
+So for any id x there are f1 in F1 ... fi in Fi such that intersection of f1...fi is x by what the factors are.
+So for any X there is a filter choice C such that 1(C) = X and 2(X)~=C , so 1.2(X) = X.
+
+Let S be a set reachable from starting from nothing/all/initial position and then toggling filters.
+I also think 2.1.2(S) = 2(S) i.e. for all urls that come up naturally the back-and-forth doesn't change them.
+I might be wrong.
+_____
 
 The initial filters and the filters later are different - we don't use "selected" since
 we select the set, but it is convenient for curators to provide initial selections

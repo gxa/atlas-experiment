@@ -3,10 +3,12 @@ import {Main as HeatmapColumnsChoice, Summary as HeatmapColumnsSummary} from './
 import Cutoff from './Cutoff.jsx'
 import CutoffDistribution from './CutoffDistribution.jsx'
 import Regulation from './Regulation.jsx'
+import Specificity from './Specificity.jsx'
 import {ColumnGroupPropTypes, QueryObjectsPropTypes} from './PropTypes.js'
 import {Modal, Button, Glyphicon} from 'react-bootstrap/lib'
 import GeneAutocomplete from 'gene-autocomplete'
-import Toggle from 'react-bootstrap-toggle'
+import {intersection, union, isEqual} from 'lodash'
+import pluralize from 'pluralize'
 require('./bootstrap-toggle.min.css')
 
 
@@ -58,7 +60,45 @@ ModalWrapper.propTypes = {
   onClickApply: React.PropTypes.func
 }
 
+const determineAvailableColumns = (columnGroups) => (
+  intersection.apply([],
+    columnGroups.map((group) => (
+      union.apply([],
+        group.groupings
+        .map((g)=> g[1])
+      )
+    ))
+  )
+)
 
+const determineColumnNameFromFirstGroup = (availableColumnIds, group) => {
+  const prettyName = (name) => (
+    name
+    .replace(/_/g," ")
+    .toLowerCase()
+    .replace(/\w\S*/, (txt) => (txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()))
+  )
+  const groupingValues = group.groupings.map((g)=> g[1])
+  if (isEqual(
+    new Set(availableColumnIds),
+    new Set([].concat.apply([], groupingValues))
+  ) && groupingValues.every((ids)=> ids.length == 1)){
+    return pluralize(prettyName(group.name))
+  } else {
+    return "Data columns"
+  }
+}
+
+const HeaderWithHint = ({header, hint}) => (
+  <div>
+    <h4 style={{marginBottom:"0rem"}}>
+      {header}
+    </h4>
+    <div style={{fontSize:"smaller", fontStyle:"italic"}}>
+      {`(${hint})`}
+    </div>
+  </div>
+)
 
 const SidebarAndModal = React.createClass({
   propTypes : {
@@ -80,37 +120,44 @@ const SidebarAndModal = React.createClass({
 
   render(){
     const showRegulation = ["UP","DOWN","UP_DOWN"].indexOf(this.props.queryObjects.regulation)>-1
-    const columnsName = this.props.isDifferential ? "Comparisons" : "Assay Groups"
+    const availableColumnIds = determineAvailableColumns(this.props.columnGroups)
+    const columnsName = this.props.isDifferential ? "Comparisons" : determineColumnNameFromFirstGroup(availableColumnIds, this.props.columnGroups[0])
+
     return (
       <div>
-        <h4>Genes</h4>
+        <HeaderWithHint header="Genes" hint="Y Axis" />
         <GeneAutocomplete
           suggesterUrlTemplate={this.props.geneSuggesterUrlTemplate}
           values={this.props.queryObjects.geneQuery}
           onChangeValues={(newValues)=>{
             this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {geneQuery: newValues}))
           }}/>
-        <h4>Specificity</h4>
-        <Toggle
-          size="l"
-          active={this.props.queryObjects.specific}
-          onClick={() => {
-            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {specific: !this.props.queryObjects.specific}))
-          }}/>
-        {showRegulation &&
-          <h4>Regulation</h4>
-        }
+        <Specificity
+          specific={this.props.queryObjects.specific}
+          onChangeSpecific={(specific)=>{
+            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {specific}))
+          }} />
         {showRegulation &&
           <Regulation
           regulation={this.props.queryObjects.regulation}
-          onChangeRegulation={(newRegulation)=>{
-            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {regulation: newRegulation}))
+          onChangeRegulation={(regulation)=>{
+            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {regulation}))
           }}/>}
-        <h4>Cutoff</h4>
+        <Cutoff
+          cutoff={this.props.queryObjects.cutoff}
+          onChangeCutoff={(cutoff) => {
+            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {cutoff}))
+          }}
+        />
         {this.props.genesDistributedByCutoffUrl
           && (
           <div>
-            <OpenerButton onClickButton={()=> this.setState({ showModal: "cutoff" })} />
+            <a href="#" onClick={()=> this.setState({ showModal: "cutoff"})} style={{marginBottom:"0.5rem", fontSize:"85%"}}>
+              <Glyphicon glyph="stats"/>
+              <span style={{marginLeft:"0.25rem"}}>
+              {`See distribution`}
+              </span>
+            </a>
             <ModalWrapper
               title={"Cutoff - distribution of genes"}
               show={this.state.showModal == "cutoff"}
@@ -128,15 +175,15 @@ const SidebarAndModal = React.createClass({
           </div>
           )
         }
-        <Cutoff
-          cutoff={this.props.queryObjects.cutoff}
-          onChangeCutoff={(newCutoff) => {
-            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {cutoff: newCutoff}))
-          }}
-        />
-        <h4>{columnsName}</h4>
+        <br/>
+        <HeaderWithHint header={columnsName} hint="X Axis" />
+
         <OpenerButton onClickButton={()=> this.setState({ showModal: "columns" })} />
-        <HeatmapColumnsSummary columnGroups={this.props.columnGroups} selectedColumnIds={this.state.selectedColumnIds}/>
+        <HeatmapColumnsSummary
+          columnGroups={this.props.columnGroups}
+          selectedColumnIds={this.state.selectedColumnIds}
+          {...{availableColumnIds,columnsName}}
+          />
 
         <ModalWrapper
           title={columnsName}
@@ -150,6 +197,7 @@ const SidebarAndModal = React.createClass({
           <HeatmapColumnsChoice
             columnGroups={this.props.columnGroups}
             selectedColumnIds={this.state.selectedColumnIds}
+            {...{availableColumnIds,columnsName}}
             onNewSelectedColumnIds={(selectedColumnIds) => {
               this.setState({selectedColumnIds})
             }}/>
