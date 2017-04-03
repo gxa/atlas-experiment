@@ -4,22 +4,6 @@ import {ColumnGroupPropTypes} from '../PropTypes.js'
 import {xor, difference, intersection, union,isEqual} from 'lodash'
 require('./Components.less');
 
-/*
-Make me work!
-I want the following features:
-- can open and close
-- shows checkboxes that can be in three states (off, partial, on) and the callbacks are right
-- (I think) partial looks more like a kind of on so clicking on it should switch things off
-
-- there are no excluded filters any more so showing/hiding the excluded ones doesn't apply
-- we could shorten into summary and "please show" separately:
--+ filters which are fully inside the current selection of ids
--+ filters which are partially inside the current selection of ids
--+ filters which are outside the current selection of ids
-
-*/
-
-
 const prettyName = (name) => (
   name
   .replace(/_/g," ")

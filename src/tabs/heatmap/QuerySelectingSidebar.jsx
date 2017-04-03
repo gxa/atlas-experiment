@@ -7,6 +7,8 @@ import {ColumnGroupPropTypes, QueryObjectsPropTypes} from './PropTypes.js'
 import {Modal, Button, Glyphicon} from 'react-bootstrap/lib'
 import GeneAutocomplete from 'gene-autocomplete'
 import Toggle from 'react-bootstrap-toggle'
+import {intersection, union, isEqual} from 'lodash'
+import pluralize from 'pluralize'
 require('./bootstrap-toggle.min.css')
 
 
@@ -58,6 +60,34 @@ ModalWrapper.propTypes = {
   onClickApply: React.PropTypes.func
 }
 
+const determineAvailableColumns = (columnGroups) => (
+  intersection.apply([],
+    columnGroups.map((group) => (
+      union.apply([],
+        group.groupings
+        .map((g)=> g[1])
+      )
+    ))
+  )
+)
+
+const determineColumnNameFromFirstGroup = (availableColumnIds, group) => {
+  const prettyName = (name) => (
+    name
+    .replace(/_/g," ")
+    .toLowerCase()
+    .replace(/\w\S*/, (txt) => (txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()))
+  )
+  const groupingValues = group.groupings.map((g)=> g[1])
+  if (isEqual(
+    new Set(availableColumnIds),
+    new Set([].concat.apply([], groupingValues))
+  ) && groupingValues.every((ids)=> ids.length == 1)){
+    return pluralize(prettyName(group.name))
+  } else {
+    return "Data columns"
+  }
+}
 
 
 const SidebarAndModal = React.createClass({
@@ -80,7 +110,9 @@ const SidebarAndModal = React.createClass({
 
   render(){
     const showRegulation = ["UP","DOWN","UP_DOWN"].indexOf(this.props.queryObjects.regulation)>-1
-    const columnsName = this.props.isDifferential ? "Comparisons" : "Assay Groups"
+    const availableColumnIds = determineAvailableColumns(this.props.columnGroups)
+    const columnsName = this.props.isDifferential ? "Comparisons" : determineColumnNameFromFirstGroup(availableColumnIds, this.props.columnGroups[0])
+
     return (
       <div>
         <h4>Genes</h4>
@@ -136,7 +168,11 @@ const SidebarAndModal = React.createClass({
         />
         <h4>{columnsName}</h4>
         <OpenerButton onClickButton={()=> this.setState({ showModal: "columns" })} />
-        <HeatmapColumnsSummary columnGroups={this.props.columnGroups} selectedColumnIds={this.state.selectedColumnIds}/>
+        <HeatmapColumnsSummary
+          columnGroups={this.props.columnGroups}
+          selectedColumnIds={this.state.selectedColumnIds}
+          {...{availableColumnIds,columnsName}}
+          />
 
         <ModalWrapper
           title={columnsName}
@@ -150,6 +186,7 @@ const SidebarAndModal = React.createClass({
           <HeatmapColumnsChoice
             columnGroups={this.props.columnGroups}
             selectedColumnIds={this.state.selectedColumnIds}
+            {...{availableColumnIds,columnsName}}
             onNewSelectedColumnIds={(selectedColumnIds) => {
               this.setState({selectedColumnIds})
             }}/>
