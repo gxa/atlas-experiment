@@ -5,7 +5,7 @@ import {toQuery as queryFromQueryObjects, fromConfigAndQuery as queryObjectsFrom
   toBaselineRequestPreferences, toDifferentialRequestPreferences} from './CreateQueryObjects.js'
 import {InitialColumnGroupPropTypes, QueryPropTypes} from './PropTypes.js'
 import {Link, withRouter} from 'react-router'
-import {ExpressionAtlasHeatmapHighcharts} from 'expression-atlas-heatmap-highcharts'
+import {ExpressionAtlasHeatmap} from 'expression-atlas-heatmap-highcharts'
 import URI from 'urijs'
 
 const Main = React.createClass({
@@ -43,19 +43,18 @@ const Main = React.createClass({
           />
         </div>
         <div className="small-9 medium-10 columns">
-          <ExpressionAtlasHeatmapHighcharts
-            options={{
-              atlasBaseURL: this.props.atlasHost,
-              isWidget:false,
-              isMultiExperiment:false,
-              isDifferential: this.props.isDifferential,
-              sourceURL:
-                URI(this.props.atlasHost+"/gxa/json/experiments/"+this.props.experimentAccession)
+          <ExpressionAtlasHeatmap
+              atlasUrl={this.props.atlasHost+"/gxa/"}
+              isWidget={false}
+              isMultiExperiment={false}
+              isDifferential={this.props.isDifferential}
+              query={
+                URI("json/experiments/"+this.props.experimentAccession)
                 .addQuery((this.props.isDifferential
                   ? toDifferentialRequestPreferences
                   : toBaselineRequestPreferences)(queryObjects))
-                .toString()
-            }} />
+                .toString()}
+            />
         </div>
       </div>
     )
