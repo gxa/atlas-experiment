@@ -85,7 +85,7 @@ const determineColumnNameFromFirstGroup = (availableColumnIds, group) => {
   ) && groupingValues.every((ids)=> ids.length == 1)){
     return pluralize(prettyName(group.name))
   } else {
-    return "Data columns"
+    return ""
   }
 }
 
@@ -121,7 +121,11 @@ const SidebarAndModal = React.createClass({
   render(){
     const showRegulation = ["UP","DOWN","UP_DOWN"].indexOf(this.props.queryObjects.regulation)>-1
     const availableColumnIds = determineAvailableColumns(this.props.columnGroups)
-    const columnsName = this.props.isDifferential ? "Comparisons" : determineColumnNameFromFirstGroup(availableColumnIds, this.props.columnGroups[0])
+    const columnsName =
+      this.props.isDifferential
+      ? "Comparisons"
+      : determineColumnNameFromFirstGroup(availableColumnIds, this.props.columnGroups[0])
+        || "Sample properties"
 
     return (
       <div>
