@@ -177,8 +177,8 @@ const heatmapCallbackParametersFromQueryObjects = ({
 }, isDifferential) => Object.assign(
   {
     specific,
-    geneQuery,
-    selectedColumnIds
+    geneQuery:JSON.stringify(geneQuery),
+    selectedColumnIds:`[${selectedColumnIds.join(",")}]`
   },
   isDifferential && regulation!=="OFF"
   ? {regulation} : {},

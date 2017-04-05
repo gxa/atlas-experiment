@@ -132,9 +132,10 @@ const SidebarAndModal = React.createClass({
         <HeaderWithHint header="Genes" hint="Y Axis" />
         <GeneAutocomplete
           suggesterUrlTemplate={this.props.geneSuggesterUrlTemplate}
-          values={this.props.queryObjects.geneQuery}
+          values={this.props.queryObjects.geneQuery.map(({value})=>value)}
           onChangeValues={(newValues)=>{
-            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {geneQuery: newValues}))
+            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects,
+              {geneQuery: newValues.map((value)=> ({value}))}))
           }}/>
         <Specificity
           specific={this.props.queryObjects.specific}
