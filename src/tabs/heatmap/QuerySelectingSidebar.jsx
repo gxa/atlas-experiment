@@ -89,15 +89,10 @@ const determineColumnNameFromFirstGroup = (availableColumnIds, group) => {
   }
 }
 
-const HeaderWithHint = ({header, hint}) => (
-  <div>
-    <h4 style={{marginBottom:"0rem"}}>
-      {header}
+const Header = ({text}) => (
+    <h4>
+      {text}
     </h4>
-    <div style={{fontSize:"smaller", fontStyle:"italic"}}>
-      {`(${hint})`}
-    </div>
-  </div>
 )
 
 const SidebarAndModal = React.createClass({
@@ -129,7 +124,7 @@ const SidebarAndModal = React.createClass({
 
     return (
       <div>
-        <HeaderWithHint header="Genes" hint="Y Axis" />
+        <Header text="Genes"/>
         <GeneAutocomplete
           suggesterUrlTemplate={this.props.geneSuggesterUrlTemplate}
           values={this.props.queryObjects.geneQuery.map(({value})=>value)}
@@ -181,8 +176,7 @@ const SidebarAndModal = React.createClass({
           )
         }
         <br/>
-        <HeaderWithHint header={columnsName} hint="X Axis" />
-
+        <Header text={columnsName}/>
         <OpenerButton onClickButton={()=> this.setState({ showModal: "columns" })} />
         <HeatmapColumnsSummary
           columnGroups={this.props.columnGroups}
