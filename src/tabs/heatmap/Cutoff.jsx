@@ -4,9 +4,7 @@ import NumericInput from 'react-numeric-input'
 
 const settingsFor = (cutoffName) => (
   Object.assign(
-    cutoffName === 'foldChange'
-    ? {}
-    : {min: 0}
+    {min: 0}
     ,
     cutoffName === 'pValue'
     ? {step: 0.01}
