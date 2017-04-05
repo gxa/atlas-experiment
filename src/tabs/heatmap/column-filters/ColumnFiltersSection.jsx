@@ -88,7 +88,12 @@ CheckboxGrouping.propTypes = GroupingPropTypes
 const PlainSectionBody = ({groupings, selectedIds, onNewSelectedIds}) => (
   <div className="sectionBody">
     {
-      groupings.map((grouping) => (
+      groupings
+      .map((e)=>e)
+      .sort((g1, g2)=> (
+        g1[0].localeCompare(g2[0])
+      ))
+      .map((grouping) => (
         <CheckboxGrouping {...makeGroupingProps({selectedIds,onNewSelectedIds}, grouping)} />
       ))
     }
@@ -161,6 +166,9 @@ class SectionBodyWithCollapsableLinks extends React.Component {
             ),
             groupings
           )
+          .sort((g1, g2)=> (
+            g1[0].localeCompare(g2[0])
+          ))
           .map((grouping) => (
             <CheckboxGrouping {...makeGroupingProps({selectedIds,onNewSelectedIds}, grouping)} />
           ))
