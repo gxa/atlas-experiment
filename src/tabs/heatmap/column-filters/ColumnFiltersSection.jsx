@@ -207,7 +207,7 @@ class Section extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      open: this.props.groupings.length < 5
+      open: this.props.primary
     }
   }
 

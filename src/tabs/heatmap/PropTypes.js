@@ -2,6 +2,7 @@ import React from 'react'
 
 const ColumnGroupPropTypes = {
  name: React.PropTypes.string.isRequired,
+ primary: React.PropTypes.bool.isRequired,
  groupings: React.PropTypes.arrayOf((props, propName)=> {
      const prop = props[propName];
 
