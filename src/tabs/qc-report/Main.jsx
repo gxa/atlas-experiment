@@ -1,6 +1,7 @@
 import React from 'react'
-import {withRouter} from 'react-router'
+import {withRouter} from 'react-router-dom'
 import {Modal, Button, Glyphicon} from 'react-bootstrap/lib'
+import queryStringUtils from 'qs'
 
 const chooseReportDropdown = (options,chosen, onChooseReport) => (
   <select value={chosen} onChange={(event) => onChooseReport(event.target.value)}>
@@ -14,8 +15,10 @@ const chooseReportDropdown = (options,chosen, onChooseReport) => (
   </select>
 )
 
-const Report = ({query, router, reports}) => {
 
+const Report = ({history,location, reports}) => {
+
+  const query = queryStringUtils.parse(location.search.replace(/^\?/, ""))
   const chosenReport = reports.find((report) => report.name == query.report) || reports[0]
 
   return (
@@ -25,8 +28,8 @@ const Report = ({query, router, reports}) => {
           reports.map((report)=> report.name),
           chosenReport.name,
           (report) => {
-            router.push(Object.assign({},
-              router.location, {query: {report}}
+            history.push(Object.assign({},
+              location, {search: queryStringUtils.stringify(Object.assign({}, query, {report}))}
             ))
           }
         )
@@ -43,10 +46,8 @@ const Report = ({query, router, reports}) => {
 )}
 
 Report.propTypes = {
-  query: React.PropTypes.shape({
-    report: React.PropTypes.string
-  }),
-  router: React.PropTypes.object.isRequired,
+  history: React.PropTypes.object.isRequired,
+  location: React.PropTypes.object.isRequired,
   reports: React.PropTypes.arrayOf(React.PropTypes.shape({
     name: React.PropTypes.string.isRequired,
     url: React.PropTypes.string.isRequired
