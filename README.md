@@ -19,6 +19,12 @@ The heatmap that this page uses can be included as a widget as part of your webs
 If you're working on both the frontend and the backend you will occasionally need to update them. You can edit them by hand or grab the config from e.g.
 `view-source:http://localhost:8080/gxa/experiments/E-MTAB-513`
 
+#### Demo pages
+Aren't doing great at the moment, we'd need to - I think - set the react-router to have a specific basename and set webpack-dev-server to serve the right page and not just always index.html.
+This works:
+```
+http://localhost:9000/gxa/experiments/E-PROT-1
+```
 
 ### License
 

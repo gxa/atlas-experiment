@@ -5,7 +5,7 @@ var CleanWebpackPlugin = require('clean-webpack-plugin');
 module.exports = {
     entry: {
         experimentPage: './index.js',
-        dependencies: ['react', 'react-bootstrap', 'react-dom', 'react-router']
+        dependencies: ['react', 'react-bootstrap', 'react-dom', 'react-router-dom']
     },
     output: {
         libraryTarget: 'var',
@@ -40,6 +40,7 @@ module.exports = {
                           'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false'
                 ]
             },
+            { test: /\.html$/, loader: 'file?name=[name].[ext]' },
             {test: /\.(svg)$/i,
                 loaders: [
                           'file?hash=sha512&digest=hex&name=[hash].[ext]'
@@ -49,6 +50,8 @@ module.exports = {
     },
 
     devServer: {
+      historyApiFallback: true,
+      contentBase: "html",
       port: 9000
     }
 };
