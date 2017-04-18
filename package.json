@@ -5,7 +5,7 @@
   "main": "index.js",
   "author": "atlas-developers@ebi.ac.uk",
   "license": "Apache-2.0",
-  "repository": "github.com/gxa/atlas",
+  "repository": "https://github.com/gxa/atlas-experiment",
   "dependencies": {
     "expression-atlas-heatmap-highcharts": "latest",
     "gene-autocomplete": "latest",
