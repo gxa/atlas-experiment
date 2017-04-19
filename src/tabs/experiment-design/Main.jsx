@@ -7,19 +7,27 @@ const ExperimentDesignTab = ({
   downloadUrl,
   table
 }) => (
-  <div>
-    <div style={{textAlign:"right"}}>
-      <a className="button" style={{margin:"0px"}} href={downloadUrl}>
-        <span className="glyphicon glyphicon-download-alt" style={{marginRight:"0.5rem"}}></span>
-        Download
-      </a>
+    <div>
+      <div className="row">
+        <div className="small-12 columns margin-top-large">
+          <div style={{textAlign:"right"}}>
+            <a className="button" style={{margin:"0px"}} href={downloadUrl}>
+              <span className="glyphicon glyphicon-download-alt" style={{marginRight:"0.5rem"}}></span>
+              Download
+            </a>
+          </div>
+        </div>
+      </div>
+      <div className="row">
+        <div className="small-12 columns margin-top-large">
+            {
+                isDifferential
+                    ? DifferentialExperimentDesign(table)
+                    : BaselineExperimentDesign(table)
+            }
+        </div>
+      </div>
     </div>
-    {
-      isDifferential
-      ? DifferentialExperimentDesign(table)
-      : BaselineExperimentDesign(table)
-    }
-  </div>
 )
 
 ExperimentDesignTab.propTypes = {
