@@ -1,10 +1,9 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import Sidebar from './QuerySelectingSidebar.jsx'
 import {toQuery as queryFromQueryObjects, fromConfigAndQuery as queryObjectsFromConfigAndQuery,
   toBaselineRequestPreferences, toDifferentialRequestPreferences} from './CreateQueryObjects.js'
 import {InitialColumnGroupPropTypes, QueryPropTypes} from './PropTypes.js'
-import {Link, withRouter} from 'react-router-dom'
+import {withRouter} from 'react-router-dom'
 import {ExpressionAtlasHeatmap} from 'expression-atlas-heatmap-highcharts'
 import URI from 'urijs'
 import queryStringUtils from 'qs'
