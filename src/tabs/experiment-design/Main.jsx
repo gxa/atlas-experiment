@@ -12,7 +12,7 @@ const ExperimentDesignTab = ({
         <div className="small-12 columns margin-top-large">
           <div style={{textAlign:"right"}}>
             <a className="button" style={{margin:"0px"}} href={downloadUrl}>
-              <span className="glyphicon glyphicon-download-alt" style={{marginRight:"0.5rem"}}></span>
+              <span className="glyphicon glyphicon-download-alt" style={{marginRight:"0.5rem"}}/>
               Download
             </a>
           </div>
