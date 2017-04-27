@@ -28,12 +28,12 @@ const makeTab = (name, props) => {
 const makeTopRibbon = (tabNames) => (
   withRouter(
     ({location}) =>
-      <ul className="tabs">
+      <ul className="tabs" data-tabs role="tablist">
         {tabNames.map(tabName => (
-          <li title={tabName} role="presentation" key={tabName} className="tabs-title">
+          <li title={tabName} role="tab" key={tabName} className="tabs-title">
             <NavLink
               to={{pathname:`/${tabName}`, search: location.search, hash: location.hash}}
-              style={{fontSize: "medium"}} activeStyle={{color:"white", background:"#666"}}>
+              activeStyle={{color:"white", background:"#666"}}>
               {tabName}
             </NavLink>
           </li>
