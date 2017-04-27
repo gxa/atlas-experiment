@@ -3,3 +3,14 @@
   white-space: normal;
   width: auto;
 }
+
+.select-wrap select {
+  height: unset;
+  margin: unset;
+}
+
+.-pageJump input {
+  display: inline-block;
+  height: unset;
+  margin: unset;
+}

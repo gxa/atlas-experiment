@@ -12,7 +12,7 @@ const toTitleCase = (str) => str.replace(/\w\S*/g, function(txt){return txt.char
 const aggregateText = (name, vals) => {
   const xs = uniq(vals)
   return (
-    xs.length ==1 || (xs.length < 5 && xs.join(", ").length < 30)
+    xs.length === 1 || (xs.length < 5 && xs.join(", ").length < 30)
     ? xs.join(", ")
     : toPlural(name.toLowerCase() , xs.length, true)
   )

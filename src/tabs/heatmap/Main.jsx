@@ -1,12 +1,13 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import Sidebar from './QuerySelectingSidebar.jsx'
 import {toQuery as queryFromQueryObjects, fromConfigAndQuery as queryObjectsFromConfigAndQuery,
   toBaselineRequestPreferences, toDifferentialRequestPreferences} from './CreateQueryObjects.js'
 import {InitialColumnGroupPropTypes, QueryPropTypes} from './PropTypes.js'
-import {Link, withRouter} from 'react-router'
+import {withRouter} from 'react-router-dom'
 import {ExpressionAtlasHeatmap} from 'expression-atlas-heatmap-highcharts'
 import URI from 'urijs'
+import queryStringUtils from 'qs'
+
 
 const Main = React.createClass({
   propTypes : {
@@ -18,7 +19,8 @@ const Main = React.createClass({
     groups: React.PropTypes.arrayOf(React.PropTypes.shape(InitialColumnGroupPropTypes)).isRequired,
     genesDistributedByCutoffUrl:React.PropTypes.string.isRequired,
     query: React.PropTypes.shape(QueryPropTypes).isRequired,
-    router: React.PropTypes.object.isRequired
+    history: React.PropTypes.object.isRequired,
+    location: React.PropTypes.object.isRequired
   },
 
   render() {
@@ -34,9 +36,9 @@ const Main = React.createClass({
             columnGroups={this.props.groups}
             queryObjects={queryObjects}
             onChangeQueryObjects={ (newQueryObjects) => {
-              this.props.router.push(Object.assign({},
-                this.props.router.location,
-                {query: queryFromQueryObjects(this.props, newQueryObjects)}
+              this.props.history.push(Object.assign({},
+                this.props.location,
+                {search: queryStringUtils.stringify(queryFromQueryObjects(this.props, newQueryObjects))}
               ))
             }
             }

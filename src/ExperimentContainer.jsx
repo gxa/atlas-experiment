@@ -1,6 +1,7 @@
 import React from 'react'
 
-import { hashHistory, Router, Route, Link, IndexRedirect, withRouter } from 'react-router'
+import {BrowserRouter, Route,Switch, Redirect,NavLink, IndexRedirect, withRouter } from 'react-router-dom'
+import queryStringUtils from 'qs'
 
 import Heatmap from './tabs/heatmap/Main.jsx'
 import ExperimentDesign from './tabs/experiment-design/Main.jsx'
@@ -19,28 +20,27 @@ const componentsPerTab = {
 
 const makeTab = (name, props) => {
   const Tab = componentsPerTab[name]
-  return ({location:{query}}) => (
-    <Tab query={query} {...props} />
+  return ({location:{search}}) => (
+    <Tab query={queryStringUtils.parse(search.replace(/^\?/,""))} {...props} />
   )
 }
 
-const makeContainer = (tabNames) => {
-
-  return ({children}) => (
-    <div>
+const makeTopRibbon = (tabNames) => (
+  withRouter(
+    ({location}) =>
       <ul className="tabs" data-tabs role="tablist">
         {tabNames.map(tabName => (
-          <li title={tabName} role="presentation" key={tabName} className="tabs-title">
-            <Link to={tabName} style={{fontSize: "medium"}} activeStyle={{color:"white", background:"#666"}}>
+          <li title={tabName} role="tab" key={tabName} className="tabs-title">
+            <NavLink
+              to={{pathname:`/${tabName}`, search: location.search, hash: location.hash}}
+              activeStyle={{color:"white", background:"#666"}}>
               {tabName}
-            </Link>
+            </NavLink>
           </li>
         ))}
       </ul>
-        {children}
-    </div>
   )
-}
+)
 
 const ExperimentContainerRouter = ({
   atlasHost,
@@ -50,16 +50,18 @@ const ExperimentContainerRouter = ({
   species,
   tabs
 }) => {
+
   return (
-    <Router history={hashHistory} >
-        <Route path="/" component={makeContainer(tabs.map((tab)=>tab.name))}>
-        <IndexRedirect to={tabs[0].name} />
+    <BrowserRouter basename={`/gxa/experiments/${experimentAccession}`}>
+      <div>
+        <Route path={"/"} component={makeTopRibbon(tabs.map((tab)=>tab.name))} />
+        <Switch>
         {
           tabs
           .map((tab)=> (
             <Route
               key={tab.name}
-              path={tab.name}
+              path={`/${tab.name}`}
               component={makeTab(tab.type,
                 Object.assign(
                   {
@@ -75,11 +77,14 @@ const ExperimentContainerRouter = ({
                     isRnaSeq:
                       experimentType.toLowerCase().replace("_","").indexOf('rnaseq') >-1
                   },tab.props)
-                )} />
+                )}
+              />
           ))
         }
-        </Route>
-    </Router>
+          <Redirect to={`/${tabs[0].name}`} />
+        </Switch>
+      </div>
+    </BrowserRouter>
   )
 }
 

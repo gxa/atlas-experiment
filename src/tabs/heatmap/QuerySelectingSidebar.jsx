@@ -85,19 +85,14 @@ const determineColumnNameFromFirstGroup = (availableColumnIds, group) => {
   ) && groupingValues.every((ids)=> ids.length == 1)){
     return pluralize(prettyName(group.name))
   } else {
-    return "Data columns"
+    return ""
   }
 }
 
-const HeaderWithHint = ({header, hint}) => (
-  <div>
-    <h4 style={{marginBottom:"0rem"}}>
-      {header}
+const Header = ({text}) => (
+    <h4>
+      {text}
     </h4>
-    <div style={{fontSize:"smaller", fontStyle:"italic"}}>
-      {`(${hint})`}
-    </div>
-  </div>
 )
 
 const SidebarAndModal = React.createClass({
@@ -121,16 +116,21 @@ const SidebarAndModal = React.createClass({
   render(){
     const showRegulation = ["UP","DOWN","UP_DOWN"].indexOf(this.props.queryObjects.regulation)>-1
     const availableColumnIds = determineAvailableColumns(this.props.columnGroups)
-    const columnsName = this.props.isDifferential ? "Comparisons" : determineColumnNameFromFirstGroup(availableColumnIds, this.props.columnGroups[0])
+    const columnsName =
+      this.props.isDifferential
+      ? "Comparisons"
+      : determineColumnNameFromFirstGroup(availableColumnIds, this.props.columnGroups[0])
+        || "Sample properties"
 
     return (
       <div>
-        <HeaderWithHint header="Genes" hint="Y Axis" />
+        <Header text="Genes"/>
         <GeneAutocomplete
           suggesterUrlTemplate={this.props.geneSuggesterUrlTemplate}
-          values={this.props.queryObjects.geneQuery}
+          values={this.props.queryObjects.geneQuery.map(({value})=>value)}
           onChangeValues={(newValues)=>{
-            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {geneQuery: newValues}))
+            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects,
+              {geneQuery: newValues.map((value)=> ({value}))}))
           }}/>
         <Specificity
           specific={this.props.queryObjects.specific}
@@ -176,8 +176,7 @@ const SidebarAndModal = React.createClass({
           )
         }
         <br/>
-        <HeaderWithHint header={columnsName} hint="X Axis" />
-
+        <Header text={columnsName}/>
         <OpenerButton onClickButton={()=> this.setState({ showModal: "columns" })} />
         <HeatmapColumnsSummary
           columnGroups={this.props.columnGroups}

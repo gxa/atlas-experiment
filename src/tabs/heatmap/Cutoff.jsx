@@ -4,14 +4,12 @@ import NumericInput from 'react-numeric-input'
 
 const settingsFor = (cutoffName) => (
   Object.assign(
-    cutoffName === 'foldChange'
-    ? {}
-    : {min: 0},
+    {min: 0}
+    ,
     cutoffName === 'pValue'
     ? {step: 0.01}
-    : cutoffName === 'foldChange'
-      ? {step: 5.0}
-      : {step: 1.5},
+    : {step: 1.0}
+    ,
     cutoffName === 'pValue'
     ? {precision: 2}
     : {precision: 1},
@@ -29,12 +27,35 @@ const keyValuePair = (key, value) => {
   return result
 }
 
+const cutoffDisplayName = (cutoffName) => {
+  switch(cutoffName){
+    case "value":
+      return (
+        "Expression value"
+      )
+    case "pValue":
+      return (
+        "Adjusted p-value"
+      )
+    case "foldChange":
+      return (
+        <span>
+          Log<sub>2</sub>-fold change
+        </span>
+      )
+    default:
+      return (
+        cutoffName
+      )
+  }
+}
+
 const Cutoff = ({cutoff, onChangeCutoff}) => (
   <div>
     {Object.keys(cutoff).map((cutoffName) => (
       <div key={cutoffName}>
         <div>
-          {`Above ${cutoffName}:`}
+          {cutoffDisplayName(cutoffName)}
         </div>
         <NumericInput
           className="form-control"
