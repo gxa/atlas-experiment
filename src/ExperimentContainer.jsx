@@ -32,7 +32,8 @@ const makeTopRibbon = (tabNames) => (
         {tabNames.map(tabName => (
           <li title={tabName} key={tabName} className="tabs-title">
             <NavLink
-              to={{pathname:`/${tabName}`, search: location.search, hash: location.hash}}>
+              to={{pathname:`/${tabName}`, search: location.search, hash: location.hash}}
+              activeStyle={{color:"#0a0a0a", background:"#e6e6e6"}}>
               {tabName}
             </NavLink>
           </li>
