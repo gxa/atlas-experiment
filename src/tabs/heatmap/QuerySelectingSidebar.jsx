@@ -161,7 +161,7 @@ const SidebarAndModal = React.createClass({
             <ModalWrapper
               title={"Cutoff - distribution of genes"}
               show={this.state.showModal == "cutoff"}
-              onCloseModal={()=> this.setState({ showModal: ""})}>
+              onCloseModal={()=> this.setState(this.getInitialState())}>
 
               <CutoffDistribution
                 cutoff={this.props.queryObjects.cutoff}
@@ -187,7 +187,7 @@ const SidebarAndModal = React.createClass({
         <ModalWrapper
           title={columnsName}
           show={this.state.showModal == "columns"}
-          onCloseModal={()=> this.setState({ showModal: ""})}
+          onCloseModal={()=> this.setState(this.getInitialState())}
           onClickApply={() => {
             this.setState({ showModal: ""})
             this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {selectedColumnIds: this.state.selectedColumnIds}))
