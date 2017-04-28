@@ -42,6 +42,18 @@ const makeTopRibbon = (tabNames) => (
   )
 )
 
+class RedirectToTabWithLocation extends React.Component {
+  render () {
+    return (
+      <Redirect to={{
+        pathname:`/${this.props.tabName}`,
+        search: this.props.location.search,
+        hash: this.props.location.hash}} />
+    )
+  }
+}
+const RedirectToTab = withRouter(RedirectToTabWithLocation)
+
 const ExperimentContainerRouter = ({
   atlasHost,
   pathToFolderWithBundledResources,
@@ -81,7 +93,7 @@ const ExperimentContainerRouter = ({
               />
           ))
         }
-          <Redirect to={`/${tabs[0].name}`} />
+        <RedirectToTab tabName={tabs[1].name} />
         </Switch>
       </div>
     </BrowserRouter>
