@@ -78,9 +78,14 @@ const CheckboxGrouping = ({text, selection, onToggle}) => (
       checked={[SELECTION.SELECTED, SELECTION.PARTIAL].indexOf(selection)>-1}
       ref={checkbox => {checkbox ? checkbox.indeterminate = selection === SELECTION.PARTIAL : null}}
       />
-    <span>
-      {text}
-    </span>
+    { text
+      ? <span>
+          {text}
+        </span>
+      : <span style={{opacity: 0.5, fontStyle:"italic"}}>
+          missing
+        </span>
+    }
   </div>
 )
 CheckboxGrouping.propTypes = GroupingPropTypes
