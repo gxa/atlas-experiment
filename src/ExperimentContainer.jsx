@@ -30,10 +30,10 @@ const makeTopRibbon = (tabNames) => (
     ({location}) =>
       <ul className="tabs">
         {tabNames.map(tabName => (
-          <li title={tabName} role="presentation" key={tabName} className="tabs-title">
+          <li title={tabName} key={tabName} className="tabs-title">
             <NavLink
               to={{pathname:`/${tabName}`, search: location.search, hash: location.hash}}
-              style={{fontSize: "medium"}} activeStyle={{color:"white", background:"#666"}}>
+              activeStyle={{color:"#0a0a0a", background:"#e6e6e6"}}>
               {tabName}
             </NavLink>
           </li>
