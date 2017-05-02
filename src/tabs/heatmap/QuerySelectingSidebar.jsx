@@ -1,4 +1,5 @@
 import React from 'react'
+import {Main as GeneQueryChoice, Summary as GeneQuerySummary} from './genes/Main.jsx'
 import {Main as HeatmapColumnsChoice, Summary as HeatmapColumnsSummary} from './column-filters/Main.jsx'
 import Cutoff from './Cutoff.jsx'
 import CutoffDistribution from './CutoffDistribution.jsx'
@@ -6,7 +7,6 @@ import Regulation from './Regulation.jsx'
 import Specificity from './Specificity.jsx'
 import {ColumnGroupPropTypes, QueryObjectsPropTypes} from './PropTypes.js'
 import {Modal, Button, Glyphicon} from 'react-bootstrap/lib'
-import GeneAutocomplete from 'gene-autocomplete'
 import {intersection, union, isEqual} from 'lodash'
 import pluralize from 'pluralize'
 require('./bootstrap-toggle.min.css')
@@ -109,6 +109,7 @@ const SidebarAndModal = React.createClass({
   getInitialState() {
     return {
       showModal: "",
+      geneQuery: this.props.queryObjects.geneQuery,
       selectedColumnIds: this.props.queryObjects.selectedColumnIds
     }
   },
@@ -125,13 +126,25 @@ const SidebarAndModal = React.createClass({
     return (
       <div>
         <Header text="Genes"/>
-        <GeneAutocomplete
-          suggesterUrlTemplate={this.props.geneSuggesterUrlTemplate}
-          values={this.props.queryObjects.geneQuery.map(({value})=>value)}
-          onChangeValues={(newValues)=>{
-            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects,
-              {geneQuery: newValues.map((value)=> ({value}))}))
-          }}/>
+        <OpenerButton onClickButton={()=> this.setState({ showModal: "genes" })} />
+        <GeneQuerySummary geneQuery={this.state.geneQuery} />
+
+        <ModalWrapper
+          title={"Gene query"}
+          show={this.state.showModal == "genes"}
+          onCloseModal={()=> this.setState(this.getInitialState())}
+          onClickApply={() => {
+            this.setState({ showModal: ""})
+            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {geneQuery: this.state.geneQuery}))
+          }} >
+          <GeneQueryChoice
+            geneSuggesterUrlTemplate={this.props.geneSuggesterUrlTemplate}
+            geneQuery={this.state.geneQuery}
+            onChangeGeneQuery={(geneQuery) => {
+              this.setState({geneQuery})
+            }}/>
+        </ModalWrapper>
+
         <Specificity
           specific={this.props.queryObjects.specific}
           onChangeSpecific={(specific)=>{
