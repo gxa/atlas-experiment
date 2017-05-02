@@ -93,7 +93,7 @@ const ExperimentContainerRouter = ({
               />
           ))
         }
-        <RedirectToTab tabName={tabs[1].name} />
+        <RedirectToTab tabName={tabs[0].name} />
         </Switch>
       </div>
     </BrowserRouter>
