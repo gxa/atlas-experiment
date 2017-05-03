@@ -1,14 +1,11 @@
 import React from 'react'
-import Url from 'url'
-import Path from 'path'
+import URI from 'urijs'
 import ResourcePropTypes from './ResourcePropTypes.js'
 
 const htmlEntity = (type) => {
   const maybeEntity = [
     ["link", "&#128279; "]
-  ].find((e)=>(
-    type.indexOf(e[0])>-1
-  ))
+  ].find(e => type.includes(e[0]))
 
   return (
     !!maybeEntity &&  <span dangerouslySetInnerHTML={{__html: maybeEntity[1]}} />
@@ -26,18 +23,14 @@ const icon = (type, pathToFolderWithBundledResources) => {
     ["icon-tsv", require("./assets/download_blue_small.png")],
     ["icon-Rdata", require("./assets/r-button.png")]
   ].find((e) => (
-    type == e[0]
+    type === e[0]
   ))
 
   return (
-    !! maybeImg && <img style={{marginRight: "0.25rem"}}src={
-      Url.resolve(
-          pathToFolderWithBundledResources,
-          maybeImg[1]
-      )} />
+    !! maybeImg && <img style={{marginRight: "0.25rem"}}
+                        src={URI(maybeImg[1], pathToFolderWithBundledResources)} />
   )
 }
-
 
 const Icon = ({type, pathToFolderWithBundledResources}) => {
   return (
@@ -47,6 +40,7 @@ const Icon = ({type, pathToFolderWithBundledResources}) => {
   )
 
 }
+
 Icon.propTypes = {
   type: ResourcePropTypes.type,
   pathToFolderWithBundledResources: React.PropTypes.string.isRequired
