@@ -24,7 +24,7 @@ const ResourcesSection = ({name, values, pathToFolderWithBundledResources}) => {
   return (
     <div className="row" style={{fontSize:"larger"}}>
       <div className="small-12 columns">
-      <h3>{name}</h3>
+      <h4>{name}</h4>
         <ul style={{listStyle: "none"}}>
           {
             subsections.filter(el=>el).length <2
