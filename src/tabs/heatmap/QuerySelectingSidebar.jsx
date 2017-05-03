@@ -1,12 +1,12 @@
 import React from 'react'
-import {Main as GeneQueryChoice, Summary as GeneQuerySummary} from './genes/Main.jsx'
+import Genes from './genes/Main.jsx'
 import {Main as HeatmapColumnsChoice, Summary as HeatmapColumnsSummary} from './column-filters/Main.jsx'
 import Cutoff from './Cutoff.jsx'
 import CutoffDistribution from './CutoffDistribution.jsx'
 import Regulation from './Regulation.jsx'
 import Specificity from './Specificity.jsx'
 import {ColumnGroupPropTypes, QueryObjectsPropTypes} from './PropTypes.js'
-import {Modal, Button, Glyphicon} from 'react-bootstrap/lib'
+import {Modal, Button,ButtonGroup, Glyphicon} from 'react-bootstrap/lib'
 import {intersection, union, isEqual} from 'lodash'
 import pluralize from 'pluralize'
 require('./bootstrap-toggle.min.css')
@@ -126,24 +126,22 @@ const SidebarAndModal = React.createClass({
     return (
       <div>
         <Header text="Genes"/>
-        <OpenerButton onClickButton={()=> this.setState({ showModal: "genes" })} />
-        <GeneQuerySummary geneQuery={this.state.geneQuery} />
-
-        <ModalWrapper
-          title={"Gene query"}
-          show={this.state.showModal == "genes"}
-          onCloseModal={()=> this.setState(this.getInitialState())}
-          onClickApply={() => {
-            this.setState({ showModal: ""})
-            this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {geneQuery: this.state.geneQuery}))
-          }} >
-          <GeneQueryChoice
-            geneSuggesterUrlTemplate={this.props.geneSuggesterUrlTemplate}
-            geneQuery={this.state.geneQuery}
-            onChangeGeneQuery={(geneQuery) => {
-              this.setState({geneQuery})
-            }}/>
-        </ModalWrapper>
+        <Genes
+          geneSuggesterUrlTemplate={this.props.geneSuggesterUrlTemplate}
+          geneQuery={this.state.geneQuery}
+          onChangeGeneQuery={(geneQuery) => {
+            this.setState({geneQuery})
+          }}/>
+        <Button onClick={()=>{
+          this.props.onChangeQueryObjects(Object.assign({}, this.props.queryObjects, {geneQuery: this.state.geneQuery}))
+          }}
+            style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
+          <span style={{verticalAlign: `middle`}}> Apply </span>
+        </Button>
+        <Button onClick={()=>this.setState(this.getInitialState())}
+          style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
+          <span style={{verticalAlign: `middle`}}> Reset </span>
+        </Button>
 
         <Specificity
           specific={this.props.queryObjects.specific}

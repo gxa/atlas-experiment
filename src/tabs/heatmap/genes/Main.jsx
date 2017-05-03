@@ -1,38 +1,29 @@
 import React from 'react'
 import {QueryObjectsPropTypes} from '../PropTypes.js'
 import AutocompleteBox from './AutocompleteBox.jsx'
+require("./tags.css")
 
 const CommonPropTypes = {
   geneQuery: QueryObjectsPropTypes.geneQuery,
 }
 
-
 const Main = ({geneQuery, onChangeGeneQuery, geneSuggesterUrlTemplate}) => (
   <div>
-    <h5>
-      Selected
-    </h5>
-    <div>
-      {geneQuery.length
-        ? geneQuery.map(({value} )=> (
-          <span style={{cursor:"pointer", margin: "0.2rem"}} className="tag" key={value} onClick={()=>{
-            onChangeGeneQuery(
-              geneQuery.filter(term => term.value !== value)
-            )}} >
-            {value}
+    {geneQuery.map(({value} )=> (
+          <span key={value} className="tag gxaTag">
+            <span>
+                {value}
+            </span>
+              <span style={{color: "grey",marginLeft: "0.2rem", position:"relative", cursor: "pointer"}} aria-hidden="true"
+              onClick={()=>{
+                onChangeGeneQuery(
+                  geneQuery.filter(term => term.value !== value)
+                )}}>
+                ✖
+              </span>
           </span>
         ))
-        : (<span style={{opacity: 0.7, margin:"1rem"}}>
-            None currently selected
-          </span>
-        )
       }
-    </div>
-    <br/>
-    <h5>
-      Choose genes
-    </h5>
-
     <AutocompleteBox
       suggesterUrlTemplate={geneSuggesterUrlTemplate}
       valuesToSkipInSuggestions={geneQuery.map(({value})=>value)}
@@ -46,16 +37,4 @@ Main.propTypes = Object.assign({}, CommonPropTypes, {
   onChangeGeneQuery: React.PropTypes.func.isRequired
 })
 
-const Summary = ({geneQuery}) => (
-  <div>
-    {
-      !!geneQuery.length && `${geneQuery.length} query term${geneQuery.length>1 ? "s" : ""}`
-    }
-  </div>
-)
-
-Summary.propTypes = CommonPropTypes
-
-export {
-  Main, Summary
-}
+export default Main

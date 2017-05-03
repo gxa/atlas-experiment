@@ -1,0 +1,6 @@
+.gxaTag {
+  overflow: hidden;
+  white-space: pre-wrap;
+  display: inline-flex;
+  margin: 0.2rem;
+}
