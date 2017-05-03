@@ -9,8 +9,15 @@ import Resources from './tabs/resources/Main.jsx'
 import StaticTable from './tabs/StaticTable.jsx'
 import QCReport from './tabs/qc-report/Main.jsx'
 
+const TabPropType = React.PropTypes.shape({
+  type: React.PropTypes.string.isRequired,
+  name: React.PropTypes.string.isRequired,
+  props: React.PropTypes.object.isRequired
+});
+
 //coupled to ExperimentController.java
 const componentsPerTab = {
+  'multipart' : "",
   'heatmap' : Heatmap,
   'experiment-design' : ExperimentDesign,
   'resources' : Resources,
@@ -18,12 +25,38 @@ const componentsPerTab = {
   'qc-report' : QCReport
 }
 
-const makeTab = (name, props) => {
-  const Tab = componentsPerTab[name]
-  return ({location:{search}}) => (
-    <Tab query={queryStringUtils.parse(search.replace(/^\?/,""))} {...props} />
+const createPageSection = ({type, props}) => {
+
+  const Tab = componentsPerTab[type]
+  return (
+      <Tab {...props} />
   )
 }
+
+const createPage = ({type,commonProps, tabProps}) => (
+  type == 'multipart'
+  ? (
+    <div>
+      {tabProps.sections.map(({type, name, props}) => (
+        <div key={name}>
+          <h4>
+            {name}
+          </h4>
+          {
+            createPageSection({type,props: Object.assign({}, commonProps, props)})
+          }
+        </div>
+      ))}
+    </div>
+  )
+  : createPageSection({type, props: Object.assign({}, commonProps, tabProps)})
+)
+
+const queryFromRouteDetails = ({location:{search}}) => queryStringUtils.parse(search.replace(/^\?/,""))
+
+const makeTab = ({type,commonProps, tabProps}) => (
+  (routeDetails) => createPage({type, commonProps: Object.assign({}, commonProps, {query: queryFromRouteDetails(routeDetails)}), tabProps})
+)
 
 const makeTopRibbon = (tabNames) => (
   withRouter(
@@ -54,6 +87,7 @@ class RedirectToTabWithLocation extends React.Component {
 }
 const RedirectToTab = withRouter(RedirectToTabWithLocation)
 
+
 const ExperimentContainerRouter = ({
   atlasUrl,
   pathToFolderWithBundledResources,
@@ -62,6 +96,21 @@ const ExperimentContainerRouter = ({
   species,
   tabs
 }) => {
+  const commonProps = Object.assign(
+    {
+      atlasUrl,
+      pathToFolderWithBundledResources,
+      experimentAccession,
+      experimentType,
+      species
+    },
+    {
+      isDifferential:
+        experimentType.toLowerCase().indexOf('differential') >-1,
+      isRnaSeq:
+        experimentType.toLowerCase().replace("_","").indexOf('rnaseq') >-1
+    }
+  )
 
   return (
     <BrowserRouter basename={`/gxa/experiments/${experimentAccession}`}>
@@ -74,21 +123,7 @@ const ExperimentContainerRouter = ({
             <Route
               key={tab.name}
               path={`/${tab.name}`}
-              component={makeTab(tab.type,
-                Object.assign(
-                  {
-                    atlasUrl,
-                    pathToFolderWithBundledResources,
-                    experimentAccession,
-                    experimentType,
-                    species
-                  },
-                  {
-                    isDifferential: experimentType.includes(`differential`),
-                    isRnaSeq: experimentType.toLowerCase().replace("_","").includes(`rnaseq`)
-                  },
-                  tab.props)
-                )}
+              component={makeTab({type:tab.type,commonProps: commonProps, tabProps: tab.props})}
               />
           ))
         }
@@ -105,11 +140,7 @@ ExperimentContainerRouter.propTypes = {
   experimentAccession: React.PropTypes.string.isRequired,
   experimentType: React.PropTypes.string.isRequired,
   species: React.PropTypes.string.isRequired,
-  tabs: React.PropTypes.arrayOf(React.PropTypes.shape({
-    type: React.PropTypes.string.isRequired,
-    name: React.PropTypes.string.isRequired,
-    props: React.PropTypes.object.isRequired
-  })).isRequired
+  tabs: React.PropTypes.arrayOf(TabPropType).isRequired
 }
 
 export default ExperimentContainerRouter;
