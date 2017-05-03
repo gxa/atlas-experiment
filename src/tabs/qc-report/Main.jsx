@@ -23,7 +23,7 @@ const Report = ({history,location, reports}) => {
 
   return (
   <div className="row">
-    <div class="small-12 columns">
+    <div className="small-12 columns">
       { reports.length > 1 &&
           chooseReportDropdown(
             reports.map((report)=> report.name),
