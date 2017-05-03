@@ -1,0 +1,32 @@
+.gene-autocomplete input {
+    text-overflow: ellipsis;
+    font-size: larger;
+    font-weight: bolder;
+    text-align: center;
+    color: #555;
+    background: #fff !important;
+    height: 2.4375rem;
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid ;
+    margin: 0 0 1rem;
+    box-shadow: inset 0 1px 2px rgba(10, 10, 10, 0.1);
+}
+
+.gene-autocomplete.underEdit input {
+  color: #007c82;
+}
+
+.gene-autocomplete .menu {
+  background: #FFF none !important;
+  border-radius: 4px;
+  padding:0;
+}
+
+.gene-autocomplete .menu .menu-element {
+  cursor: pointer;
+  z-index: 600;
+  padding: 6px;
+  color: #007c82;
+  word-wrap: break-word;
+}
