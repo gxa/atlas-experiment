@@ -15,6 +15,6 @@
   margin: unset;
 }
 
-.-pagination .-btn button {
-  height: 2.25rem !important;
+.-pagination button.-btn  {
+  height: 2.25rem;
 }
