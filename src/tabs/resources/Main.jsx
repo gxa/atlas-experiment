@@ -1,8 +1,9 @@
-import React, { Component } from 'react'
-import { connect, PromiseState } from 'react-refetch'
+import React, {Component} from 'react'
+import {connect} from 'react-refetch'
 import ResourceType from './ResourcePropTypes.js'
 import Icon from './Icon.jsx'
 import {uniq} from 'lodash'
+import URI from 'urijs'
 
 const whichSection = (value) => value.group.split("/")[0]
 const whichSubsection = (value) => {
@@ -101,10 +102,10 @@ ResourcesList.propTypes = {
 
 class ResourcesTab extends Component {
   render() {
-    const { resourcesFetch , atlasHost, pathToFolderWithBundledResources} = this.props
+    const { resourcesFetch , atlasUrl, pathToFolderWithBundledResources} = this.props
 
     if (resourcesFetch.pending) {
-      return <img src={atlasHost + "/gxa/resources/images/loading.gif"}/>
+      return <img src={URI(`resources/images/loading.gif`, atlasUrl)} />
     } else if (resourcesFetch.rejected) {
       return (
         <div>

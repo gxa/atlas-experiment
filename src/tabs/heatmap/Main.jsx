@@ -14,7 +14,7 @@ const Main = React.createClass({
     experimentAccession: React.PropTypes.string.isRequired,
     isDifferential: React.PropTypes.bool.isRequired,
     isRnaSeq: React.PropTypes.bool.isRequired,
-    atlasHost: React.PropTypes.string.isRequired,
+    atlasUrl: React.PropTypes.string.isRequired,
     species: React.PropTypes.string.isRequired,
     groups: React.PropTypes.arrayOf(React.PropTypes.shape(InitialColumnGroupPropTypes)).isRequired,
     genesDistributedByCutoffUrl:React.PropTypes.string.isRequired,
@@ -30,9 +30,9 @@ const Main = React.createClass({
         <div className="small-3 medium-2 columns" >
           <Sidebar
             isDifferential={this.props.isDifferential}
-            geneSuggesterUrlTemplate={`${this.props.atlasHost}/gxa/json/suggestions?query={0}&species=${this.props.species}`}
+            geneSuggesterUrlTemplate={URI(`json/suggestions`, this.props.atlasUrl).search({query: `{0}`, species: this.props.species}).toString()}
             genesDistributedByCutoffUrl={this.props.isDifferential? "" : this.props.genesDistributedByCutoffUrl}
-            loadingGifUrl={`${this.props.atlasHost}/gxa/resources/images/loading.gif`}
+            loadingGifUrl={URI(`resources/images/loading.gif`, this.props.atlasUrl).toString()}
             columnGroups={this.props.groups}
             queryObjects={queryObjects}
             onChangeQueryObjects={ (newQueryObjects) => {
@@ -46,13 +46,13 @@ const Main = React.createClass({
         </div>
         <div className="small-9 medium-10 columns">
           <ExpressionAtlasHeatmap
-              atlasUrl={this.props.atlasHost+"/gxa/"}
+              atlasUrl={this.props.atlasUrl}
               isWidget={false}
               isMultiExperiment={false}
               isDifferential={this.props.isDifferential}
               query={
                 URI("json/experiments/"+this.props.experimentAccession)
-                .addQuery((this.props.isDifferential
+                .addSearch((this.props.isDifferential
                   ? toDifferentialRequestPreferences
                   : toBaselineRequestPreferences)(queryObjects))
                 .toString()}

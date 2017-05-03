@@ -55,7 +55,7 @@ class RedirectToTabWithLocation extends React.Component {
 const RedirectToTab = withRouter(RedirectToTabWithLocation)
 
 const ExperimentContainerRouter = ({
-  atlasHost,
+  atlasUrl,
   pathToFolderWithBundledResources,
   experimentAccession,
   experimentType,
@@ -77,18 +77,17 @@ const ExperimentContainerRouter = ({
               component={makeTab(tab.type,
                 Object.assign(
                   {
-                    atlasHost,
+                    atlasUrl,
                     pathToFolderWithBundledResources,
                     experimentAccession,
                     experimentType,
                     species
                   },
                   {
-                    isDifferential:
-                      experimentType.toLowerCase().indexOf('differential') >-1,
-                    isRnaSeq:
-                      experimentType.toLowerCase().replace("_","").indexOf('rnaseq') >-1
-                  },tab.props)
+                    isDifferential: experimentType.includes(`differential`),
+                    isRnaSeq: experimentType.toLowerCase().replace("_","").includes(`rnaseq`)
+                  },
+                  tab.props)
                 )}
               />
           ))
@@ -101,7 +100,7 @@ const ExperimentContainerRouter = ({
 }
 
 ExperimentContainerRouter.propTypes = {
-  atlasHost: React.PropTypes.string.isRequired,
+  atlasUrl: React.PropTypes.string.isRequired,
   pathToFolderWithBundledResources: React.PropTypes.string.isRequired,
   experimentAccession: React.PropTypes.string.isRequired,
   experimentType: React.PropTypes.string.isRequired,

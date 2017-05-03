@@ -4,7 +4,7 @@ var CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
     entry: {
-        experimentPage: './index.js',
+        experimentPage: './index.jsx',
         dependencies: ['react', 'react-bootstrap', 'react-dom', 'react-router-dom']
     },
     output: {
