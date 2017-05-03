@@ -14,3 +14,7 @@
   height: unset;
   margin: unset;
 }
+
+.-pagination .-btn {
+  height: 2.5rem;
+}
