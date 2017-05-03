@@ -16,5 +16,5 @@
 }
 
 .-pagination button.-btn  {
-  height: 2.25rem;
+  height: 2.25rem !important;
 }
