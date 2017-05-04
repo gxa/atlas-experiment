@@ -30,7 +30,7 @@ const Main = React.createClass({
         <div className="small-3 medium-2 columns" >
           <Sidebar
             isDifferential={this.props.isDifferential}
-            geneSuggesterUrlTemplate={URI(`json/suggestions`, this.props.atlasUrl).search({query: `{0}`, species: this.props.species}).toString()}
+            geneSuggesterUri={URI(`json/suggestions`, this.props.atlasUrl).addSearch({species: this.props.species})}
             genesDistributedByCutoffUrl={this.props.isDifferential? "" : this.props.genesDistributedByCutoffUrl}
             loadingGifUrl={URI(`resources/images/loading.gif`, this.props.atlasUrl).toString()}
             columnGroups={this.props.groups}

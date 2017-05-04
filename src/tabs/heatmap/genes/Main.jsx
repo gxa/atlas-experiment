@@ -1,13 +1,17 @@
 import React from 'react'
-import {QueryObjectsPropTypes} from '../PropTypes.js'
+
+import URI from 'urijs'
+
 import AutocompleteBox from './AutocompleteBox.jsx'
-require("./tags.css")
+
+import {QueryObjectsPropTypes} from '../PropTypes.js'
+import './tags.css'
 
 const CommonPropTypes = {
   geneQuery: QueryObjectsPropTypes.geneQuery,
 }
 
-const Main = ({geneQuery, onChangeGeneQuery, geneSuggesterUrlTemplate}) => (
+const Main = ({geneQuery, onChangeGeneQuery, geneSuggesterUri}) => (
   <div>
     {geneQuery.map(({value} )=> (
           <span key={value} className="tag gxaTag">
@@ -25,7 +29,7 @@ const Main = ({geneQuery, onChangeGeneQuery, geneSuggesterUrlTemplate}) => (
         ))
       }
     <AutocompleteBox
-      suggesterUrlTemplate={geneSuggesterUrlTemplate}
+      geneSuggesterUri={geneSuggesterUri}
       valuesToSkipInSuggestions={geneQuery.map(({value})=>value)}
       onGeneChosen={(newGene)=> onChangeGeneQuery(
         [].concat(geneQuery, [{value: newGene}])
@@ -33,8 +37,10 @@ const Main = ({geneQuery, onChangeGeneQuery, geneSuggesterUrlTemplate}) => (
   </div>
 )
 
-Main.propTypes = Object.assign({}, CommonPropTypes, {
-  onChangeGeneQuery: React.PropTypes.func.isRequired
-})
+Main.propTypes = {
+  ...CommonPropTypes,
+  onChangeGeneQuery: React.PropTypes.func.isRequired,
+  geneSuggesterUri: React.PropTypes.instanceOf(URI)
+}
 
 export default Main

@@ -1,6 +1,9 @@
 import React from 'react'
 import Autocomplete from 'react-autocomplete'
-require("./gene-autocomplete.css")
+
+import URI from 'urijs'
+
+import './gene-autocomplete.css'
 
 const TRANSITIONS = {
   standBy: 1,
@@ -10,14 +13,13 @@ const TRANSITIONS = {
 
 const AutocompleteBox = React.createClass({
   propTypes: {
-    suggesterUrlTemplate : React.PropTypes.string.isRequired,
+    geneSuggesterUri : React.PropTypes.instanceOf(URI),
     onGeneChosen: React.PropTypes.func.isRequired,
     valuesToSkipInSuggestions: React.PropTypes.arrayOf(React.PropTypes.string.isRequired).isRequired
   },
   getInitialState () {
-    const value = this.props.value || ''
     return {
-      value: '',
+      value: ``,
       currentTransition: TRANSITIONS.standBy,
       currentSuggestions: []
     }
@@ -29,7 +31,7 @@ const AutocompleteBox = React.createClass({
       httpRequest.onload = (e) => {
         const xhr = e.target;
         let results;
-        if (xhr.responseType === 'json') {
+        if (xhr.responseType === `json`) {
           results = xhr.response;
         } else {
           results = JSON.parse(xhr.responseText);
@@ -47,20 +49,20 @@ const AutocompleteBox = React.createClass({
                   this.props.valuesToSkipInSuggestions.indexOf(item) === -1
               ))
               .filter((item,ix,self)=>(
-                self.indexOf(item)==ix
+                self.indexOf(item) === ix
               ))
           ,
             currentTransition: TRANSITIONS.underEdit})
       };
-      httpRequest.open('GET', this.props.suggesterUrlTemplate.replace(/\{0\}/, value), true);
-      httpRequest.responseType = 'json';
+      httpRequest.open(`GET`, this.props.geneSuggesterUri.search({query: value}), true);
+      httpRequest.responseType = `json`;
       httpRequest.send();
     }
   },
   _renderItem (item, isHighlighted) {
     return (
       <div
-        className={"menu-element"}
+        className="menu-element"
         style={isHighlighted ? {"background": "#007c82", "color": "white"} : {}}
         key={item}
         id={item}
