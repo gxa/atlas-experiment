@@ -1,19 +1,15 @@
 import React from 'react'
-import Fieldset from './common/Fieldset.jsx'
+import Checkbox from './Checkbox.jsx'
 import {QueryObjectsPropTypes} from './PropTypes.js'
 
-const Specificity = ({specific,onChangeSpecific}) => (
-  <Fieldset value={specific}
-    onChangeValue={onChangeSpecific}
-    options={[
-      [true, "Most specific first"],
-      [false, "Highest expression first"]
-    ]} />
-)
+const Specificity = ({specific, onChangeSpecific}) => (
+    <Checkbox value={specific}
+              onChangeValue={onChangeSpecific}/>
+);
 
 Specificity.propTypes = {
   specific: QueryObjectsPropTypes.specific,
   onChangeSpecific : React.PropTypes.func.isRequired
-}
+};
 
-export default Specificity
+export default Specificity;
