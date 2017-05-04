@@ -19,7 +19,7 @@ class Checkbox extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className="margin-top-large">
                 <input type="checkbox"
                        checked={this.state.isChecked}
                        name={`menu-item-${this.state.isChecked}`}
