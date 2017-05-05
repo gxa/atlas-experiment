@@ -116,6 +116,7 @@ const ExperimentContainerRouter = ({
     <BrowserRouter basename={`/gxa/experiments/${experimentAccession}`}>
       <div>
         <Route path={"/"} component={makeTopRibbon(tabs.map((tab)=>tab.name))} />
+        <br/>
         <Switch>
         {
           tabs
