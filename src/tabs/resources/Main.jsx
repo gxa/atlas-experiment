@@ -5,27 +5,14 @@ import Icon from './Icon.jsx'
 import {uniq} from 'lodash'
 import URI from 'urijs'
 
-const whichSection = (value) => value.group.split("/")[0]
-const whichSubsection = (value) => {
-  const s = value.group.split("/")
-  return (
-    s.length <2
-    ? ""
-    : s.splice(1).join("/")
-
-  )
-}
-
-
-const ResourcesSection = ({name, values, pathToFolderWithBundledResources}) => {
+const ResourcesSection = ({values, pathToFolderWithBundledResources}) => {
   const subsections = uniq(values.map((value)=> (
-    whichSubsection(value)
+    value.group
   )))
 
   return (
     <div className="row" style={{fontSize:"larger"}}>
       <div className="small-12 columns">
-      <h4>{name}</h4>
         <ul style={{listStyle: "none"}}>
           {
             subsections.filter(el=>el).length <2
@@ -47,7 +34,7 @@ const ResourcesSection = ({name, values, pathToFolderWithBundledResources}) => {
                   </i>
                   {
                     values.filter((value) => (
-                      subsectionName === whichSubsection(value)
+                      subsectionName === value.group
                     ))
                     .map((value, jx, self) => (
                       <li key={jx} style={{marginLeft:"1.25rem"}}>
@@ -71,35 +58,6 @@ const ResourcesSection = ({name, values, pathToFolderWithBundledResources}) => {
   )
 }
 
-const ResourcesList = ({values, pathToFolderWithBundledResources}) => {
-  const sections = uniq(values.map((value)=> (
-    whichSection(value)
-  )))
-
-  return (
-    <div>
-      {
-        sections.map((sectionName, ix) => (
-          <ResourcesSection key={ix}
-            name = {sectionName}
-            values = {
-              values.filter((value) => (
-                sectionName === whichSection(value)
-              ))
-            } {...{pathToFolderWithBundledResources}}/>
-        ))
-      }
-    </div>
-  )
-
-}
-
-ResourcesList.propTypes = {
-  values: React.PropTypes.arrayOf(React.PropTypes.shape(ResourceType)).isRequired,
-  pathToFolderWithBundledResources: React.PropTypes.string.isRequired
-}
-
-
 class ResourcesTab extends Component {
   render() {
     const { resourcesFetch , atlasUrl, pathToFolderWithBundledResources} = this.props
@@ -114,7 +72,7 @@ class ResourcesTab extends Component {
       )
     } else if (resourcesFetch.fulfilled) {
       return (
-        <ResourcesList values={resourcesFetch.value}
+        <ResourcesSection values={resourcesFetch.value}
         {...{pathToFolderWithBundledResources}} />
       )
     }
