@@ -1,6 +1,6 @@
 import React from 'react'
 import {Modal, Button, Glyphicon} from 'react-bootstrap/lib'
-import {intersection, union, isEqual, flow} from 'lodash'
+import {intersection, union, isEqual, flow, xor} from 'lodash'
 import pluralize from 'pluralize'
 import URI from 'urijs'
 
@@ -14,6 +14,12 @@ import Specificity from './Specificity.jsx'
 import {ColumnGroupPropTypes, QueryObjectsPropTypes} from './PropTypes.js'
 import './bootstrap-toggle.min.css'
 
+const prettyName = (name) => (
+  name
+    .replace(/_/g, ` `)
+    .toLowerCase()
+    .replace(/\w\S*/, (txt) => (txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()))
+)
 
 const OpenerButton = ({
   onClickButton
@@ -66,12 +72,6 @@ const determineAvailableColumns = (columnGroups) => (
 )
 
 const determineColumnNameFromFirstGroup = (availableColumnIds, group) => {
-  const prettyName = (name) => (
-    name
-    .replace(/_/g, ` `)
-    .toLowerCase()
-    .replace(/\w\S*/, (txt) => (txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()))
-  )
   const groupingValues = group.groupings.map((g)=> g[1])
   if (isEqual(
     new Set(availableColumnIds),
@@ -189,7 +189,7 @@ const SidebarAndModal = React.createClass({
           onCloseModal={resetState}
           onClickApply={flow([
             toggleModal.bind(null, ""),
-            this.setState.bind(this, {initialFilters: false}),
+            this.setState.bind(this, {initialFilters: this.state.initialFilters && xor(this.state.selectedColumnIds, this.props.queryObjects.selectedColumnIds).length === 0}),
             onChangeProperty.bind(null, "selectedColumnIds", this.state.selectedColumnIds)
           ])} >
 
@@ -201,6 +201,15 @@ const SidebarAndModal = React.createClass({
               this.setState({selectedColumnIds})
             }}/>
         </ModalWrapper>
+          {this.state.initialFilters &&
+            <div class="margin-top-xxlarge">
+              <h5>Initially showing:</h5>
+              <ul>
+                {this.props.columnGroups.filter(group => group.primary)
+                  .map(primaryGroup => <li>{prettyName(primaryGroup.name)}: {primaryGroup.selected}</li>)}
+              </ul>
+            </div>
+          }
     </div>
     )
   }
