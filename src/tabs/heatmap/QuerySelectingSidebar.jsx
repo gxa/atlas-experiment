@@ -202,7 +202,7 @@ const SidebarAndModal = React.createClass({
             }}/>
         </ModalWrapper>
           {this.state.initialFilters &&
-            <div class="margin-top-xxlarge">
+            <div className="margin-top-xlarge">
               <h5>Initially showing:</h5>
               <ul>
                 {this.props.columnGroups.filter(group => group.primary)
