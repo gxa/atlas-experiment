@@ -71,7 +71,7 @@ const ReadOnlyGrouping = ({text, selection}) => (
 ReadOnlyGrouping.propTypes = GroupingPropTypes
 
 const CheckboxGrouping = ({text, selection, onToggle}) => (
-  <div className={"checkboxGrouping "+selection}>
+  <div className={"checkboxGrouping " + selection}>
     <input type="checkbox"
       value={text}
       onChange={onToggle}
@@ -221,9 +221,9 @@ class Section extends React.Component {
     const {name, groupings, availableIds} = this.props
     const {open} = this.state
     const headerName = prettyName(name)+": "
-    if(this.props.groupings.length == 1) {
+    if(this.props.groupings.length === 1) {
       return (
-        <div className="gxaSection">
+        <div className="margin-top-large gxaSection">
           <span className="title">
             {headerName}
           </span>
@@ -231,11 +231,11 @@ class Section extends React.Component {
         </div>
       )
     } else if (
-      groupings.length == 2
+      groupings.length === 2
       && isEqual(new Set(groupings[0][1]), new Set(availableIds))
       && isEqual(new Set(groupings[1][1]), new Set(availableIds))){
       return (
-        <div className="gxaSection">
+        <div className="margin-top-large gxaSection">
           <span className="title">
             {headerName}
           </span>
@@ -247,7 +247,7 @@ class Section extends React.Component {
       )
     } else {
       return (
-        <div className="gxaSection">
+        <div className="margin-top-large gxaSection">
           <div className="title openable"
              onClick={()=>{
                this.setState(({open})=>({open:!open}))
