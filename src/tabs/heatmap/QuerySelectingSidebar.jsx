@@ -201,15 +201,16 @@ const SidebarAndModal = React.createClass({
               this.setState({selectedColumnIds})
             }}/>
         </ModalWrapper>
-          {this.state.initialFilters &&
-            <div className="margin-top-xlarge">
-              <h5>Initially showing:</h5>
-              <ul>
-                {this.props.columnGroups.filter(group => group.primary)
-                  .map(primaryGroup => <li>{prettyName(primaryGroup.name)}: {primaryGroup.selected}</li>)}
-              </ul>
-            </div>
-          }
+
+        {this.state.initialFilters &&
+          <div className="margin-top-xlarge">
+            <h5>Initially showing:</h5>
+            <ul>
+              {this.props.columnGroups.filter(group => group.groupings.length > 1)
+                .map(primaryGroup => <li>{prettyName(primaryGroup.name)}: {primaryGroup.selected}</li>)}
+            </ul>
+          </div>
+        }
     </div>
     )
   }
