@@ -1,7 +1,7 @@
 import React from 'react'
 import {Glyphicon} from 'react-bootstrap/lib'
 import {ColumnGroupPropTypes} from '../PropTypes.js'
-import {xor, difference, intersection, union,isEqual} from 'lodash'
+import {difference, intersection, union, isEqual} from 'lodash'
 require('./Components.less');
 
 const prettyName = (name) => (
