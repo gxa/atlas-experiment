@@ -12,6 +12,7 @@ import queryStringUtils from 'qs'
 const Main = React.createClass({
   propTypes : {
     experimentAccession: React.PropTypes.string.isRequired,
+    accessKey: React.PropTypes.string,
     isDifferential: React.PropTypes.bool.isRequired,
     isRnaSeq: React.PropTypes.bool.isRequired,
     atlasUrl: React.PropTypes.string.isRequired,
@@ -30,7 +31,7 @@ const Main = React.createClass({
         <div className="small-3 medium-2 columns" >
           <Sidebar
             isDifferential={this.props.isDifferential}
-            geneSuggesterUri={URI(`json/suggestions`, this.props.atlasUrl).addSearch({species: this.props.species})}
+            geneSuggesterUri={URI(`json/suggestions`, this.props.atlasUrl).addSearch(this.props.species ? {species: this.props.species} : {})}
             genesDistributedByCutoffUrl={this.props.isDifferential? "" : this.props.genesDistributedByCutoffUrl}
             loadingGifUrl={URI(`resources/images/loading.gif`, this.props.atlasUrl).toString()}
             columnGroups={this.props.groups}
@@ -51,11 +52,12 @@ const Main = React.createClass({
               isMultiExperiment={false}
               isDifferential={this.props.isDifferential}
               query={
-                URI("json/experiments/"+this.props.experimentAccession)
-                .addSearch((this.props.isDifferential
-                  ? toDifferentialRequestPreferences
-                  : toBaselineRequestPreferences)(queryObjects))
-                .toString()}
+                URI(`json/experiments/${this.props.experimentAccession}`)
+                  .addSearch(this.props.accessKey ? {accessKey: this.props.accessKey} : {})
+                  .addSearch((this.props.isDifferential
+                    ? toDifferentialRequestPreferences
+                    : toBaselineRequestPreferences)(queryObjects))
+                  .toString()}
             />
         </div>
       </div>

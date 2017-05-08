@@ -1,7 +1,8 @@
 import React from 'react'
+import {BrowserRouter, Route, Switch, Redirect, NavLink, IndexRedirect, withRouter } from 'react-router-dom'
 
-import {BrowserRouter, Route,Switch, Redirect,NavLink, IndexRedirect, withRouter } from 'react-router-dom'
 import queryStringUtils from 'qs'
+import URI from 'urijs'
 
 import Heatmap from './tabs/heatmap/Main.jsx'
 import ExperimentDesign from './tabs/experiment-design/Main.jsx'
@@ -17,7 +18,7 @@ const TabPropType = React.PropTypes.shape({
 
 //coupled to ExperimentController.java
 const componentsPerTab = {
-  'multipart' : "",
+  'multipart' : ``,
   'heatmap' : Heatmap,
   'experiment-design' : ExperimentDesign,
   'resources' : Resources,
@@ -34,7 +35,7 @@ const createPageSection = ({type, props}) => {
 }
 
 const createPage = ({type,commonProps, tabProps}) => (
-  type == 'multipart'
+  type === `multipart`
   ? (
     <div>
       {tabProps.sections.map(({type, name, props}) => (
@@ -52,7 +53,7 @@ const createPage = ({type,commonProps, tabProps}) => (
   : createPageSection({type, props: Object.assign({}, commonProps, tabProps)})
 )
 
-const queryFromRouteDetails = ({location:{search}}) => queryStringUtils.parse(search.replace(/^\?/,""))
+const queryFromRouteDetails = ({location:{search}}) => queryStringUtils.parse(search.replace(/^\?/, ``))
 
 const makeTab = ({type,commonProps, tabProps}) => (
   (routeDetails) => createPage({type, commonProps: Object.assign({}, commonProps, {query: queryFromRouteDetails(routeDetails)}), tabProps})
@@ -66,7 +67,7 @@ const makeTopRibbon = (tabNames) => (
           <li title={tabName} key={tabName} className="tabs-title">
             <NavLink
               to={{pathname:`/${tabName}`, search: location.search, hash: location.hash}}
-              activeStyle={{color:"#0a0a0a", background:"#e6e6e6"}}>
+              activeStyle={{color: `#0a0a0a`, background: `#e6e6e6`}}>
               {tabName}
             </NavLink>
           </li>
@@ -79,7 +80,7 @@ class RedirectToTabWithLocation extends React.Component {
   render () {
     return (
       <Redirect to={{
-        pathname:`/${this.props.tabName}`,
+        pathname: `/${this.props.tabName}`,
         search: this.props.location.search,
         hash: this.props.location.hash}} />
     )
@@ -93,6 +94,7 @@ const ExperimentContainerRouter = ({
   pathToFolderWithBundledResources,
   experimentAccession,
   experimentType,
+  accessKey,
   species,
   tabs
 }) => {
@@ -102,31 +104,30 @@ const ExperimentContainerRouter = ({
       pathToFolderWithBundledResources,
       experimentAccession,
       experimentType,
+      accessKey,
       species
     },
     {
-      isDifferential:
-        experimentType.toLowerCase().indexOf('differential') >-1,
-      isRnaSeq:
-        experimentType.toLowerCase().replace("_","").indexOf('rnaseq') >-1
+      isDifferential: experimentType.toLowerCase().includes(`differential`),
+      isRnaSeq: experimentType.toLowerCase().replace(`_`, ``).includes(`rnaseq`)
     }
   )
 
   return (
-    <BrowserRouter basename={`/gxa/experiments/${experimentAccession}`}>
+    <BrowserRouter basename={URI(`experiments/${experimentAccession}`, URI(atlasUrl).path()).toString()}>
       <div>
-        <Route path={"/"} component={makeTopRibbon(tabs.map((tab)=>tab.name))} />
+        <Route path={`/`} component={makeTopRibbon(tabs.map((tab)=>tab.name))} />
         <br/>
         <Switch>
         {
           tabs
-          .map((tab)=> (
+          .map((tab)=>
             <Route
               key={tab.name}
               path={`/${tab.name}`}
-              component={makeTab({type:tab.type,commonProps: commonProps, tabProps: tab.props})}
+              component={makeTab({type:tab.type, commonProps: commonProps, tabProps: tab.props})}
               />
-          ))
+          )
         }
         <RedirectToTab tabName={tabs[0].name} />
         </Switch>
@@ -140,6 +141,7 @@ ExperimentContainerRouter.propTypes = {
   pathToFolderWithBundledResources: React.PropTypes.string.isRequired,
   experimentAccession: React.PropTypes.string.isRequired,
   experimentType: React.PropTypes.string.isRequired,
+  accessKey: React.PropTypes.string,
   species: React.PropTypes.string.isRequired,
   tabs: React.PropTypes.arrayOf(TabPropType).isRequired
 }
