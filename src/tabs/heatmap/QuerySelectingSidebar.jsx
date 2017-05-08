@@ -207,7 +207,7 @@ const SidebarAndModal = React.createClass({
             <h5>Initially showing:</h5>
             <ul>
               {this.props.columnGroups.filter(group => group.groupings.length > 1)
-                .map(primaryGroup => <li>{prettyName(primaryGroup.name)}: {primaryGroup.selected}</li>)}
+                .map(group => <li key={group.name}>{prettyName(group.name)}: {group.selected}</li>)}
             </ul>
           </div>
         }
