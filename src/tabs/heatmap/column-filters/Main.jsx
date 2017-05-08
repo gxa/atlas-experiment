@@ -1,11 +1,28 @@
 import React from 'react'
 import {Button, ButtonGroup, Glyphicon} from 'react-bootstrap/lib'
+
+import {isEqual} from 'lodash'
+
 import {ColumnGroupPropTypes} from '../PropTypes.js'
 import Section from './ColumnFiltersSection.jsx'
 
 const Main = ({columnGroups, selectedColumnIds, onNewSelectedColumnIds, availableColumnIds, columnsName}) => {
-  const oneGroupingColumnGroups = columnGroups.filter(group => group.groupings.length === 1)
-  const multipleGroupingColumnGroups = columnGroups.filter(group => group.groupings.length > 1)
+
+  const oneGroupingColumnGroups = []
+  const readOnlyTwoGroupingColumnGroups = []
+  const multipleGroupingsColumnGroups = []
+
+  columnGroups.forEach(group => {
+    if (group.groupings.length === 1) {
+      oneGroupingColumnGroups.push(group)
+    } else if (group.groupings.length === 2 &&
+               isEqual(new Set(group.groupings[0][1]), new Set(availableColumnIds)) &&
+               isEqual(new Set(group.groupings[1][1]), new Set(availableColumnIds))) {
+      readOnlyTwoGroupingColumnGroups.push(group)
+    } else {
+      multipleGroupingsColumnGroups.push(group)
+    }
+  })
 
   return (
     <div>
@@ -36,9 +53,9 @@ const Main = ({columnGroups, selectedColumnIds, onNewSelectedColumnIds, availabl
         </Button>
       </ButtonGroup>
 
-      {multipleGroupingColumnGroups.length > 0 &&
+      {multipleGroupingsColumnGroups.length > 0 &&
         <div>
-          {multipleGroupingColumnGroups.map(group =>
+          {multipleGroupingsColumnGroups.map(group =>
               <Section key={group.name}
                        availableIds={availableColumnIds}
                        selectedIds={selectedColumnIds}
@@ -48,8 +65,21 @@ const Main = ({columnGroups, selectedColumnIds, onNewSelectedColumnIds, availabl
         </div>
       }
 
+      {readOnlyTwoGroupingColumnGroups.length > 0 &&
+      <div className={multipleGroupingsColumnGroups.length > 0 ? `margin-top-xlarge` : ``}>
+        {readOnlyTwoGroupingColumnGroups.map(group =>
+          <Section key={group.name}
+                   availableIds={availableColumnIds}
+                   selectedIds={selectedColumnIds}
+                   onNewSelectedIds={onNewSelectedColumnIds}
+                   {...group} />
+        )}
+      </div>
+      }
+
       {oneGroupingColumnGroups.length > 0 &&
-      <div className={multipleGroupingColumnGroups.length > 0 ? `margin-top-xlarge` : ``}>
+      <div className={multipleGroupingsColumnGroups.length > 0 || readOnlyTwoGroupingColumnGroups.length > 0 ?
+                      `margin-top-xlarge` : ``}>
         {oneGroupingColumnGroups.map(group =>
           <Section key={group.name}
                    availableIds={availableColumnIds}
