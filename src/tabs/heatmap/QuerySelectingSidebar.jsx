@@ -93,6 +93,7 @@ const SidebarAndModal = React.createClass({
   propTypes : {
     isDifferential: React.PropTypes.bool.isRequired,
     geneSuggesterUri: React.PropTypes.instanceOf(URI),
+    defaultQuery: React.PropTypes.bool.isRequired,
     genesDistributedByCutoffUrl: React.PropTypes.string.isRequired,
     loadingGifUrl: React.PropTypes.string.isRequired,
     columnGroups: React.PropTypes.arrayOf(React.PropTypes.shape(ColumnGroupPropTypes)).isRequired,
@@ -178,7 +179,9 @@ const SidebarAndModal = React.createClass({
         }
         <br/>
         <Header text={columnsName}/>
-        <OpenerButton onClickButton={toggleModal.bind(null, "columns")} />
+        <div className="row column margin-bottom-medium">
+          <OpenerButton onClickButton={toggleModal.bind(null, "columns")} />
+        </div>
         <HeatmapColumnsSummary
           columnGroups={this.props.columnGroups}
           selectedColumnIds={this.state.selectedColumnIds}
@@ -204,10 +207,10 @@ const SidebarAndModal = React.createClass({
             }}/>
         </ModalWrapper>
 
-        {this.state.initialFilters &&
-          <div className="margin-top-xlarge">
-            <h5>Initially showing:</h5>
-            <ul>
+        {this.props.defaultQuery && this.state.initialFilters &&
+          <div className="margin-top-medium">
+            <p className="margin-bottom-small">Initially showing:</p>
+            <ul className="small">
               {this.props.columnGroups.filter(group => group.groupings.length > 1)
                 .map(group => <li key={group.name}>{prettyName(group.name)}: {group.selected}</li>)}
             </ul>

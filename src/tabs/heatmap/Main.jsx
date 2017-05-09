@@ -35,6 +35,7 @@ const Main = React.createClass({
             genesDistributedByCutoffUrl={this.props.isDifferential? "" : this.props.genesDistributedByCutoffUrl}
             loadingGifUrl={URI(`resources/images/loading.gif`, this.props.atlasUrl).toString()}
             columnGroups={this.props.groups}
+            defaultQuery={Object.keys(this.props.query).length === 0}
             queryObjects={queryObjects}
             onChangeQueryObjects={ (newQueryObjects) => {
               this.props.history.push(Object.assign({},
