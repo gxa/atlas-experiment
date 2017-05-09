@@ -133,14 +133,16 @@ const SidebarAndModal = React.createClass({
           onChangeGeneQuery={(geneQuery) => {
             this.setState({geneQuery})
           }}/>
+
+        <div className="row column margin-top-large">
         <Button onClick={onChangeProperty.bind(null, "geneQuery", this.state.geneQuery)}
-                style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
-          <span style={{verticalAlign: `middle`}}> Apply </span>
+                style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`, marginRight: `1rem`}}>
+          Apply
         </Button>
-        <Button onClick={resetState}
-                style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
-          <span style={{verticalAlign: `middle`}}> Reset </span>
+        <Button onClick={resetState} style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
+          Reset
         </Button>
+        </div>
 
         <Specificity
           specific={this.props.queryObjects.specific}
