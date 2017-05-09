@@ -39,8 +39,8 @@ const GroupingPropTypes = {
 const makeGroupingProps = ({selectedIds,onNewSelectedIds}, grouping) => {
   const idsInGroupingAndSelected = intersection(selectedIds, grouping[1])
   const idsInGroupingButNotSelected = difference(grouping[1], idsInGroupingAndSelected)
-  const isFullySelected = grouping[1].length > 0 && idsInGroupingButNotSelected.length == 0
-  const isFullyUnselected = idsInGroupingAndSelected.length == 0
+  const isFullySelected = grouping[1].length > 0 && idsInGroupingButNotSelected.length === 0
+  const isFullyUnselected = idsInGroupingAndSelected.length === 0
   return {
     key: grouping[0],
     text: grouping[0],
@@ -230,10 +230,7 @@ class Section extends React.Component {
           <ReadOnlyGrouping {...makeGroupingProps(this.props, groupings[0])} />
         </div>
       )
-    } else if (
-      groupings.length === 2
-      && isEqual(new Set(groupings[0][1]), new Set(availableIds))
-      && isEqual(new Set(groupings[1][1]), new Set(availableIds))){
+    } else if (this.props.readOnly) {
       return (
         <div className="margin-top-large gxaSection">
           <span className="title">
@@ -242,7 +239,7 @@ class Section extends React.Component {
           <ReadOnlyGrouping
             {...makeGroupingProps(this.props, groupings[0])}
             text={`${groupings[0][0]} vs ${groupings[1][0]}`}
-             />
+          />
         </div>
       )
     } else {
@@ -269,6 +266,9 @@ class Section extends React.Component {
   }
 }
 
-Section.propTypes = CommonPropTypes
+Section.propTypes = {
+  ...CommonPropTypes,
+  readOnly: React.PropTypes.bool,
+}
 
 export default Section;

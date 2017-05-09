@@ -60,6 +60,7 @@ const Main = ({columnGroups, selectedColumnIds, onNewSelectedColumnIds, availabl
                        availableIds={availableColumnIds}
                        selectedIds={selectedColumnIds}
                        onNewSelectedIds={onNewSelectedColumnIds}
+                       readOnly={false}
                        {...group} />
           )}
         </div>
@@ -72,6 +73,7 @@ const Main = ({columnGroups, selectedColumnIds, onNewSelectedColumnIds, availabl
                    availableIds={availableColumnIds}
                    selectedIds={selectedColumnIds}
                    onNewSelectedIds={onNewSelectedColumnIds}
+                   readOnly={true}
                    {...group} />
         )}
       </div>
