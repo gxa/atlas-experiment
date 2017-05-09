@@ -109,9 +109,7 @@ Main.propTypes = Object.assign(
 
 const Summary = ({columnGroups, selectedColumnIds, availableColumnIds}) => (
   <div>
-  {
-    `Selected: ${selectedColumnIds.length} / ${availableColumnIds.length}`
-  }
+    <p>{`Selected: ${selectedColumnIds.length} / ${availableColumnIds.length}`}</p>
   </div>
 )
 
