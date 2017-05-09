@@ -60,10 +60,11 @@ const AutocompleteBox = React.createClass({
     }
   },
   _renderItem (item, isHighlighted) {
+    // Background colour should match .button.primary colour in theme-atlas.css
     return (
       <div
         className="menu-element"
-        style={isHighlighted ? {"background": "#007c82", "color": "white"} : {}}
+        style={isHighlighted ? {"background": "#3497c5", "color": "white"} : {}}
         key={item}
         id={item}
       >
@@ -87,7 +88,6 @@ const AutocompleteBox = React.createClass({
           : this.state.currentTransition === TRANSITIONS.standBy
             ? "standBy"
             : "")}>
-        <span tabIndex={-1} ref={(span) => {this.dummySpan=span}} />
         <Autocomplete
           open={this.state.currentTransition === TRANSITIONS.underEdit
                 || this.state.currentTransition === TRANSITIONS.fetchingSuggestion}
@@ -97,11 +97,13 @@ const AutocompleteBox = React.createClass({
           items={this.state.currentSuggestions}
           getItemValue={(item) => item}
           wrapperStyle={{display:"block"}}
-          onSelect={(value, item) => {
-            this.setState({ value:'', currentSuggestions: [] , currentTransition: TRANSITIONS.standBy}, () => {
-              this.dummySpan.focus()
-              this.props.onGeneChosen(value)
-            })
+          onSelect={value => {
+            this.setState({
+                value: '',
+                currentSuggestions: [],
+                currentTransition: TRANSITIONS.standBy
+              },
+              () => {this.props.onGeneChosen(value)})
           }}
           onChange={(event, value) => {
             if(this._isTooShortToShowHints(value)){
