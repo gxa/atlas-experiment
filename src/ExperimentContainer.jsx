@@ -34,7 +34,7 @@ const createPageSection = ({type, props}) => {
   )
 }
 
-const createPage = ({type,commonProps, tabProps}) => (
+const createPage = ({type, commonProps, tabProps}) => (
   type === `multipart`
   ? (
     <div>
@@ -44,7 +44,7 @@ const createPage = ({type,commonProps, tabProps}) => (
             {name}
           </h4>
           {
-            createPageSection({type,props: Object.assign({}, commonProps, props)})
+            createPageSection({type, props: Object.assign({}, commonProps, props)})
           }
         </div>
       ))}
