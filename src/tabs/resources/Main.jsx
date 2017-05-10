@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import {connect} from 'react-refetch'
-import ResourceType from './ResourcePropTypes.js'
 import Icon from './Icon.jsx'
 import {uniq} from 'lodash'
 import URI from 'urijs'
@@ -80,5 +79,5 @@ class ResourcesTab extends Component {
 }
 
 export default connect(props => ({
-  resourcesFetch: props.url
+  resourcesFetch: URI(props.url, props.atlasUrl).toString()
 }))(ResourcesTab)
