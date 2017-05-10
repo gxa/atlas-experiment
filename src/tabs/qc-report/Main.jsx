@@ -19,7 +19,7 @@ const chooseReportDropdown = (options,chosen, onChooseReport) => (
 const Report = ({history,location, reports}) => {
 
   const query = queryStringUtils.parse(location.search.replace(/^\?/, ""))
-  const chosenReport = reports.find((report) => report.name == query.report) || reports[0]
+  const chosenReport = reports.find((report) => report.name === query.report) || reports[0]
 
   return (
   <div className="row">
