@@ -37,19 +37,13 @@ const CutoffDistribution = ({cutoff,onChangeCutoff, histogram}) => (
       },
       type:"line",
       series:[{
-        cursor:"pointer",
         name:"Genes expressed in this experiment at value higher than cutoff",
         data: cumulativeDistributionPoints(histogram),
-        events : {
-          click: (event) => {
-            onChangeCutoff({value: event.point.x})
-          }
-        }
       }],
       tooltip: {
         useHTML: true,
         formatter: function() {
-          return `<div>Select cutoff: <b> ${this.x}</b> (${this.y} genes past this cutoff)</div>`
+          return `<div>Cutoff: <b> ${this.x}</b> (${this.y} genes past this cutoff)</div>`
         }
       },
       credits: {
@@ -61,7 +55,7 @@ const CutoffDistribution = ({cutoff,onChangeCutoff, histogram}) => (
 
 CutoffDistribution.propTypes = {
   cutoff: CutoffType,
-  onChangeCutoff: React.PropTypes.func.isRequired,
+  //onChangeCutoff: React.PropTypes.func.isRequired,
   histogram: React.PropTypes.shape({
     bins: React.PropTypes.arrayOf(React.PropTypes.number.isRequired).isRequired,
     values: React.PropTypes.arrayOf(React.PropTypes.number.isRequired).isRequired
