@@ -116,7 +116,7 @@ const SidebarAndModal = React.createClass({
     const columnsName =
       this.props.isDifferential
       ? `Comparisons`
-      : determineColumnNameFromFirstGroup(availableColumnIds, this.props.columnGroups[0]) || `Sample properties`
+      : determineColumnNameFromFirstGroup(availableColumnIds, this.props.columnGroups[0]) || `Experimental variables`
 
     const onChangeProperty = (name, newValue) => {
       const newQueryObjects = Object.assign({}, this.props.queryObjects)
