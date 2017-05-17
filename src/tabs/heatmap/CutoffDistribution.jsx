@@ -1,44 +1,35 @@
 import {CutoffType} from './PropTypes.js'
 import React, { Component } from 'react'
-import { connect, PromiseState } from 'react-refetch'
+import { connect } from 'react-refetch'
 import ReactHighcharts from 'react-highcharts'
 
-const cumulativeDistributionPoints= ({bins, values}) => {
-  let total = values.reduce((l,r)=> l+r , 0)
-  return bins.map((bin, ix) => {
-    const result = {
-      x:bin,
-      y: 0+total
-    }
-    total -= values[ix]
-    return result
-  }).filter(({x,y}) => y>0 && x > 0)
+const cumulativeDistributionPoints= ({bins, counts}) => {
+  return bins
+    .map((bin, ix) => ({x: bin, y: counts.slice(ix).reduce((v, acc) => v + acc, 0)}))
+    .filter(v => v.y > 0);
 }
 
-const CutoffDistribution = ({cutoff,onChangeCutoff, histogram}) => (
+const CutoffDistribution = ({cutoff, onChangeCutoff, histogram}) => (
   <div>
   {`Current value: ${cutoff.value}`}
   <ReactHighcharts
     config={{
-      title: "",
+      title: ``,
       xAxis: {
         title: {
-          text: 'Cutoff value'
+          text: `Cutoff value`
         },
-        type: 'logarithmic'
-      },
-      tooltip: {
-        pointFormat: '<span style="color:{point.color};cursor: crosshair;">\u25CF</span> Select cutoff: <b>{point.y}</b><br/>'
+        type: `logarithmic`
       },
       yAxis: {
         title: {
-          text: '# genes'
+          text: `# genes`
         },
       },
-      type:"line",
+      type: `line`,
       series:[{
-        cursor:"pointer",
-        name:"Genes expressed in this experiment at value higher than cutoff",
+        cursor: `pointer`,
+        name: `Genes expressed in this experiment at value higher than cutoff`,
         data: cumulativeDistributionPoints(histogram),
         events : {
           click: (event) => {
@@ -64,7 +55,7 @@ CutoffDistribution.propTypes = {
   onChangeCutoff: React.PropTypes.func.isRequired,
   histogram: React.PropTypes.shape({
     bins: React.PropTypes.arrayOf(React.PropTypes.number.isRequired).isRequired,
-    values: React.PropTypes.arrayOf(React.PropTypes.number.isRequired).isRequired
+    counts: React.PropTypes.arrayOf(React.PropTypes.number.isRequired).isRequired
   })
 }
 
