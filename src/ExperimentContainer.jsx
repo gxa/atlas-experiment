@@ -115,22 +115,23 @@ const ExperimentContainerRouter = ({
 
   return (
     <BrowserRouter basename={URI(`experiments/${experimentAccession}`, URI(atlasUrl).path()).toString()}>
-      <div>
-        <Route path={`/`} component={makeTopRibbon(tabs.map((tab)=>tab.name))} />
-        <br/>
-        <Switch>
-        {
-          tabs
-          .map((tab)=>
-            <Route
-              key={tab.name}
-              path={`/${tab.name}`}
-              component={makeTab({type:tab.type, commonProps: commonProps, tabProps: tab.props})}
-              />
-          )
-        }
-        <RedirectToTab tabName={tabs[0].name} />
-        </Switch>
+      <div class="row expanded margin-top-large">
+        <div class="small-12 columns">
+          <Route path={`/`} component={makeTopRibbon(tabs.map((tab)=>tab.name))} />
+          <Switch>
+          {
+            tabs
+            .map((tab)=>
+              <Route
+                key={tab.name}
+                path={`/${tab.name}`}
+                component={makeTab({type:tab.type, commonProps: commonProps, tabProps: tab.props})}
+                />
+            )
+          }
+          <RedirectToTab tabName={tabs[0].name} />
+          </Switch>
+        </div>
       </div>
     </BrowserRouter>
   )
