@@ -10,18 +10,16 @@ const ExperimentDesignTab = ({
   table
 }) => (
     <div>
-      <div className="row expanded">
-        <div className="small-12 columns margin-top-large">
-          <div style={{textAlign:"right"}}>
-            <a className="button" style={{margin:"0px"}} href={URI(downloadUrl, atlasUrl).toString()}>
-              <span className="glyphicon glyphicon-download-alt" style={{marginRight:"0.5rem"}}/>
-              Download
-            </a>
-          </div>
+      <div className="row expanded margin-top-large">
+        <div className="small-12 columns">
+          <a className="button float-right margin-bottom-none" href={URI(downloadUrl, atlasUrl).toString()}>
+            <span className="glyphicon glyphicon-download-alt margin-right-medium"/>
+            Download
+          </a>
         </div>
       </div>
-      <div className="row expanded">
-        <div className="small-12 columns margin-top-large">
+      <div className="row expanded margin-top-large">
+        <div className="small-12 columns">
             {
                 isDifferential
                     ? DifferentialExperimentDesign(table)
