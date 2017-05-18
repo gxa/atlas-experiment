@@ -10,50 +10,45 @@ const ResourcesSection = ({values, pathToFolderWithBundledResources}) => {
   )))
 
   return (
-    <div className="row expanded" style={{fontSize:"larger"}}>
-      <div className="small-12 columns">
-        <ul style={{listStyle: "none"}}>
-          {
-            subsections.filter(el=>el).length <2
-            ? values.map((value, ix, self) => (
-                <li key={ix}>
-                  <a href={value.url}>
-                  <p>
-                    <Icon type={value.type} {...{pathToFolderWithBundledResources}}  />
-                    {value.description}
-                  </p>
-                  </a>
-                </li>
-              ))
-            : subsections.map((subsectionName, ix) => (
-                <li key={ix}>
-                <ul style={{listStyle: "none", marginLeft:"0rem"}}>
-                  <i>{
-                    subsectionName}
-                  </i>
-                  {
-                    values.filter((value) => (
-                      subsectionName === value.group
-                    ))
-                    .map((value, jx, self) => (
-                      <li key={jx} style={{marginLeft:"1.25rem"}}>
-                        <a href={value.url}>
-                        <div>
-                          <Icon type={value.type} {...{pathToFolderWithBundledResources}} />
-                          {value.description}
-                        </div>
-                        </a>
-                      </li>
-                    ))
-                  }
-                </ul>
-                <br/>
-                </li>
-            ))
-          }
-        </ul>
-      </div>
-    </div>
+    <ul style={{listStyle: "none"}}>
+      {
+        subsections.filter(el=>el).length <2
+        ? values.map((value, ix, self) => (
+            <li key={ix}>
+              <a href={value.url}>
+              <p>
+                <Icon type={value.type} {...{pathToFolderWithBundledResources}}  />
+                {value.description}
+              </p>
+              </a>
+            </li>
+          ))
+        : subsections.map((subsectionName, ix) => (
+            <li key={ix}>
+              <ul style={{listStyle: "none"}} className="margin-left-none margin-bottom-medium">
+                <i>{
+                  subsectionName}
+                </i>
+                {
+                  values.filter((value) => (
+                    subsectionName === value.group
+                  ))
+                  .map((value, jx, self) => (
+                    <li key={jx} className="margin-left-large">
+                      <a href={value.url}>
+                      <div>
+                        <Icon type={value.type} {...{pathToFolderWithBundledResources}} />
+                        {value.description}
+                      </div>
+                      </a>
+                    </li>
+                  ))
+                }
+              </ul>
+            </li>
+        ))
+      }
+    </ul>
   )
 }
 

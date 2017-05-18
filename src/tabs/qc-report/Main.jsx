@@ -22,28 +22,26 @@ const Report = ({history,location, reports}) => {
   const chosenReport = reports.find((report) => report.name === query.report) || reports[0]
 
   return (
-  <div className="row expanded">
-    <div className="small-12 columns">
-      { reports.length > 1 &&
-          chooseReportDropdown(
-            reports.map((report)=> report.name),
-            chosenReport.name,
-            (report) => {
-              history.push(Object.assign({},
-                location, {search: queryStringUtils.stringify(Object.assign({}, query, {report}))}
-              ))
-            }
-          )
-      }
-      <iframe
-        name={chosenReport.name}
-        src={chosenReport.url}
-        style={{
-          width:"100%",
-          height:1000,
-          border:0
-        }} />
-    </div>
+  <div className="row column expanded">
+    { reports.length > 1 &&
+        chooseReportDropdown(
+          reports.map((report)=> report.name),
+          chosenReport.name,
+          (report) => {
+            history.push(Object.assign({},
+              location, {search: queryStringUtils.stringify(Object.assign({}, query, {report}))}
+            ))
+          }
+        )
+    }
+    <iframe
+      name={chosenReport.name}
+      src={chosenReport.url}
+      style={{
+        width:"100%",
+        height:1000,
+        border:0
+      }} />
   </div>
 )}
 

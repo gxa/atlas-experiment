@@ -27,8 +27,8 @@ const Main = React.createClass({
   render() {
     const queryObjects = queryObjectsFromConfigAndQuery(this.props, this.props.query)
     return (
-      <div className="row expanded margin-top-medium">
-        <div className="small-3 medium-2 columns" >
+      <div className="row expanded column margin-top-large">
+        <div className="small-3 medium-2 columns padding-left-none" >
           <Sidebar
             isDifferential={this.props.isDifferential}
             geneSuggesterUri={URI(`json/suggestions`, this.props.atlasUrl).addSearch(this.props.species ? {species: this.props.species} : {})}
@@ -46,7 +46,7 @@ const Main = React.createClass({
             }
           />
         </div>
-        <div className="small-9 medium-10 columns">
+        <div className="small-9 medium-10 columns padding-right-none">
           <ExpressionAtlasHeatmap
               atlasUrl={this.props.atlasUrl}
               isWidget={false}

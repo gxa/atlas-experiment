@@ -37,16 +37,16 @@ const createPageSection = ({type, props}) => {
 const createPage = ({type, commonProps, tabProps}) => (
   type === `multipart`
   ? (
-    <div>
-      {tabProps.sections.map(({type, name, props}) => (
-        <div key={name}>
-          <h4>
-            {name}
-          </h4>
-          {
-            createPageSection({type, props: Object.assign({}, commonProps, props)})
-          }
-        </div>
+    <div className="row expanded column margin-top-large">
+        {tabProps.sections.map(({type, name, props}) => (
+          <div key={name} className="row column expanded">
+            <h4>
+              {name}
+            </h4>
+            {
+              createPageSection({type, props: Object.assign({}, commonProps, props)})
+            }
+          </div>
       ))}
     </div>
   )
@@ -115,23 +115,21 @@ const ExperimentContainerRouter = ({
 
   return (
     <BrowserRouter basename={URI(`experiments/${experimentAccession}`, URI(atlasUrl).path()).toString()}>
-      <div class="row expanded margin-top-large">
-        <div class="small-12 columns">
-          <Route path={`/`} component={makeTopRibbon(tabs.map((tab)=>tab.name))} />
-          <Switch>
-          {
-            tabs
-            .map((tab)=>
-              <Route
-                key={tab.name}
-                path={`/${tab.name}`}
-                component={makeTab({type:tab.type, commonProps: commonProps, tabProps: tab.props})}
-                />
-            )
-          }
-          <RedirectToTab tabName={tabs[0].name} />
-          </Switch>
-        </div>
+      <div>
+        <Route path={`/`} component={makeTopRibbon(tabs.map((tab)=>tab.name))} />
+        <Switch>
+        {
+          tabs
+          .map((tab)=>
+            <Route
+              key={tab.name}
+              path={`/${tab.name}`}
+              component={makeTab({type:tab.type, commonProps: commonProps, tabProps: tab.props})}
+              />
+          )
+        }
+        <RedirectToTab tabName={tabs[0].name} />
+        </Switch>
       </div>
     </BrowserRouter>
   )
