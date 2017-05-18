@@ -20,7 +20,7 @@ const ExperimentDesignTab = ({
           </div>
         </div>
       </div>
-      <div className="row">
+      <div className="row expanded">
         <div className="small-12 columns margin-top-large">
             {
                 isDifferential

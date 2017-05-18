@@ -1,7 +1,7 @@
 import React from 'react'
 
 const Table = ({data}) => (
-    <div className="row">
+    <div className="row expanded">
         <div className="small-12 columns">
             <table>
                 <tbody>
