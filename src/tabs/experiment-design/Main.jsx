@@ -10,7 +10,7 @@ const ExperimentDesignTab = ({
   table
 }) => (
     <div>
-      <div className="row">
+      <div className="row expanded">
         <div className="small-12 columns margin-top-large">
           <div style={{textAlign:"right"}}>
             <a className="button" style={{margin:"0px"}} href={URI(downloadUrl, atlasUrl).toString()}>

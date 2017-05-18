@@ -10,7 +10,7 @@ const ResourcesSection = ({values, pathToFolderWithBundledResources}) => {
   )))
 
   return (
-    <div className="row" style={{fontSize:"larger"}}>
+    <div className="row expanded" style={{fontSize:"larger"}}>
       <div className="small-12 columns">
         <ul style={{listStyle: "none"}}>
           {

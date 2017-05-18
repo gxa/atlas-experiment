@@ -22,7 +22,7 @@ const Report = ({history,location, reports}) => {
   const chosenReport = reports.find((report) => report.name === query.report) || reports[0]
 
   return (
-  <div className="row">
+  <div className="row expanded">
     <div className="small-12 columns">
       { reports.length > 1 &&
           chooseReportDropdown(
