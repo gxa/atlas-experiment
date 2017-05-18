@@ -10,22 +10,18 @@ const ExperimentDesignTab = ({
   table
 }) => (
     <div>
-      <div className="row expanded margin-top-large">
-        <div className="small-12 columns">
-          <a className="button float-right margin-bottom-none" href={URI(downloadUrl, atlasUrl).toString()}>
-            <span className="glyphicon glyphicon-download-alt margin-right-medium"/>
-            Download
-          </a>
-        </div>
+      <div className="row expanded column margin-top-large">
+        <a className="button float-right margin-bottom-none" href={URI(downloadUrl, atlasUrl).toString()}>
+          <span className="glyphicon glyphicon-download-alt margin-right-medium"/>
+          Download
+        </a>
       </div>
-      <div className="row expanded margin-top-large">
-        <div className="small-12 columns">
-            {
-                isDifferential
-                    ? DifferentialExperimentDesign(table)
-                    : BaselineExperimentDesign(table)
-            }
-        </div>
+      <div className="row expanded column margin-top-large">
+          {
+              isDifferential
+                  ? DifferentialExperimentDesign(table)
+                  : BaselineExperimentDesign(table)
+          }
       </div>
     </div>
 )
