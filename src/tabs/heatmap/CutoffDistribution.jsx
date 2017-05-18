@@ -6,7 +6,7 @@ import ReactHighcharts from 'react-highcharts'
 const cumulativeDistributionPoints= ({bins, counts}) => {
   return bins
     .map((bin, ix) => ({x: bin, y: counts.slice(ix).reduce((v, acc) => v + acc, 0)}))
-    .filter(v => v.y > 0);
+    .filter(v => v.x > 0 && v.y > 0); // Remove first bin for the logarithmic chart, otherwise Highcarts complains
 }
 
 const CutoffDistribution = ({cutoff, onChangeCutoff, histogram}) => (
@@ -48,7 +48,7 @@ const CutoffDistribution = ({cutoff, onChangeCutoff, histogram}) => (
 CutoffDistribution.propTypes = {
   cutoff: CutoffType,
   //onChangeCutoff: React.PropTypes.func.isRequired,
-  histogram: React.PropTypes.shape({
+    histogram: React.PropTypes.shape({
     bins: React.PropTypes.arrayOf(React.PropTypes.number.isRequired).isRequired,
     counts: React.PropTypes.arrayOf(React.PropTypes.number.isRequired).isRequired
   })
