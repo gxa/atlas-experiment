@@ -119,7 +119,18 @@ const SidebarAndModal = React.createClass({
       : determineColumnNameFromFirstGroup(availableColumnIds, this.props.columnGroups[0]) || `Experimental variables`
 
     const onChangeProperty = (name, newValue) => {
-      const newQueryObjects = Object.assign({}, this.props.queryObjects)
+      const newQueryObjects = Object.assign({}, this.props.queryObjects);
+
+      if(name === "geneQuery") {
+          Object.keys(newValue).map(index => {
+              if (newValue[index].category === undefined && newValue[index].value.indexOf("(") !== -1) {
+                  const val = newValue[index].value;
+                  newValue[index].value = val.substring(0, val.indexOf("(") - 1);
+                  newValue[index].category = val.substring(val.indexOf("(") + 1, val.length - 1);
+              }
+          });
+      }
+
       newQueryObjects[name] = newValue
       return this.props.onChangeQueryObjects(newQueryObjects)
     }
