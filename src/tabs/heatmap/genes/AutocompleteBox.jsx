@@ -40,10 +40,13 @@ const AutocompleteBox = React.createClass({
           { currentSuggestions:
               results
               .map((result)=> (
-                result.value + ( result.category ? " (" + result.category + ")" : "")
+                /* The server also produces categories
+                   skip them since the query is the same
+                */
+                result.value
               ))
               .filter((item)=> (
-                  !this.props.valuesToSkipInSuggestions.includes(item)
+                  this.props.valuesToSkipInSuggestions.indexOf(item) === -1
               ))
               .filter((item,ix,self)=>(
                 self.indexOf(item) === ix
