@@ -11,7 +11,7 @@ fileToChange=~/dev/atlas-experiment/html/index.html
 url=$1
 if [ $(echo $url | grep --quiet 'E-*-*' ) ]
 then
-  url= "localhost:8080/gxa/experiments/$url"
+  url= "http://localhost:8080/gxa/experiments/$url"
 fi
 
 line=$(grep -n content: $fileToChange | cut -f1 -d:)
@@ -20,10 +20,15 @@ cat <(head -n $(echo $line - 1 | bc ) $fileToChange) <(curl -s $url | grep conte
 
 diffCount=$(diff $fileToChange $fileToChange.swp | wc -l )
 
-if [ "$diffCount" -lt 5 ]
+if [ "$diffCount" -gt 5 ]
 then
-  mv $fileToChange.swp $fileToChange
-else
   echo "Something went wrong, diff count too large: $diffCount"
   exit 1
+elif [ "$diffCount" -eq 2 ]
+then
+  echo "Something went wrong, probably failed to load the page you asked for "
+  rm $fileToChange.swp
+  exit 1
+else
+  mv $fileToChange.swp $fileToChange
 fi
