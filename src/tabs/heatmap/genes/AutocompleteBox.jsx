@@ -39,14 +39,8 @@ const AutocompleteBox = React.createClass({
         this.setState(
           { currentSuggestions:
               results
-              .map((result)=> (
-                  result.value + ( result.category ? " (" + result.category + ")" : "")
-              ))
               .filter((item)=> (
-                  !this.props.valuesToSkipInSuggestions.includes(item)
-              ))
-              .filter((item,ix,self)=>(
-                self.indexOf(item) === ix
+                  !this.props.valuesToSkipInSuggestions.includes(item.value)
               ))
           ,
             currentTransition: TRANSITIONS.underEdit})
@@ -62,11 +56,14 @@ const AutocompleteBox = React.createClass({
       <div
         className="menu-element"
         style={isHighlighted ? {"background": "#3497c5", "color": "white"} : {}}
-        key={item}
-        id={item}
+        key={item.value + " " + item.category}
+        id={item.value}
       >
       <span>
-        {item}
+        {item.category
+          ? `${item.value} (${item.category})`
+          : item.value
+        }
       </span>
       </div>
     )
@@ -92,15 +89,15 @@ const AutocompleteBox = React.createClass({
           inputProps={{name: "Enter gene", id: "gene-autocomplete", type:"text"}}
           value={this.state.value}
           items={this.state.currentSuggestions}
-          getItemValue={(item) => item}
+          getItemValue={(item) => item.value}
           wrapperStyle={{display:"block"}}
-          onSelect={value => {
+          onSelect={(value, item) => {
             this.setState({
                 value: '',
                 currentSuggestions: [],
                 currentTransition: TRANSITIONS.standBy
               },
-              () => {this.props.onGeneChosen(value)})
+              () => {this.props.onGeneChosen(item)})
           }}
           onChange={(event, value) => {
             if(this._isTooShortToShowHints(value)){
