@@ -127,6 +127,9 @@ const toQuery = ({groups}, queryObjects) => Object.assign({
   cutoff: encode(queryObjects.cutoff)
 }, ["UP","DOWN","UP_DOWN"].indexOf(queryObjects.regulation)>-1
     ? {regulation: encode(queryObjects.regulation)}
+    : {},
+    queryObjects.unit
+    ? {unit: encode(queryObjects.unit)}
     : {}
 )
 
@@ -153,6 +156,12 @@ const defaultCutoff = ({isDifferential, isRnaSeq}) => (
   }
 )
 
+const defaultUnit = ({isDifferential, isRnaSeq, availableDataUnits}) => (
+  (isRnaSeq && !isDifferential && availableDataUnits.length)
+  ? availableDataUnits[0]
+  : ""
+)
+
 const fromConfigAndQuery = (config, query) => ({
   specific: decode(query.specific , true),
   geneQuery: packStringsIntoArrays(decode(query.geneQuery , [])),
@@ -162,7 +171,8 @@ const fromConfigAndQuery = (config, query) => ({
         : selectedIdsFromFilterFactors(config.groups,decode(query.filterFactors))
       ,
   cutoff: decode(query.cutoff, defaultCutoff(config)),
-  regulation: decode(query.regulation, defaultRegulation(config))
+  regulation: decode(query.regulation, defaultRegulation(config)),
+  unit: decode(query.unit, defaultUnit(config))
 })
 
 
@@ -173,7 +183,8 @@ const heatmapCallbackParametersFromQueryObjects = ({
   geneQuery,
   selectedColumnIds,
   cutoff,
-  regulation
+  regulation,
+  unit
 }, isDifferential) => Object.assign(
   {
     specific,
@@ -181,7 +192,11 @@ const heatmapCallbackParametersFromQueryObjects = ({
     selectedColumnIds: selectedColumnIds.join(",")
   },
   isDifferential && regulation!=="OFF"
-  ? {regulation} : {},
+    ? {regulation}
+    : {},
+  isDifferential
+    ? {}
+    : {unit},
   isDifferential
     ? {
       cutoff: cutoff.pValue,

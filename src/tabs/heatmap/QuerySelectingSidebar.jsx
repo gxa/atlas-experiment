@@ -9,6 +9,7 @@ import {Main as HeatmapColumnsChoice, Summary as HeatmapColumnsSummary} from './
 import Cutoff from './Cutoff.jsx'
 import CutoffDistribution from './CutoffDistribution.jsx'
 import Regulation from './Regulation.jsx'
+import Unit from './Unit.jsx'
 import Specificity from './Specificity.jsx'
 
 import {ColumnGroupPropTypes, QueryObjectsPropTypes} from './PropTypes.js'
@@ -97,6 +98,7 @@ const SidebarAndModal = React.createClass({
     genesDistributedByCutoffUrl: React.PropTypes.string.isRequired,
     loadingGifUrl: React.PropTypes.string.isRequired,
     columnGroups: React.PropTypes.arrayOf(React.PropTypes.shape(ColumnGroupPropTypes)).isRequired,
+    availableDataUnits:React.PropTypes.arrayOf(React.PropTypes.string.isRequired).isRequired,
     queryObjects: React.PropTypes.shape(QueryObjectsPropTypes).isRequired,
     onChangeQueryObjects: React.PropTypes.func.isRequired
   },
@@ -175,6 +177,18 @@ const SidebarAndModal = React.createClass({
               />
             </ModalWrapper>
           </div>
+          )
+        }
+        {
+          !!this.props.availableDataUnits.length && (
+            <div>
+              <br/>
+              <Header text={"Data units"}/>
+              <Unit
+                unit={this.props.queryObjects.unit}
+                available={this.props.availableDataUnits}
+                onChangeUnit={onChangeProperty.bind(null, "unit")} />
+            </div>
           )
         }
         <br/>

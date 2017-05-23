@@ -45,6 +45,8 @@ const RegulationType = React.PropTypes.oneOf([
   'UP_DOWN'
 ])
 
+const UnitType = React.PropTypes.string
+
 const QueryObjectsPropTypes = {
   specific: React.PropTypes.bool.isRequired,
   geneQuery: React.PropTypes.arrayOf(React.PropTypes.shape({
@@ -53,7 +55,8 @@ const QueryObjectsPropTypes = {
   }).isRequired).isRequired,
   selectedColumnIds: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
   cutoff: CutoffType.isRequired,
-  regulation: RegulationType.isRequired
+  regulation: RegulationType.isRequired,
+  unit: UnitType.isRequired
 }
 
 const QueryPropTypes = {
@@ -61,7 +64,8 @@ const QueryPropTypes = {
   specific: React.PropTypes.string,
   geneQuery: React.PropTypes.string,
   cutoff: React.PropTypes.string,
-  regulation: React.PropTypes.string
+  regulation: React.PropTypes.string,
+  unit: React.PropTypes.string
 }
 
-export {ColumnGroupPropTypes,InitialColumnGroupPropTypes, QueryObjectsPropTypes,CutoffType,RegulationType, QueryPropTypes}
+export {ColumnGroupPropTypes,InitialColumnGroupPropTypes,QueryObjectsPropTypes,CutoffType,RegulationType,UnitType,QueryPropTypes}
