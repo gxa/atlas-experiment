@@ -115,10 +115,17 @@ const SidebarAndModal = React.createClass({
   render(){
     const showRegulation = [`UP`, `DOWN`, `UP_DOWN`].includes(this.props.queryObjects.regulation);
     const availableColumnIds = determineAvailableColumns(this.props.columnGroups);
-    const columnsName =
+    const maybeColumnsName =
       this.props.isDifferential
       ? `Comparisons`
-      : determineColumnNameFromFirstGroup(availableColumnIds, this.props.columnGroups[0]) || `Experimental variables`
+      : determineColumnNameFromFirstGroup(availableColumnIds, this.props.columnGroups[0])
+
+    const heatmapColumns = {
+      columnGroups: this.props.columnGroups,
+      selectedColumnIds: this.state.selectedColumnIds,
+      availableColumnIds,
+      columnsName: maybeColumnsName || "Sample groups"
+    }
 
     const onChangeProperty = (name, newValue) => {
       const newQueryObjects = Object.assign({}, this.props.queryObjects);
@@ -192,18 +199,13 @@ const SidebarAndModal = React.createClass({
           )
         }
         <br/>
-        <Header text={columnsName}/>
+        <Header text={maybeColumnsName || "Experimental variables"}/>
         <div className="row column margin-bottom-medium">
           <OpenerButton onClickButton={toggleModal.bind(null, "columns")} />
         </div>
-        <HeatmapColumnsSummary
-          columnGroups={this.props.columnGroups}
-          selectedColumnIds={this.state.selectedColumnIds}
-          {...{availableColumnIds,columnsName}}
-          />
-
+        <HeatmapColumnsSummary {...heatmapColumns} />
         <ModalWrapper
-          title={columnsName}
+          title={maybeColumnsName || "Experimental variables"}
           show={this.state.showModal === `columns`}
           onCloseModal={resetState}
           onClickApply={flow([
@@ -212,10 +214,7 @@ const SidebarAndModal = React.createClass({
             onChangeProperty.bind(null, "selectedColumnIds", this.state.selectedColumnIds)
           ])} >
 
-          <HeatmapColumnsChoice
-            columnGroups={this.props.columnGroups}
-            selectedColumnIds={this.state.selectedColumnIds}
-            {...{availableColumnIds,columnsName}}
+          <HeatmapColumnsChoice {...heatmapColumns}
             onNewSelectedColumnIds={(selectedColumnIds) => {
               this.setState({selectedColumnIds})
             }}/>
