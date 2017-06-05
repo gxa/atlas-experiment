@@ -178,9 +178,11 @@ const SidebarAndModal = React.createClass({
               show={this.state.showModal === `cutoff`}
               onCloseModal={resetState}>
 
-              <CutoffDistribution cutoff={this.props.queryObjects.cutoff}
-                                  onChangeCutoff={flow([onChangeProperty.bind(null, "cutoff"), toggleModal.bind(null, "")])}
-                                  genesDistributedByCutoffUrl={this.props.genesDistributedByCutoffUrl}
+              <CutoffDistribution
+                cutoff={this.props.queryObjects.cutoff}
+                unit={this.props.queryObjects.unit}
+                onChangeCutoff={flow([onChangeProperty.bind(null, "cutoff"), toggleModal.bind(null, "")])}
+                genesDistributedByCutoffUrl={this.props.genesDistributedByCutoffUrl}
               />
             </ModalWrapper>
           </div>

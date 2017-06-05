@@ -33,7 +33,9 @@ const Main = React.createClass({
           <Sidebar
             isDifferential={this.props.isDifferential}
             geneSuggesterUri={URI(`json/suggestions`, this.props.atlasUrl).addSearch(this.props.species ? {species: this.props.species} : {})}
-            genesDistributedByCutoffUrl={this.props.isDifferential? "" : this.props.genesDistributedByCutoffUrl}
+            genesDistributedByCutoffUrl={
+              this.props.isDifferential ? "" :
+              URI(this.props.genesDistributedByCutoffUrl, this.props.atlasUrl).addSearch(this.props.isRnaSeq ? {unit: queryObjects.unit} : {}).toString()}
             loadingGifUrl={URI(`resources/images/loading.gif`, this.props.atlasUrl).toString()}
             columnGroups={this.props.groups}
             defaultQuery={Object.keys(this.props.query).length === 0}

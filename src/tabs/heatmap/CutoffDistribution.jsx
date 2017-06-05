@@ -1,4 +1,4 @@
-import {CutoffType} from './PropTypes.js'
+import {CutoffType, UnitType} from './PropTypes.js'
 import React, { Component } from 'react'
 import { connect } from 'react-refetch'
 import ReactHighcharts from 'react-highcharts'
@@ -9,9 +9,9 @@ const cumulativeDistributionPoints= ({bins, counts}) => {
     .filter(v => v.x > 0 && v.y > 0); // Remove first bin for the logarithmic chart, otherwise Highcarts complains
 }
 
-const CutoffDistribution = ({cutoff, onChangeCutoff, histogram}) => (
+const CutoffDistribution = ({unit, cutoff, onChangeCutoff, histogram}) => (
   <div>
-  {`Current value: ${cutoff.value}`}
+  {`Current value: ${cutoff.value}${unit ? ` ${unit}`: ""}` }
   <ReactHighcharts
     config={{
       title: ``,
@@ -48,7 +48,8 @@ const CutoffDistribution = ({cutoff, onChangeCutoff, histogram}) => (
 CutoffDistribution.propTypes = {
   cutoff: CutoffType,
   //onChangeCutoff: React.PropTypes.func.isRequired,
-    histogram: React.PropTypes.shape({
+  unit: UnitType.isRequired,
+  histogram: React.PropTypes.shape({
     bins: React.PropTypes.arrayOf(React.PropTypes.number.isRequired).isRequired,
     counts: React.PropTypes.arrayOf(React.PropTypes.number.isRequired).isRequired
   })
@@ -56,7 +57,7 @@ CutoffDistribution.propTypes = {
 
 class CutoffDistributionLoader extends Component {
   render() {
-    const { genesDistributedByCutoffFetch , loadingGifUrl, cutoff, onChangeCutoff} = this.props
+    const { genesDistributedByCutoffFetch , loadingGifUrl, cutoff, onChangeCutoff, unit} = this.props
 
     if (genesDistributedByCutoffFetch.pending) {
       return <img src={loadingGifUrl}/>
@@ -70,7 +71,7 @@ class CutoffDistributionLoader extends Component {
       return (
         <CutoffDistribution
         histogram={genesDistributedByCutoffFetch.value}
-        {...{cutoff, onChangeCutoff}} />
+        {...{cutoff, onChangeCutoff,unit}} />
       )
     }
   }
