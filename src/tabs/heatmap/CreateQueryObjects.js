@@ -109,25 +109,9 @@ const makeFilterFactorsGivenSelectedIds = (filters, selectedIds) => {
   return sparserFilterFactors
 }
 
-const decode = (encodedV, defaultV, validateV) => {
-  const fallback = typeof defaultV === 'function' ? defaultV : () => defaultV
-  const precondition = typeof validateV === 'function' ? validateV : (v) => !!v
-
-  const s = decodeURIComponent(encodedV)
-
-  if (precondition(s)) {
-    try {
-      return (
-        JSON.parse(s)
-      )
-    } catch (err) {
-      return fallback(s)
-    }
-  } else {
-    return fallback(s)
-  }
-}
-
+const decode = (v, defaultV) => (
+  v === undefined ? defaultV : JSON.parse(decodeURIComponent(v))
+)
 
 const encode = (v) => (
   encodeURIComponent(JSON.stringify(v))
@@ -147,6 +131,12 @@ const toQuery = ({groups}, queryObjects) => Object.assign({
     queryObjects.unit
     ? {unit: encode(queryObjects.unit)}
     : {}
+)
+
+const packStringsIntoArrays = (stringOrArray) => (
+  typeof stringOrArray == 'string'
+  ? [{value: stringOrArray}]
+  : stringOrArray
 )
 
 const defaultRegulation = ({isDifferential}) => (
@@ -172,19 +162,9 @@ const defaultUnit = ({isDifferential, isRnaSeq, availableDataUnits}) => (
   : ""
 )
 
-const makeIntoGeneQueryFormat = (v) => {
-  const strippedV = v.replace(/\W/g, '')
-  return (
-    strippedV
-    ? [{value:strippedV}]
-    : []
-  )
-}
-const looksLikeEncodedArray =   (v) => v.match(/\[.*\]/)
-
 const fromConfigAndQuery = (config, query) => ({
   specific: decode(query.specific , true),
-  geneQuery: decode(query.geneQuery , makeIntoGeneQueryFormat , looksLikeEncodedArray),
+  geneQuery: packStringsIntoArrays(decode(query.geneQuery , [])),
   selectedColumnIds:
       isEmpty(query.filterFactors)
         ? selectedColumnIdsFromInitialGroups(config.groups)
