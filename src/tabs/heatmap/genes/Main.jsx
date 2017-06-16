@@ -1,11 +1,17 @@
 import React from 'react'
 
+import sanitizeHtml from 'sanitize-html'
 import URI from 'urijs'
 
 import AutocompleteBox from './AutocompleteBox.jsx'
 
 import {QueryObjectsPropTypes} from '../PropTypes.js'
 import './tags.css'
+
+const noTags = {
+  allowedTags:[],
+  allowedAttributes:[]
+}
 
 const Main = ({geneQuery, onChangeGeneQuery, geneSuggesterUri}) => (
   <div>
@@ -22,7 +28,7 @@ const Main = ({geneQuery, onChangeGeneQuery, geneSuggesterUri}) => (
     <AutocompleteBox
       geneSuggesterUri={geneSuggesterUri}
       valuesToSkipInSuggestions={geneQuery.map( ({value}) => value )}
-      onGeneChosen={newGene => onChangeGeneQuery([].concat(geneQuery, [{value: newGene}]))}
+      onGeneChosen={newGene => onChangeGeneQuery([].concat(geneQuery, [{value: sanitizeHtml(newGene, noTags)}]))}
     />
   </div>
 )

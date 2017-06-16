@@ -21,6 +21,7 @@
     "react-refetch": "^1.0.0",
     "react-router-dom": "^4.0.0",
     "react-table": "^5.3.4",
+    "sanitize-html": "^1.14.1",
     "urijs": "^1.18.7",
     "url": "^0.11.0",
     "whatwg-fetch": "^2.0.3"

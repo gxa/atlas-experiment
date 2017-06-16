@@ -65,9 +65,7 @@ const AutocompleteBox = React.createClass({
         key={item}
         id={item}
       >
-      <span>
-        {item}
-      </span>
+      <span dangerouslySetInnerHTML={{__html: item}} />
       </div>
     )
   },
