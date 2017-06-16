@@ -19,6 +19,7 @@ const Main = React.createClass({
     species: React.PropTypes.string.isRequired,
     groups: React.PropTypes.arrayOf(React.PropTypes.shape(InitialColumnGroupPropTypes)).isRequired,
     genesDistributedByCutoffUrl:React.PropTypes.string.isRequired,
+    availableDataUnits:React.PropTypes.arrayOf(React.PropTypes.string.isRequired).isRequired,
     query: React.PropTypes.shape(QueryPropTypes).isRequired,
     history: React.PropTypes.object.isRequired,
     location: React.PropTypes.object.isRequired
@@ -32,10 +33,13 @@ const Main = React.createClass({
           <Sidebar
             isDifferential={this.props.isDifferential}
             geneSuggesterUri={URI(`json/suggestions`, this.props.atlasUrl).addSearch(this.props.species ? {species: this.props.species} : {})}
-            genesDistributedByCutoffUrl={this.props.isDifferential? "" : this.props.genesDistributedByCutoffUrl}
+            genesDistributedByCutoffUrl={
+              this.props.isDifferential ? "" :
+              URI(this.props.genesDistributedByCutoffUrl, this.props.atlasUrl).addSearch(this.props.isRnaSeq ? {unit: queryObjects.unit} : {}).toString()}
             loadingGifUrl={URI(`resources/images/loading.gif`, this.props.atlasUrl).toString()}
             columnGroups={this.props.groups}
             defaultQuery={Object.keys(this.props.query).length === 0}
+            availableDataUnits={this.props.availableDataUnits}
             queryObjects={queryObjects}
             onChangeQueryObjects={ (newQueryObjects) => {
               this.props.history.push(Object.assign({},

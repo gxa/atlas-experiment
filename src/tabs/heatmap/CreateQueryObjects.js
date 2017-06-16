@@ -109,9 +109,25 @@ const makeFilterFactorsGivenSelectedIds = (filters, selectedIds) => {
   return sparserFilterFactors
 }
 
-const decode = (v, defaultV) => (
-  v === undefined ? defaultV : JSON.parse(decodeURIComponent(v))
-)
+const decode = (encodedV, defaultV, validateV) => {
+  const fallback = typeof defaultV === 'function' ? defaultV : () => defaultV
+  const precondition = typeof validateV === 'function' ? validateV : (v) => !!v
+
+  const s = decodeURIComponent(encodedV)
+
+  if (precondition(s)) {
+    try {
+      return (
+        JSON.parse(s)
+      )
+    } catch (err) {
+      return fallback(s)
+    }
+  } else {
+    return fallback(s)
+  }
+}
+
 
 const encode = (v) => (
   encodeURIComponent(JSON.stringify(v))
@@ -127,13 +143,10 @@ const toQuery = ({groups}, queryObjects) => Object.assign({
   cutoff: encode(queryObjects.cutoff)
 }, ["UP","DOWN","UP_DOWN"].indexOf(queryObjects.regulation)>-1
     ? {regulation: encode(queryObjects.regulation)}
+    : {},
+    queryObjects.unit
+    ? {unit: encode(queryObjects.unit)}
     : {}
-)
-
-const packStringsIntoArrays = (stringOrArray) => (
-  typeof stringOrArray == 'string'
-  ? [{value: stringOrArray}]
-  : stringOrArray
 )
 
 const defaultRegulation = ({isDifferential}) => (
@@ -153,16 +166,33 @@ const defaultCutoff = ({isDifferential, isRnaSeq}) => (
   }
 )
 
+const defaultUnit = ({isDifferential, isRnaSeq, availableDataUnits}) => (
+  (isRnaSeq && !isDifferential && availableDataUnits.length)
+  ? availableDataUnits[0]
+  : ""
+)
+
+const makeIntoGeneQueryFormat = (v) => {
+  const strippedV = v.replace(/\W/g, '')
+  return (
+    strippedV
+    ? [{value:strippedV}]
+    : []
+  )
+}
+const looksLikeEncodedArray =   (v) => v.match(/\[.*\]/)
+
 const fromConfigAndQuery = (config, query) => ({
   specific: decode(query.specific , true),
-  geneQuery: packStringsIntoArrays(decode(query.geneQuery , [])),
+  geneQuery: decode(query.geneQuery , makeIntoGeneQueryFormat , looksLikeEncodedArray),
   selectedColumnIds:
       isEmpty(query.filterFactors)
         ? selectedColumnIdsFromInitialGroups(config.groups)
         : selectedIdsFromFilterFactors(config.groups,decode(query.filterFactors))
       ,
   cutoff: decode(query.cutoff, defaultCutoff(config)),
-  regulation: decode(query.regulation, defaultRegulation(config))
+  regulation: decode(query.regulation, defaultRegulation(config)),
+  unit: decode(query.unit, defaultUnit(config))
 })
 
 
@@ -173,7 +203,8 @@ const heatmapCallbackParametersFromQueryObjects = ({
   geneQuery,
   selectedColumnIds,
   cutoff,
-  regulation
+  regulation,
+  unit
 }, isDifferential) => Object.assign(
   {
     specific,
@@ -181,7 +212,11 @@ const heatmapCallbackParametersFromQueryObjects = ({
     selectedColumnIds: selectedColumnIds.join(",")
   },
   isDifferential && regulation!=="OFF"
-  ? {regulation} : {},
+    ? {regulation}
+    : {},
+  isDifferential
+    ? {}
+    : {unit},
   isDifferential
     ? {
       cutoff: cutoff.pValue,

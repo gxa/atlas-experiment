@@ -15,9 +15,13 @@ const noTags = {
 
 const Main = ({geneQuery, onChangeGeneQuery, geneSuggesterUri}) => (
   <div>
-    {geneQuery.map( ({value}) =>
-      <span key={value} className="tag gxaTag">
-        <span>
+    {geneQuery.map( ({value, category}) =>
+      <span key={value + "" + category} className="tag gxaTag">
+        <span title={
+          category
+            ? `${value} (${category})`
+            : value
+        }>
           {value}
         </span>
         <span style={{marginLeft: "0.2rem", position:"relative", cursor: "pointer"}} aria-hidden="true"
@@ -28,7 +32,7 @@ const Main = ({geneQuery, onChangeGeneQuery, geneSuggesterUri}) => (
     <AutocompleteBox
       geneSuggesterUri={geneSuggesterUri}
       valuesToSkipInSuggestions={geneQuery.map( ({value}) => value )}
-      onGeneChosen={newGene => onChangeGeneQuery([].concat(geneQuery, [{value: sanitizeHtml(newGene, noTags)}]))}
+      onGeneChosen={newGene => onChangeGeneQuery([].concat(geneQuery, [sanitizeHtml(newGene, noTags)]))}
     />
   </div>
 )

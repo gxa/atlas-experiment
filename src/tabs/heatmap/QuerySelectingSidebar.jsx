@@ -9,6 +9,7 @@ import {Main as HeatmapColumnsChoice, Summary as HeatmapColumnsSummary} from './
 import Cutoff from './Cutoff.jsx'
 import CutoffDistribution from './CutoffDistribution.jsx'
 import Regulation from './Regulation.jsx'
+import Unit from './Unit.jsx'
 import Specificity from './Specificity.jsx'
 
 import {ColumnGroupPropTypes, QueryObjectsPropTypes} from './PropTypes.js'
@@ -97,6 +98,7 @@ const SidebarAndModal = React.createClass({
     genesDistributedByCutoffUrl: React.PropTypes.string.isRequired,
     loadingGifUrl: React.PropTypes.string.isRequired,
     columnGroups: React.PropTypes.arrayOf(React.PropTypes.shape(ColumnGroupPropTypes)).isRequired,
+    availableDataUnits:React.PropTypes.arrayOf(React.PropTypes.string.isRequired).isRequired,
     queryObjects: React.PropTypes.shape(QueryObjectsPropTypes).isRequired,
     onChangeQueryObjects: React.PropTypes.func.isRequired
   },
@@ -113,25 +115,23 @@ const SidebarAndModal = React.createClass({
   render(){
     const showRegulation = [`UP`, `DOWN`, `UP_DOWN`].includes(this.props.queryObjects.regulation);
     const availableColumnIds = determineAvailableColumns(this.props.columnGroups);
-    const columnsName =
+    const maybeColumnsName =
       this.props.isDifferential
       ? `Comparisons`
-      : determineColumnNameFromFirstGroup(availableColumnIds, this.props.columnGroups[0]) || `Experimental variables`
+      : determineColumnNameFromFirstGroup(availableColumnIds, this.props.columnGroups[0])
+
+    const heatmapColumns = {
+      columnGroups: this.props.columnGroups,
+      selectedColumnIds: this.state.selectedColumnIds,
+      availableColumnIds,
+      columnsName: maybeColumnsName || "Sample groups"
+    }
 
     const onChangeProperty = (name, newValue) => {
       const newQueryObjects = Object.assign({}, this.props.queryObjects);
-
-        Object.keys(newValue).map( index => {
-            if(newValue[index].category === undefined && newValue[index].value.indexOf("(") !== -1) {
-                const val = newValue[index].value;
-                newValue[index].value = val.substring(0, val.indexOf("(") - 1);
-                newValue[index].category = val.substring(val.indexOf("(") + 1, val.length - 1);
-            }
-        });
-
-      newQueryObjects[name] = newValue;
+      newQueryObjects[name] = newValue
       return this.props.onChangeQueryObjects(newQueryObjects)
-    };
+    }
     const toggleModal = (which) => this.setState({showModal: which || ''})
     const resetState = () => this.setState(this.getInitialState())
     return (
@@ -178,27 +178,36 @@ const SidebarAndModal = React.createClass({
               show={this.state.showModal === `cutoff`}
               onCloseModal={resetState}>
 
-              <CutoffDistribution cutoff={this.props.queryObjects.cutoff}
-                                  onChangeCutoff={flow([onChangeProperty.bind(null, "cutoff"), toggleModal.bind(null, "")])}
-                                  genesDistributedByCutoffUrl={this.props.genesDistributedByCutoffUrl}
+              <CutoffDistribution
+                cutoff={this.props.queryObjects.cutoff}
+                unit={this.props.queryObjects.unit}
+                onChangeCutoff={flow([onChangeProperty.bind(null, "cutoff"), toggleModal.bind(null, "")])}
+                genesDistributedByCutoffUrl={this.props.genesDistributedByCutoffUrl}
               />
             </ModalWrapper>
           </div>
           )
         }
+        {
+          !!this.props.availableDataUnits.length && (
+            <div>
+              <br/>
+              <Header text={"Data units"}/>
+              <Unit
+                unit={this.props.queryObjects.unit}
+                available={this.props.availableDataUnits}
+                onChangeUnit={onChangeProperty.bind(null, "unit")} />
+            </div>
+          )
+        }
         <br/>
-        <Header text={columnsName}/>
+        <Header text={maybeColumnsName || "Experimental variables"}/>
         <div className="row column margin-bottom-medium">
           <OpenerButton onClickButton={toggleModal.bind(null, "columns")} />
         </div>
-        <HeatmapColumnsSummary
-          columnGroups={this.props.columnGroups}
-          selectedColumnIds={this.state.selectedColumnIds}
-          {...{availableColumnIds,columnsName}}
-          />
-
+        <HeatmapColumnsSummary {...heatmapColumns} />
         <ModalWrapper
-          title={columnsName}
+          title={maybeColumnsName || "Experimental variables"}
           show={this.state.showModal === `columns`}
           onCloseModal={resetState}
           onClickApply={flow([
@@ -207,10 +216,7 @@ const SidebarAndModal = React.createClass({
             onChangeProperty.bind(null, "selectedColumnIds", this.state.selectedColumnIds)
           ])} >
 
-          <HeatmapColumnsChoice
-            columnGroups={this.props.columnGroups}
-            selectedColumnIds={this.state.selectedColumnIds}
-            {...{availableColumnIds,columnsName}}
+          <HeatmapColumnsChoice {...heatmapColumns}
             onNewSelectedColumnIds={(selectedColumnIds) => {
               this.setState({selectedColumnIds})
             }}/>
