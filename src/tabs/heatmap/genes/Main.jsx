@@ -32,7 +32,10 @@ const Main = ({geneQuery, onChangeGeneQuery, geneSuggesterUri}) => (
     <AutocompleteBox
       geneSuggesterUri={geneSuggesterUri}
       valuesToSkipInSuggestions={geneQuery.map( ({value}) => value )}
-      onGeneChosen={newGene => onChangeGeneQuery([].concat(geneQuery, [sanitizeHtml(newGene, noTags)]))}
+      onGeneChosen={
+        newGene =>
+          onChangeGeneQuery([...geneQuery, {value: sanitizeHtml(newGene.value, noTags), category: newGene.category}])
+      }
     />
   </div>
 )
