@@ -4,7 +4,7 @@ import {toQuery as queryFromQueryObjects, fromConfigAndQuery as queryObjectsFrom
   toBaselineRequestPreferences, toDifferentialRequestPreferences} from './CreateQueryObjects.js'
 import {InitialColumnGroupPropTypes, QueryPropTypes} from './PropTypes.js'
 import {withRouter} from 'react-router-dom'
-import {ExpressionAtlasHeatmap} from 'expression-atlas-heatmap-highcharts'
+import ExpressionAtlasHeatmap from 'expression-atlas-heatmap-highcharts'
 import URI from 'urijs'
 import queryStringUtils from 'qs'
 
