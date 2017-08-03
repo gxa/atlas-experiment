@@ -1,6 +1,8 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+
 import {UnitType} from './PropTypes.js'
-import Fieldset from './common/Fieldset.jsx'
+import Fieldset from './common/Fieldset.js'
 
 const Unit = ({unit, available, onChangeUnit}) => (
   available.length === 1
@@ -12,8 +14,8 @@ const Unit = ({unit, available, onChangeUnit}) => (
 
 Unit.propTypes = {
   unit: UnitType.isRequired,
-  available: React.PropTypes.arrayOf(UnitType.isRequired).isRequired,
-  onChangeUnit : React.PropTypes.func.isRequired
+  available: PropTypes.arrayOf(UnitType.isRequired).isRequired,
+  onChangeUnit : PropTypes.func.isRequired
 }
 
 export default Unit

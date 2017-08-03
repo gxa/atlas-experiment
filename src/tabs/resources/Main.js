@@ -1,10 +1,10 @@
 import React, {Component} from 'react'
 import {connect} from 'react-refetch'
-import Icon from './Icon.jsx'
+import Icon from './Icon.js'
 import {uniq} from 'lodash'
 import URI from 'urijs'
 
-const ResourcesSection = ({values, pathToFolderWithBundledResources}) => {
+const ResourcesSection = ({values, pathToResources, atlasUrl}) => {
   const subsections = uniq(values.map((value)=> (
     value.group
   )))
@@ -16,9 +16,9 @@ const ResourcesSection = ({values, pathToFolderWithBundledResources}) => {
           subsections.filter(el=>el).length <2
           ? values.map((value, ix, self) => (
               <li key={ix}>
-                <a href={value.url}>
+                <a href={URI(value.url, atlasUrl)}>
                 <p>
-                  <Icon type={value.type} {...{pathToFolderWithBundledResources}}  />
+                  <Icon type={value.type} {...{pathToResources}}  />
                   {value.description}
                 </p>
                 </a>
@@ -36,9 +36,9 @@ const ResourcesSection = ({values, pathToFolderWithBundledResources}) => {
                     ))
                     .map((value, jx, self) => (
                       <li key={jx} className="margin-left-large">
-                        <a href={value.url}>
+                        <a href={URI(value.url, atlasUrl)}>
                         <div>
-                          <Icon type={value.type} {...{pathToFolderWithBundledResources}} />
+                          <Icon type={value.type} {...{pathToResources}} />
                           {value.description}
                         </div>
                         </a>
@@ -56,20 +56,24 @@ const ResourcesSection = ({values, pathToFolderWithBundledResources}) => {
 
 class ResourcesTab extends Component {
   render() {
-    const { resourcesFetch , atlasUrl, pathToFolderWithBundledResources} = this.props
+    const {resourcesFetch, atlasUrl, pathToResources} = this.props
 
     if (resourcesFetch.pending) {
-      return <img src={URI(`resources/images/loading.gif`, atlasUrl)} />
+      return (
+        <div className={`row column expanded margin-top-large`}>
+          <img src={URI(`resources/images/loading.gif`, atlasUrl)} />
+        </div>
+      )
     } else if (resourcesFetch.rejected) {
       return (
-        <div>
-        Error: {resourcesFetch.reason}
+        <div className={`row column expanded margin-top-large`}>
+          <p>Error: {resourcesFetch.reason}</p>
         </div>
       )
     } else if (resourcesFetch.fulfilled) {
       return (
         <ResourcesSection values={resourcesFetch.value}
-        {...{pathToFolderWithBundledResources}} />
+                          {...{ pathToResources, atlasUrl }} />
       )
     }
   }

@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const Table = ({data}) => (
     <div className="row column expanded">
@@ -23,7 +24,7 @@ const Table = ({data}) => (
 )
 
 Table.propTypes = {
-  data: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired
+  data: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)).isRequired
 }
 
 export default Table;

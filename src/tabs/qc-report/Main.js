@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import {withRouter} from 'react-router-dom'
 import {Modal, Button, Glyphicon} from 'react-bootstrap/lib'
 import queryStringUtils from 'qs'
@@ -46,11 +47,11 @@ const Report = ({history,location, reports}) => {
 )}
 
 Report.propTypes = {
-  history: React.PropTypes.object.isRequired,
-  location: React.PropTypes.object.isRequired,
-  reports: React.PropTypes.arrayOf(React.PropTypes.shape({
-    name: React.PropTypes.string.isRequired,
-    url: React.PropTypes.string.isRequired
+  history: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired,
+  reports: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    url: PropTypes.string.isRequired
   })).isRequired
 }
 

@@ -1,10 +1,10 @@
 import React from 'react'
-
+import PropTypes from 'prop-types'
 
 export default {
-  description: React.PropTypes.string.isRequired,
-  group: React.PropTypes.string.isRequired,
-  type: React.PropTypes.string.isRequired,
-  atlasUrl: React.PropTypes.string.isRequired,
-  url: React.PropTypes.string.isRequired
+  description: PropTypes.string.isRequired,
+  group: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  atlasUrl: PropTypes.string.isRequired,
+  url: PropTypes.string.isRequired
 }

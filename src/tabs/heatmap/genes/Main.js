@@ -1,9 +1,9 @@
 import React from 'react'
-
+import PropTypes from 'prop-types'
 import sanitizeHtml from 'sanitize-html'
 import URI from 'urijs'
 
-import AutocompleteBox from './AutocompleteBox.jsx'
+import AutocompleteBox from './AutocompleteBox.js'
 
 import {QueryObjectsPropTypes} from '../PropTypes.js'
 import './tags.css'
@@ -34,7 +34,7 @@ const Main = ({geneQuery, onChangeGeneQuery, geneSuggesterUri}) => (
       valuesToSkipInSuggestions={geneQuery.map( ({value}) => value )}
       onGeneChosen={
         newGene =>
-          onChangeGeneQuery([...geneQuery, {value: sanitizeHtml(newGene.value, noTags), category: newGene.category}])
+            onChangeGeneQuery([...geneQuery, {value: sanitizeHtml(newGene.value, noTags), category: newGene.category}])
       }
     />
   </div>
@@ -42,8 +42,8 @@ const Main = ({geneQuery, onChangeGeneQuery, geneSuggesterUri}) => (
 
 Main.propTypes = {
   geneQuery: QueryObjectsPropTypes.geneQuery,
-  onChangeGeneQuery: React.PropTypes.func.isRequired,
-  geneSuggesterUri: React.PropTypes.instanceOf(URI)
+  onChangeGeneQuery: PropTypes.func.isRequired,
+  geneSuggesterUri: PropTypes.instanceOf(URI)
 }
 
 export default Main

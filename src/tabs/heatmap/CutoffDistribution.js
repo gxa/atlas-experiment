@@ -1,7 +1,9 @@
-import {CutoffType, UnitType} from './PropTypes.js'
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-refetch'
 import ReactHighcharts from 'react-highcharts'
+
+import {CutoffType, UnitType} from './PropTypes.js'
 
 const cumulativeDistributionPoints= ({bins, counts}) => {
   return bins
@@ -47,11 +49,11 @@ const CutoffDistribution = ({unit, cutoff, onChangeCutoff, histogram}) => (
 
 CutoffDistribution.propTypes = {
   cutoff: CutoffType,
-  //onChangeCutoff: React.PropTypes.func.isRequired,
+  //onChangeCutoff: PropTypes.func.isRequired,
   unit: UnitType.isRequired,
-  histogram: React.PropTypes.shape({
-    bins: React.PropTypes.arrayOf(React.PropTypes.number.isRequired).isRequired,
-    counts: React.PropTypes.arrayOf(React.PropTypes.number.isRequired).isRequired
+  histogram: PropTypes.shape({
+    bins: PropTypes.arrayOf(PropTypes.number.isRequired).isRequired,
+    counts: PropTypes.arrayOf(PropTypes.number.isRequired).isRequired
   })
 }
 

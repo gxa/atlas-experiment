@@ -1,5 +1,6 @@
 import React from 'react'
-import Checkbox from './Checkbox.jsx'
+import PropTypes from 'prop-types'
+import Checkbox from './Checkbox.js'
 import {QueryObjectsPropTypes} from './PropTypes.js'
 
 const Specificity = ({specific, onChangeSpecific}) => (
@@ -9,7 +10,7 @@ const Specificity = ({specific, onChangeSpecific}) => (
 
 Specificity.propTypes = {
   specific: QueryObjectsPropTypes.specific,
-  onChangeSpecific : React.PropTypes.func.isRequired
+  onChangeSpecific : PropTypes.func.isRequired
 };
 
 export default Specificity;

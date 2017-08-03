@@ -1,8 +1,9 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import {Glyphicon} from 'react-bootstrap/lib'
 import {ColumnGroupPropTypes} from '../PropTypes.js'
-import {difference, intersection, union, isEqual} from 'lodash'
-require('./Components.less');
+import {difference, intersection, union} from 'lodash'
+import './Components.css'
 
 const prettyName = (name) => (
   name
@@ -13,9 +14,9 @@ const prettyName = (name) => (
 const CommonPropTypes = {
   name: ColumnGroupPropTypes.name,
   groupings: ColumnGroupPropTypes.groupings,
-  availableIds: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-  selectedIds: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-  onNewSelectedIds: React.PropTypes.func.isRequired
+  availableIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  selectedIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  onNewSelectedIds: PropTypes.func.isRequired
 }
 
 const SELECTION = {
@@ -31,9 +32,9 @@ const SELECTION_LIST = [
 ]
 
 const GroupingPropTypes = {
-  text: React.PropTypes.string.isRequired,
-  selection: React.PropTypes.oneOf(SELECTION_LIST).isRequired,
-  onToggle: React.PropTypes.func.isRequired
+  text: PropTypes.string.isRequired,
+  selection: PropTypes.oneOf(SELECTION_LIST).isRequired,
+  onToggle: PropTypes.func.isRequired
 }
 
 const makeGroupingProps = ({selectedIds,onNewSelectedIds}, grouping) => {
@@ -127,8 +128,8 @@ const SelectionOption = ({selection,isCurrentlyShown,groupingsForThisSelection})
 )
 
 SelectionOption.propTypes = {
-  selection: React.PropTypes.oneOf(SELECTION_LIST).isRequired,
-  isCurrentlyShown: React.PropTypes.bool.isRequired,
+  selection: PropTypes.oneOf(SELECTION_LIST).isRequired,
+  isCurrentlyShown: PropTypes.bool.isRequired,
   groupingsForThisSelection: ColumnGroupPropTypes.groupings
 }
 
@@ -268,7 +269,7 @@ class Section extends React.Component {
 
 Section.propTypes = {
   ...CommonPropTypes,
-  readOnly: React.PropTypes.bool,
+  readOnly: PropTypes.bool,
 }
 
 export default Section;

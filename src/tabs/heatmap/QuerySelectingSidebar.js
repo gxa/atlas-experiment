@@ -1,16 +1,18 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+
 import {Modal, Button, Glyphicon} from 'react-bootstrap/lib'
 import {intersection, union, isEqual, flow, xor} from 'lodash'
 import pluralize from 'pluralize'
 import URI from 'urijs'
 
-import Genes from './genes/Main.jsx'
-import {Main as HeatmapColumnsChoice, Summary as HeatmapColumnsSummary} from './column-filters/Main.jsx'
-import Cutoff from './Cutoff.jsx'
-import CutoffDistribution from './CutoffDistribution.jsx'
-import Regulation from './Regulation.jsx'
-import Unit from './Unit.jsx'
-import Specificity from './Specificity.jsx'
+import Genes from './genes/Main.js'
+import {Main as HeatmapColumnsChoice, Summary as HeatmapColumnsSummary} from './column-filters/Main.js'
+import Cutoff from './Cutoff.js'
+import CutoffDistribution from './CutoffDistribution.js'
+import Regulation from './Regulation.js'
+import Unit from './Unit.js'
+import Specificity from './Specificity.js'
 
 import {ColumnGroupPropTypes, QueryObjectsPropTypes} from './PropTypes.js'
 import './bootstrap-toggle.min.css'
@@ -33,7 +35,7 @@ const OpenerButton = ({
 )
 
 OpenerButton.propTypes = {
-  onClickButton : React.PropTypes.func.isRequired
+  onClickButton : PropTypes.func.isRequired
 }
 
 const ModalWrapper = ({title, show, onCloseModal, onClickApply, children}) =>
@@ -55,9 +57,9 @@ const ModalWrapper = ({title, show, onCloseModal, onClickApply, children}) =>
   </Modal>
 
 ModalWrapper.propTypes = {
-  show: React.PropTypes.bool.isRequired,
-  onCloseModal: React.PropTypes.func.isRequired,
-  onClickApply: React.PropTypes.func
+  show: PropTypes.bool.isRequired,
+  onCloseModal: PropTypes.func.isRequired,
+  onClickApply: PropTypes.func
 }
 
 
@@ -92,15 +94,15 @@ const Header = ({text}) => (
 
 const SidebarAndModal = React.createClass({
   propTypes : {
-    isDifferential: React.PropTypes.bool.isRequired,
-    geneSuggesterUri: React.PropTypes.instanceOf(URI),
-    defaultQuery: React.PropTypes.bool.isRequired,
-    genesDistributedByCutoffUrl: React.PropTypes.string.isRequired,
-    loadingGifUrl: React.PropTypes.string.isRequired,
-    columnGroups: React.PropTypes.arrayOf(React.PropTypes.shape(ColumnGroupPropTypes)).isRequired,
-    availableDataUnits:React.PropTypes.arrayOf(React.PropTypes.string.isRequired).isRequired,
-    queryObjects: React.PropTypes.shape(QueryObjectsPropTypes).isRequired,
-    onChangeQueryObjects: React.PropTypes.func.isRequired
+    isDifferential: PropTypes.bool.isRequired,
+    geneSuggesterUri: PropTypes.instanceOf(URI),
+    defaultQuery: PropTypes.bool.isRequired,
+    genesDistributedByCutoffUrl: PropTypes.string.isRequired,
+    loadingGifUrl: PropTypes.string.isRequired,
+    columnGroups: PropTypes.arrayOf(PropTypes.shape(ColumnGroupPropTypes)).isRequired,
+    availableDataUnits:PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
+    queryObjects: PropTypes.shape(QueryObjectsPropTypes).isRequired,
+    onChangeQueryObjects: PropTypes.func.isRequired
   },
 
   getInitialState() {

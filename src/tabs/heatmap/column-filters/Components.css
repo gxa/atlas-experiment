@@ -1,0 +1,40 @@
+.oneProperty {
+  font-style: italic;
+}
+.oneProperty .unselected {
+  color: grey;
+}
+.gxaSection .title {
+  margin-right: 0.5rem;
+  display: inline-block;
+}
+.gxaSection .title.openable {
+  cursor: pointer;
+}
+.gxaSection .title.openable:hover {
+  text-decoration: underline;
+}
+.readOnlyGrouping {
+  font-style: italic;
+}
+.readOnlyGrouping.unselected {
+  color: grey;
+}
+.checkboxGrouping input {
+  margin: 0.2rem;
+  cursor: pointer;
+}
+.checkboxGrouping.partiallySelected input {
+  opacity: 0.6;
+}
+.sectionBody {
+  padding-left: 15px;
+  font-size: 85%;
+  -webkit-column-width: 180px;
+  -moz-column-width: 180px;
+  column-width: 180px;
+}
+.sectionBody .linkForToggleShow {
+  cursor: pointer;
+  font-style: italic;
+}

@@ -3,55 +3,96 @@ var path = require('path');
 var CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
-    entry: {
-        experimentPage: './index.jsx',
-        dependencies: ['react', 'react-bootstrap', 'react-dom', 'react-router-dom']
-    },
-    output: {
-        libraryTarget: 'var',
-        library: '[name]',
-        path: path.resolve(__dirname, 'dist'),
-        filename: '[name].bundle.js',
-        publicPath: '/dist/'
-    },
+  entry: {
+    experimentPage: ['whatwg-fetch', './src/index.js'],
+    dependencies: ['prop-types', 'react', 'react-bootstrap', 'react-dom', 'react-router-dom', 'rc-slider']
+  },
+  output: {
+    libraryTarget: 'var',
+    library: '[name]',
+    path: path.resolve(__dirname, 'dist'),
+    filename: '[name].bundle.js',
+    publicPath: '/dist/'
+  },
 
-    plugins: [
-        new CleanWebpackPlugin(['dist'], {verbose: true, dry: false}),
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'dependencies',
-            filename: 'vendorCommons.bundle.js',
-            minChunks: Infinity     // Explicit definition-based split. Don’t put shared modules between main and demo
-        })                          // entries in vendor.bundle.js
+  plugins: [
+    new CleanWebpackPlugin(['dist'], {verbose: true, dry: false}),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'dependencies',
+      filename: 'vendorCommons.bundle.js',
+      minChunks: Infinity     // Explicit definition-based split. Don’t put shared modules between main and demo
+    })                          // entries in vendor.bundle.js
 
-    ],
+  ],
 
-    module: {
-        loaders: [
-            {test: /\.js$/, loader: 'babel', query: {presets: ['es2015'], plugins:['transform-object-rest-spread']},
-              // Place here all the packages that we own
-              exclude: /node_modules\/(?!(expression-atlas|anatomogram|react-ebi-species))/},
-            {test: /\.jsx$/, loader: 'babel', query: {presets: ['es2015', 'react'], plugins:['transform-object-rest-spread']}},
-            {test: /\.css$/, loader: 'style-loader!css-loader'},
-            {test: /\.less$/, loader: 'style-loader!css-loader!less-loader'},
-            {test: /\.json$/, loader: 'json'},
-            {test: /\.(jpe?g|png|gif)$/i,
-                loaders: [
-                          'file?hash=sha512&digest=hex&name=[hash].[ext]',
-                          'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false'
-                ]
-            },
-            { test: /\.html$/, loader: 'file?name=[name].[ext]' },
-            {test: /\.(svg)$/i,
-                loaders: [
-                          'file?hash=sha512&digest=hex&name=[hash].[ext]'
-                ]
+  module: {
+    rules: [
+      {
+        test: /\.css$/i,
+        use: [ 'style-loader', 'css-loader' ]
+      },
+      {
+        test: /\.less$/i,
+        use: [ 'style-loader', 'css-loader', 'less-loader' ]
+      },
+      {
+        test: /\.(jpe?g|png|gif)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              query: {
+                name: '[hash].[ext]',
+                hash: 'sha512',
+                digest: 'hex'
+              }
             }
+          },
+          {
+            loader: 'image-webpack-loader',
+            options: {
+              query: {
+                bypassOnDebug: true,
+                mozjpeg: {
+                  progressive: true,
+                },
+                gifsicle: {
+                  interlaced: true,
+                },
+                optipng: {
+                  optimizationLevel: 7,
+                }
+              }
+            }
+          }
         ]
-    },
+      },
+      {
+        test: /\.svg$/i,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              query: {
+                name: '[hash].[ext]',
+                hash: 'sha512',
+                digest: 'hex'
+              }
+            }
+          }
+        ]
+      },
+      {
+        test: /\.js$/i,
+        exclude: /node_modules\//,
+        use: 'babel-loader'
+      }
+    ]
+  },
 
-    devServer: {
-      historyApiFallback: true,
-      contentBase: "html",
-      port: 9000
-    }
+  devServer: {
+    historyApiFallback: true,
+    contentBase: "html",
+    port: 9000
+  }
 };

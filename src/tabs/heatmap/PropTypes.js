@@ -1,9 +1,10 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const ColumnGroupPropTypes = {
- name: React.PropTypes.string.isRequired,
- primary: React.PropTypes.bool.isRequired,
- groupings: React.PropTypes.arrayOf((props, propName)=> {
+ name: PropTypes.string.isRequired,
+ primary: PropTypes.bool.isRequired,
+ groupings: PropTypes.arrayOf((props, propName)=> {
      const prop = props[propName];
 
      if (prop === undefined) {
@@ -21,51 +22,51 @@ const ColumnGroupPropTypes = {
 const InitialColumnGroupPropTypes = Object.assign({},
   ColumnGroupPropTypes,
   {
-    selected: React.PropTypes.oneOfType([
-      React.PropTypes.oneOf(['all','ALL']),
-      React.PropTypes.arrayOf(React.PropTypes.string)
+    selected: PropTypes.oneOfType([
+      PropTypes.oneOf(['all','ALL']),
+      PropTypes.arrayOf(PropTypes.string)
     ])
   }
 )
 
-const CutoffType = React.PropTypes.oneOfType([
-  React.PropTypes.shape({
-    value : React.PropTypes.number.isRequired
+const CutoffType = PropTypes.oneOfType([
+  PropTypes.shape({
+    value : PropTypes.number.isRequired
   }),
-  React.PropTypes.shape({
-    foldChange : React.PropTypes.number.isRequired,
-    pValue: React.PropTypes.number.isRequired
+  PropTypes.shape({
+    foldChange : PropTypes.number.isRequired,
+    pValue: PropTypes.number.isRequired
   })
 ])
 
-const RegulationType = React.PropTypes.oneOf([
+const RegulationType = PropTypes.oneOf([
   'OFF',
   'UP',
   'DOWN',
   'UP_DOWN'
 ])
 
-const UnitType = React.PropTypes.string
+const UnitType = PropTypes.string
 
 const QueryObjectsPropTypes = {
-  specific: React.PropTypes.bool.isRequired,
-  geneQuery: React.PropTypes.arrayOf(React.PropTypes.shape({
-    value: React.PropTypes.string.isRequired,
-    category: React.PropTypes.string
+  specific: PropTypes.bool.isRequired,
+  geneQuery: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.string.isRequired,
+    category: PropTypes.string
   }).isRequired).isRequired,
-  selectedColumnIds: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+  selectedColumnIds: PropTypes.arrayOf(PropTypes.string).isRequired,
   cutoff: CutoffType.isRequired,
   regulation: RegulationType.isRequired,
   unit: UnitType.isRequired
 }
 
 const QueryPropTypes = {
-  filterFactors : React.PropTypes.string,
-  specific: React.PropTypes.string,
-  geneQuery: React.PropTypes.string,
-  cutoff: React.PropTypes.string,
-  regulation: React.PropTypes.string,
-  unit: React.PropTypes.string
+  filterFactors : PropTypes.string,
+  specific: PropTypes.string,
+  geneQuery: PropTypes.string,
+  cutoff: PropTypes.string,
+  regulation: PropTypes.string,
+  unit: PropTypes.string
 }
 
 export {ColumnGroupPropTypes,InitialColumnGroupPropTypes,QueryObjectsPropTypes,CutoffType,RegulationType,UnitType,QueryPropTypes}

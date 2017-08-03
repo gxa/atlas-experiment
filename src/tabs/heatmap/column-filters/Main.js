@@ -1,10 +1,11 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import {Button, ButtonGroup, Glyphicon} from 'react-bootstrap/lib'
 
 import {isEqual} from 'lodash'
 
 import {ColumnGroupPropTypes} from '../PropTypes.js'
-import Section from './ColumnFiltersSection.jsx'
+import Section from './ColumnFiltersSection.js'
 
 const Main = ({columnGroups, selectedColumnIds, onNewSelectedColumnIds, availableColumnIds, columnsName}) => {
 
@@ -97,15 +98,15 @@ const Main = ({columnGroups, selectedColumnIds, onNewSelectedColumnIds, availabl
 }
 
 const ColumnCommonTypes = {
-  columnGroups: React.PropTypes.arrayOf(React.PropTypes.shape(ColumnGroupPropTypes).isRequired).isRequired,
-  selectedColumnIds: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-  availableColumnIds: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-  columnsName: React.PropTypes.string.isRequired
+  columnGroups: PropTypes.arrayOf(PropTypes.shape(ColumnGroupPropTypes).isRequired).isRequired,
+  selectedColumnIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  availableColumnIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  columnsName: PropTypes.string.isRequired
 }
 
 Main.propTypes = Object.assign(
   {}, ColumnCommonTypes , {
-    onNewSelectedColumnIds: React.PropTypes.func.isRequired
+    onNewSelectedColumnIds: PropTypes.func.isRequired
   }
 )
 

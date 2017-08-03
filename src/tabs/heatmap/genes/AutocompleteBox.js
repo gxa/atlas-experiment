@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import Autocomplete from 'react-autocomplete'
 
 import URI from 'urijs'
@@ -13,9 +14,9 @@ const TRANSITIONS = {
 
 const AutocompleteBox = React.createClass({
   propTypes: {
-    geneSuggesterUri : React.PropTypes.instanceOf(URI),
-    onGeneChosen: React.PropTypes.func.isRequired,
-    valuesToSkipInSuggestions: React.PropTypes.arrayOf(React.PropTypes.string.isRequired).isRequired
+    geneSuggesterUri : PropTypes.instanceOf(URI),
+    onGeneChosen: PropTypes.func.isRequired,
+    valuesToSkipInSuggestions: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired
   },
   getInitialState () {
     return {

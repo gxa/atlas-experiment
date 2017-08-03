@@ -1,19 +1,20 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import {BrowserRouter, Route, Switch, Redirect, NavLink, IndexRedirect, withRouter } from 'react-router-dom'
 
 import queryStringUtils from 'qs'
 import URI from 'urijs'
 
-import Heatmap from './tabs/heatmap/Main.jsx'
-import ExperimentDesign from './tabs/experiment-design/Main.jsx'
-import Resources from './tabs/resources/Main.jsx'
-import StaticTable from './tabs/StaticTable.jsx'
-import QCReport from './tabs/qc-report/Main.jsx'
+import Heatmap from './tabs/heatmap/Main.js'
+import ExperimentDesign from './tabs/experiment-design/Main.js'
+import Resources from './tabs/resources/Main.js'
+import StaticTable from './tabs/StaticTable.js'
+import QCReport from './tabs/qc-report/Main.js'
 
-const TabPropType = React.PropTypes.shape({
-  type: React.PropTypes.string.isRequired,
-  name: React.PropTypes.string.isRequired,
-  props: React.PropTypes.object.isRequired
+const TabPropType = PropTypes.shape({
+  type: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  props: PropTypes.object.isRequired
 });
 
 //coupled to ExperimentController.java
@@ -91,7 +92,7 @@ const RedirectToTab = withRouter(RedirectToTabWithLocation)
 
 const ExperimentContainerRouter = ({
   atlasUrl,
-  pathToFolderWithBundledResources,
+  pathToResources,
   experimentAccession,
   experimentType,
   accessKey,
@@ -101,7 +102,7 @@ const ExperimentContainerRouter = ({
   const commonProps = Object.assign(
     {
       atlasUrl,
-      pathToFolderWithBundledResources,
+      pathToResources,
       experimentAccession,
       experimentType,
       accessKey,
@@ -136,13 +137,13 @@ const ExperimentContainerRouter = ({
 }
 
 ExperimentContainerRouter.propTypes = {
-  atlasUrl: React.PropTypes.string.isRequired,
-  pathToFolderWithBundledResources: React.PropTypes.string.isRequired,
-  experimentAccession: React.PropTypes.string.isRequired,
-  experimentType: React.PropTypes.string.isRequired,
-  accessKey: React.PropTypes.string,
-  species: React.PropTypes.string.isRequired,
-  tabs: React.PropTypes.arrayOf(TabPropType).isRequired
+  atlasUrl: PropTypes.string.isRequired,
+  pathToResources: PropTypes.string.isRequired,
+  experimentAccession: PropTypes.string.isRequired,
+  experimentType: PropTypes.string.isRequired,
+  accessKey: PropTypes.string,
+  species: PropTypes.string.isRequired,
+  tabs: PropTypes.arrayOf(TabPropType).isRequired
 }
 
 export default ExperimentContainerRouter;

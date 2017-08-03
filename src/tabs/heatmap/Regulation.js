@@ -1,6 +1,8 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+
 import {RegulationType} from './PropTypes.js'
-import Fieldset from './common/Fieldset.jsx'
+import Fieldset from './common/Fieldset.js'
 
 const Regulation = ({regulation,onChangeRegulation}) => (
   <Fieldset value={regulation}
@@ -14,7 +16,7 @@ const Regulation = ({regulation,onChangeRegulation}) => (
 
 Regulation.propTypes = {
   regulation: RegulationType.isRequired,
-  onChangeRegulation : React.PropTypes.func.isRequired
+  onChangeRegulation : PropTypes.func.isRequired
 }
 
 export default Regulation

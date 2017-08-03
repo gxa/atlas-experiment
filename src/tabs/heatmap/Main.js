@@ -1,5 +1,7 @@
 import React from 'react'
-import Sidebar from './QuerySelectingSidebar.jsx'
+import PropTypes from 'prop-types'
+
+import Sidebar from './QuerySelectingSidebar.js'
 import {toQuery as queryFromQueryObjects, fromConfigAndQuery as queryObjectsFromConfigAndQuery,
   toBaselineRequestPreferences, toDifferentialRequestPreferences} from './CreateQueryObjects.js'
 import {InitialColumnGroupPropTypes, QueryPropTypes} from './PropTypes.js'
@@ -11,18 +13,18 @@ import queryStringUtils from 'qs'
 
 const Main = React.createClass({
   propTypes : {
-    experimentAccession: React.PropTypes.string.isRequired,
-    accessKey: React.PropTypes.string,
-    isDifferential: React.PropTypes.bool.isRequired,
-    isRnaSeq: React.PropTypes.bool.isRequired,
-    atlasUrl: React.PropTypes.string.isRequired,
-    species: React.PropTypes.string.isRequired,
-    groups: React.PropTypes.arrayOf(React.PropTypes.shape(InitialColumnGroupPropTypes)).isRequired,
-    genesDistributedByCutoffUrl:React.PropTypes.string.isRequired,
-    availableDataUnits:React.PropTypes.arrayOf(React.PropTypes.string.isRequired).isRequired,
-    query: React.PropTypes.shape(QueryPropTypes).isRequired,
-    history: React.PropTypes.object.isRequired,
-    location: React.PropTypes.object.isRequired
+    experimentAccession: PropTypes.string.isRequired,
+    accessKey: PropTypes.string,
+    isDifferential: PropTypes.bool.isRequired,
+    isRnaSeq: PropTypes.bool.isRequired,
+    atlasUrl: PropTypes.string.isRequired,
+    species: PropTypes.string.isRequired,
+    groups: PropTypes.arrayOf(PropTypes.shape(InitialColumnGroupPropTypes)).isRequired,
+    genesDistributedByCutoffUrl:PropTypes.string.isRequired,
+    availableDataUnits:PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
+    query: PropTypes.shape(QueryPropTypes).isRequired,
+    history: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired
   },
 
   render() {

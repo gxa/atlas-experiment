@@ -1,6 +1,7 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import TablePropTypes from './ExperimentDesignTablePropTypes.js'
-import {DifferentialExperimentDesign, BaselineExperimentDesign} from './ExperimentDesignTable.jsx'
+import {DifferentialExperimentDesign, BaselineExperimentDesign} from './ExperimentDesignTable.js'
 import URI from 'urijs'
 
 const ExperimentDesignTab = ({
@@ -27,10 +28,10 @@ const ExperimentDesignTab = ({
 )
 
 ExperimentDesignTab.propTypes = {
-  isDifferential : React.PropTypes.bool.isRequired,
-  downloadUrl: React.PropTypes.string.isRequired,
-  atlasUrl: React.PropTypes.string.isRequired,
-  table: React.PropTypes.shape(TablePropTypes)
+  isDifferential : PropTypes.bool.isRequired,
+  downloadUrl: PropTypes.string.isRequired,
+  atlasUrl: PropTypes.string.isRequired,
+  table: PropTypes.shape(TablePropTypes)
 }
 
 export default ExperimentDesignTab;

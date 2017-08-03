@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import {CutoffType} from './PropTypes.js'
 import NumericInput from 'react-numeric-input'
 
@@ -76,7 +77,7 @@ const Cutoff = ({cutoff, onChangeCutoff}) => (
 
 Cutoff.propTypes = {
   cutoff: CutoffType.isRequired,
-  onChangeCutoff : React.PropTypes.func.isRequired
+  onChangeCutoff : PropTypes.func.isRequired
 }
 
 export default Cutoff

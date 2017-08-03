@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const MenuItem = ({value, onChangeValue, optionValue, label}) => (
   <div>
@@ -18,10 +19,10 @@ const MenuItem = ({value, onChangeValue, optionValue, label}) => (
 )
 
 MenuItem.propTypes = {
-  value: React.PropTypes.any.isRequired,
-  onChangeValue: React.PropTypes.func.isRequired,
-  optionValue: React.PropTypes.any.isRequired,
-  label: React.PropTypes.string.isRequired
+  value: PropTypes.any.isRequired,
+  onChangeValue: PropTypes.func.isRequired,
+  optionValue: PropTypes.any.isRequired,
+  label: PropTypes.string.isRequired
 }
 
 
@@ -36,9 +37,9 @@ const Fieldset = (props) => (
 )
 
 Fieldset.propTypes = {
-  value: React.PropTypes.any.isRequired,
-  onChangeValue: React.PropTypes.func.isRequired,
-  options: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.any.isRequired).isRequired).isRequired //[[name,value]]
+  value: PropTypes.any.isRequired,
+  onChangeValue: PropTypes.func.isRequired,
+  options: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.any.isRequired).isRequired).isRequired //[[name,value]]
 }
 
 export default Fieldset
