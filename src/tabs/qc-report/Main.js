@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {withRouter} from 'react-router-dom'
 import {Modal, Button, Glyphicon} from 'react-bootstrap/lib'
+import URI from 'urijs'
 import queryStringUtils from 'qs'
 
 const chooseReportDropdown = (options,chosen, onChooseReport) => (
@@ -17,7 +18,7 @@ const chooseReportDropdown = (options,chosen, onChooseReport) => (
 )
 
 
-const Report = ({history,location, reports}) => {
+const Report = ({atlasUrl, history,location, reports}) => {
 
   const query = queryStringUtils.parse(location.search.replace(/^\?/, ""))
   const chosenReport = reports.find((report) => report.name === query.report) || reports[0]
@@ -37,7 +38,7 @@ const Report = ({history,location, reports}) => {
     }
     <iframe
       name={chosenReport.name}
-      src={chosenReport.url}
+      src={URI(chosenReport.url, atlasUrl).toString()}
       style={{
         width:"100%",
         height:1000,
@@ -47,6 +48,7 @@ const Report = ({history,location, reports}) => {
 )}
 
 Report.propTypes = {
+  atlasUrl: PropTypes.string.isRequired,
   history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
   reports: PropTypes.arrayOf(PropTypes.shape({
