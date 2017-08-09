@@ -42,8 +42,7 @@ const ExperimentDesign = ({
     style={{
       fontSize: "small",
       padding: "7px 0px",
-      height: "100%",
-
+      height: "80%"
     }}
     data={data}
     {...options}
