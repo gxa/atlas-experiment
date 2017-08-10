@@ -5,19 +5,23 @@ import {ColumnGroupPropTypes} from '../PropTypes.js'
 import {difference, intersection, union} from 'lodash'
 import './Components.css'
 
-const prettyName = (name) => (
+const headerName = (name) => (
   name
   .replace(/_/g," ")
   .replace(/\w\S*/g, (txt) => (txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()))
+  + ": "
 )
 
 const CommonPropTypes = {
   name: ColumnGroupPropTypes.name,
-  groupings: ColumnGroupPropTypes.groupings,
   availableIds: PropTypes.arrayOf(PropTypes.string).isRequired,
   selectedIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-  onNewSelectedIds: PropTypes.func.isRequired
 }
+
+const ManyGroupingsPropTypes = Object.assign({}, CommonPropTypes, {
+    groupings: ColumnGroupPropTypes.groupings,
+    onNewSelectedIds: PropTypes.func.isRequired
+})
 
 const SELECTION = {
   UNSELECTED: "unselected",
@@ -37,22 +41,29 @@ const GroupingPropTypes = {
   onToggle: PropTypes.func.isRequired
 }
 
+const determineGroupingSelection = ({selectedIds,groupingIds}) => {
+    const idsInGroupingAndSelected = intersection(selectedIds, groupingIds)
+    const idsInGroupingButNotSelected = difference(groupingIds, idsInGroupingAndSelected)
+    const isFullySelected = groupingIds.length > 0 && idsInGroupingButNotSelected.length === 0
+    const isFullyUnselected = idsInGroupingAndSelected.length === 0
+    return (
+        isFullyUnselected
+         ? SELECTION.UNSELECTED
+         : isFullySelected
+           ? SELECTION.SELECTED
+           : SELECTION.PARTIAL
+    )
+}
+
 const makeGroupingProps = ({selectedIds,onNewSelectedIds}, grouping) => {
-  const idsInGroupingAndSelected = intersection(selectedIds, grouping[1])
-  const idsInGroupingButNotSelected = difference(grouping[1], idsInGroupingAndSelected)
-  const isFullySelected = grouping[1].length > 0 && idsInGroupingButNotSelected.length === 0
-  const isFullyUnselected = idsInGroupingAndSelected.length === 0
+  const groupingSelection = determineGroupingSelection({selectedIds,groupingIds:grouping[1] })
   return {
     key: grouping[0],
     text: grouping[0],
     selection:
-      isFullyUnselected
-       ? SELECTION.UNSELECTED
-       : isFullySelected
-         ? SELECTION.SELECTED
-         : SELECTION.PARTIAL ,
+      groupingSelection,
     onToggle:
-      isFullyUnselected
+      groupingSelection === SELECTION.UNSELECTED
       ? () => {
         onNewSelectedIds(union(grouping[1], selectedIds))
       }
@@ -105,7 +116,7 @@ const PlainSectionBody = ({groupings, selectedIds, onNewSelectedIds}) => (
     }
   </div>
 )
-PlainSectionBody.propTypes = CommonPropTypes
+PlainSectionBody.propTypes = ManyGroupingsPropTypes
 
 const filterGroupingsBySelections = ({selectedIds}, selectionsAllowed, groupings) => (
   groupings
@@ -207,9 +218,25 @@ class SectionBodyWithCollapsableLinks extends React.Component {
   }
 }
 
-SectionBodyWithCollapsableLinks.propTypes = CommonPropTypes
+SectionBodyWithCollapsableLinks.propTypes = ManyGroupingsPropTypes
 
-class Section extends React.Component {
+
+const OneGroupingReadOnlySection = ({name, text, availableIds, selectedIds}) => (
+    <div className="margin-top-large gxaSection">
+      <span className="title">
+        {headerName(name)}
+      </span>
+      <ReadOnlyGrouping
+        text={text}
+        selection={determineGroupingSelection({selectedIds, groupingIds: availableIds})}/>
+    </div>
+)
+
+OneGroupingReadOnlySection.propTypes= Object.assign({}, CommonPropTypes, {
+    text: PropTypes.string
+})
+
+class MultipleGroupingsSection extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -219,39 +246,16 @@ class Section extends React.Component {
 
 
   render() {
-    const {name, groupings, availableIds} = this.props
+    const {name, groupings} = this.props
     const {open} = this.state
-    const headerName = prettyName(name)+": "
-    if(this.props.groupings.length === 1) {
-      return (
-        <div className="margin-top-large gxaSection">
-          <span className="title">
-            {headerName}
-          </span>
-          <ReadOnlyGrouping {...makeGroupingProps(this.props, groupings[0])} />
-        </div>
-      )
-    } else if (this.props.readOnly) {
-      return (
-        <div className="margin-top-large gxaSection">
-          <span className="title">
-            {headerName}
-          </span>
-          <ReadOnlyGrouping
-            {...makeGroupingProps(this.props, groupings[0])}
-            text={`${groupings[0][0]} vs ${groupings[1][0]}`}
-          />
-        </div>
-      )
-    } else {
-      return (
+    return (
         <div className="margin-top-large gxaSection">
           <div className="title openable"
              onClick={()=>{
                this.setState(({open})=>({open:!open}))
              }}
              href="#">
-             {headerName}
+             {headerName(name)}
              {
                <Glyphicon style={{fontSize: `x-small`, paddingLeft: `5px`}} glyph={open? "menu-up" : "menu-down"}/>
              }
@@ -262,14 +266,11 @@ class Section extends React.Component {
             : <PlainSectionBody {...this.props} />)
           }
         </div>
-      )
-    }
+    )
   }
 }
 
-Section.propTypes = {
-  ...CommonPropTypes,
-  readOnly: PropTypes.bool,
-}
+MultipleGroupingsSection.propTypes = ManyGroupingsPropTypes
 
-export default Section;
+
+export {MultipleGroupingsSection, OneGroupingReadOnlySection};

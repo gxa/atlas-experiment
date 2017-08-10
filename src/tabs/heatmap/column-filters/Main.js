@@ -5,7 +5,7 @@ import {Button, ButtonGroup, Glyphicon} from 'react-bootstrap/lib'
 import {isEqual} from 'lodash'
 
 import {ColumnGroupPropTypes} from '../PropTypes.js'
-import Section from './ColumnFiltersSection.js'
+import {MultipleGroupingsSection, OneGroupingReadOnlySection} from './ColumnFiltersSection.js'
 
 const Main = ({columnGroups, selectedColumnIds, onNewSelectedColumnIds, availableColumnIds, columnsName}) => {
 
@@ -57,7 +57,7 @@ const Main = ({columnGroups, selectedColumnIds, onNewSelectedColumnIds, availabl
       {multipleGroupingsColumnGroups.length > 0 &&
         <div>
           {multipleGroupingsColumnGroups.map(group =>
-              <Section key={group.name}
+              <MultipleGroupingsSection key={group.name}
                        availableIds={availableColumnIds}
                        selectedIds={selectedColumnIds}
                        onNewSelectedIds={onNewSelectedColumnIds}
@@ -70,12 +70,12 @@ const Main = ({columnGroups, selectedColumnIds, onNewSelectedColumnIds, availabl
       {readOnlyTwoGroupingColumnGroups.length > 0 &&
       <div className={multipleGroupingsColumnGroups.length > 0 ? `margin-top-xlarge` : ``}>
         {readOnlyTwoGroupingColumnGroups.map(group =>
-          <Section key={group.name}
-                   availableIds={availableColumnIds}
-                   selectedIds={selectedColumnIds}
-                   onNewSelectedIds={onNewSelectedColumnIds}
-                   readOnly={true}
-                   {...group} />
+          <OneGroupingReadOnlySection
+                key={group.name}
+                name={group.name}
+                availableIds={availableColumnIds}
+                selectedIds={selectedColumnIds}
+                text={`${group.groupings[0][0]} vs ${group.groupings[1][0]}`}/>
         )}
       </div>
       }
@@ -84,11 +84,12 @@ const Main = ({columnGroups, selectedColumnIds, onNewSelectedColumnIds, availabl
       <div className={multipleGroupingsColumnGroups.length > 0 || readOnlyTwoGroupingColumnGroups.length > 0 ?
                       `margin-top-xlarge` : ``}>
         {oneGroupingColumnGroups.map(group =>
-          <Section key={group.name}
-                   availableIds={availableColumnIds}
-                   selectedIds={selectedColumnIds}
-                   onNewSelectedIds={onNewSelectedColumnIds}
-                   {...group} />
+            <OneGroupingReadOnlySection
+                key={group.name}
+                name={group.name}
+                availableIds={availableColumnIds}
+                selectedIds={selectedColumnIds}
+                text={group.groupings[0][0]} />
         )}
       </div>
       }
