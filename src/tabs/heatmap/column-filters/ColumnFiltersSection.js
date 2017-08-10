@@ -38,7 +38,7 @@ const SELECTION_LIST = [
 const GroupingPropTypes = {
   text: PropTypes.string.isRequired,
   selection: PropTypes.oneOf(SELECTION_LIST).isRequired,
-  onToggle: PropTypes.func.isRequired
+  onToggle: PropTypes.func
 }
 
 const determineGroupingSelection = ({selectedIds,groupingIds}) => {
