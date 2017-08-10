@@ -27,11 +27,11 @@ const ExperimentDesign = ({
     columns={
       headers.map((headerGroup,ix)=> (
         {
-          header: headerGroup.name,
+          Header: headerGroup.name,
           columns:
             headerGroup.values.map((header, jx) => ({
               aggregate: curry(aggregateText, 2)(header),
-              header: header,
+              Header: header,
               id: ix*1000 +jx +1,
               accessor: r => r.values[ix][jx],
             }))
