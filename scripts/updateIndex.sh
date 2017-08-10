@@ -9,7 +9,7 @@ fi
 fileToChange=~/dev/atlas-experiment/html/index.html
 
 url=$1
-if [ $(echo $url | grep --quiet 'E-*-*' ) ]
+if [ $(echo $url | grep --quiet '^E-*-*' ) ]
 then
   url= "http://localhost:8080/gxa/experiments/$url"
 fi
