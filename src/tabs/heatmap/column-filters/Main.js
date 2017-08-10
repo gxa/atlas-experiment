@@ -7,19 +7,24 @@ import {isEqual} from 'lodash'
 import {ColumnGroupPropTypes} from '../PropTypes.js'
 import {MultipleGroupingsSection, OneGroupingReadOnlySection} from './ColumnFiltersSection.js'
 
-const Main = ({columnGroups, selectedColumnIds, onNewSelectedColumnIds, availableColumnIds, columnsName}) => {
+const Main = ({isDifferential, columnGroups, selectedColumnIds, onNewSelectedColumnIds, availableColumnIds, columnsName}) => {
 
   const oneGroupingColumnGroups = []
-  const readOnlyTwoGroupingColumnGroups = []
+  const gottaBeContrastComparisonColumnGroups = []
+  const multipleGroupingsEachCoveringAllIdsColumnGroups = []
   const multipleGroupingsColumnGroups = []
 
   columnGroups.forEach(group => {
     if (group.groupings.length === 1) {
-      oneGroupingColumnGroups.push(group)
-    } else if (group.groupings.length === 2 &&
-               isEqual(new Set(group.groupings[0][1]), new Set(availableColumnIds)) &&
-               isEqual(new Set(group.groupings[1][1]), new Set(availableColumnIds))) {
-      readOnlyTwoGroupingColumnGroups.push(group)
+        oneGroupingColumnGroups.push(group)
+    } else if (group.groupings.every( g =>
+            isEqual(new Set(g[1]), new Set(availableColumnIds))
+        )) {
+        if(isDifferential && group.groupings.length === 2){
+            gottaBeContrastComparisonColumnGroups.push(group)
+        } else {
+            multipleGroupingsEachCoveringAllIdsColumnGroups.push(group)
+        }
     } else {
       multipleGroupingsColumnGroups.push(group)
     }
@@ -67,15 +72,37 @@ const Main = ({columnGroups, selectedColumnIds, onNewSelectedColumnIds, availabl
         </div>
       }
 
-      {readOnlyTwoGroupingColumnGroups.length > 0 &&
+      {gottaBeContrastComparisonColumnGroups.length > 0 &&
       <div className={multipleGroupingsColumnGroups.length > 0 ? `margin-top-xlarge` : ``}>
-        {readOnlyTwoGroupingColumnGroups.map(group =>
+        {gottaBeContrastComparisonColumnGroups.map(group =>
           <OneGroupingReadOnlySection
                 key={group.name}
                 name={group.name}
                 availableIds={availableColumnIds}
                 selectedIds={selectedColumnIds}
-                text={`${group.groupings[0][0]} vs ${group.groupings[1][0]}`}/>
+                text={
+                    isDifferential
+                        ? `${group.groupings[0][0]} vs ${group.groupings[1][0]}`
+                        : group.groupings
+                            .map(g=>g[0])
+                            .join(", ")
+                    }/>
+        )}
+      </div>
+      }
+
+      {multipleGroupingsEachCoveringAllIdsColumnGroups.length > 0 &&
+      <div className={multipleGroupingsColumnGroups.length > 0 ? `margin-top-xlarge` : ``}>
+        {multipleGroupingsEachCoveringAllIdsColumnGroups.map(group =>
+          <OneGroupingReadOnlySection
+                key={group.name}
+                name={group.name}
+                availableIds={availableColumnIds}
+                selectedIds={selectedColumnIds}
+                text={
+                    group.groupings
+                    .map(g=>g[0])
+                    .join(", ")}/>
         )}
       </div>
       }
@@ -107,6 +134,7 @@ const ColumnCommonTypes = {
 
 Main.propTypes = Object.assign(
   {}, ColumnCommonTypes , {
+    isDifferential : PropTypes.bool.isRequired,
     onNewSelectedColumnIds: PropTypes.func.isRequired
   }
 )

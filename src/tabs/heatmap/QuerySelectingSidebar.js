@@ -219,6 +219,7 @@ const SidebarAndModal = React.createClass({
           ])} >
 
           <HeatmapColumnsChoice {...heatmapColumns}
+            isDifferential={this.props.isDifferential}
             onNewSelectedColumnIds={(selectedColumnIds) => {
               this.setState({selectedColumnIds})
             }}/>
