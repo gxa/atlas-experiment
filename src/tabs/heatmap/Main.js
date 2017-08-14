@@ -65,6 +65,7 @@ const Main = React.createClass({
                     ? toDifferentialRequestPreferences
                     : toBaselineRequestPreferences)(queryObjects))
                   .toString()}
+              useEbiFramework={false}
             />
         </div>
       </div>
