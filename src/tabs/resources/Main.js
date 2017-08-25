@@ -1,8 +1,11 @@
 import React, {Component} from 'react'
+import PropTypes from 'prop-types'
 import {connect} from 'react-refetch'
 import Icon from './Icon.js'
 import {uniq} from 'lodash'
 import URI from 'urijs'
+import Disclaimers from 'expression-atlas-disclaimers'
+import {Button} from 'react-bootstrap/lib'
 
 const ResourcesSection = ({values, pathToResources, atlasUrl}) => {
   const subsections = uniq(values.map((value)=> (
@@ -54,9 +57,51 @@ const ResourcesSection = ({values, pathToResources, atlasUrl}) => {
   )
 }
 
+const DisclaimerWithAgreeButton = ({title, content, onAgree}) => (
+    <div>
+        <h4>
+            {title}
+        </h4>
+        {content}
+        <Button onClick={onAgree}>
+            Continue to download
+        </Button>
+    </div>
+)
+
+class DisclaimerWrapper extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            needsAck : !!this.props.disclaimer && Disclaimers[this.props.disclaimer]
+        }
+    }
+
+    render() {
+        if (this.state.needsAck) {
+            return (
+                <DisclaimerWithAgreeButton
+                    onAgree={() => this.setState({needsAck: false})}
+                    {... Disclaimers[this.props.disclaimer]}
+                />
+            )
+        } else {
+            return (
+                <div>
+                    {this.props.children}
+                </div>
+            )
+        }
+    }
+}
+
+DisclaimerWrapper.propTypes = {
+    disclaimer: PropTypes.string.isRequired
+}
+
 class ResourcesTab extends Component {
   render() {
-    const {resourcesFetch, atlasUrl, pathToResources} = this.props
+    const {resourcesFetch, atlasUrl, pathToResources, disclaimer} = this.props
 
     if (resourcesFetch.pending) {
       return (
@@ -72,8 +117,11 @@ class ResourcesTab extends Component {
       )
     } else if (resourcesFetch.fulfilled) {
       return (
-        <ResourcesSection values={resourcesFetch.value}
-                          {...{ pathToResources, atlasUrl }} />
+        <DisclaimerWrapper disclaimer={disclaimer}>
+            <ResourcesSection
+                values={resourcesFetch.value}
+                {...{ pathToResources, atlasUrl }} />
+        </DisclaimerWrapper>
       )
     }
   }

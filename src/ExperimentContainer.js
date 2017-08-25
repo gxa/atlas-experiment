@@ -97,6 +97,7 @@ const ExperimentContainerRouter = ({
   experimentType,
   accessKey,
   species,
+  disclaimer,
   tabs
 }) => {
   const commonProps = Object.assign(
@@ -106,7 +107,8 @@ const ExperimentContainerRouter = ({
       experimentAccession,
       experimentType,
       accessKey,
-      species
+      species,
+      disclaimer
     },
     {
       isDifferential: experimentType.toLowerCase().includes(`differential`),
@@ -143,7 +145,8 @@ ExperimentContainerRouter.propTypes = {
   experimentType: PropTypes.string.isRequired,
   accessKey: PropTypes.string,
   species: PropTypes.string.isRequired,
-  tabs: PropTypes.arrayOf(TabPropType).isRequired
+  tabs: PropTypes.arrayOf(TabPropType).isRequired,
+  disclaimer: PropTypes.string.isRequired
 }
 
 export default ExperimentContainerRouter;

@@ -14,6 +14,7 @@
   "license": "Apache-2.0",
   "repository": "https://github.com/gxa/atlas-experiment",
   "dependencies": {
+    "expression-atlas-disclaimers": "latest",
     "expression-atlas-heatmap-highcharts": "latest",
     "lodash": "^4.17.4",
     "pluralize": "^6.0.0",
