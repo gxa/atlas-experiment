@@ -73,7 +73,7 @@ const DifferentialExperimentDesign = ({
       data.map(({properties, values}) => ({
       values: [[properties.contrastName || "N/A", toTitleCase(properties.referenceOrTest || "")]].concat(values)
     })),
-    headers: [{name: "", values: ["Contrast", "Reference/Test"]}].concat(headers),
+    headers: [{name: "", values: ["Comparison", "Reference/Test"]}].concat(headers),
     options: {
       pivotBy: [1]
     }
