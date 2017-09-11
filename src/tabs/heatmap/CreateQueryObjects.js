@@ -1,4 +1,4 @@
-import {isEqual, intersection, isEmpty} from 'lodash'
+import {isEqual, intersection, isEmpty, sortBy} from 'lodash'
 
 /*
 1) filterFactors -> selectedColumnIds
@@ -82,10 +82,12 @@ const makeFilterFactorsGivenSelectedIds = (filters, selectedIds) => {
   })
   /*
     If a factor value is behaving the same as "all", make it all.
-    .sort() tries to keep behaviour deterministic.
+    Sort to try eliminate largest subsets first.
   */
-  Object.keys(filterFactors)
-  .sort()
+  sortBy(Object.entries(filterFactors),
+    p => -p[1].length + " " + p[0]
+  )
+  .map(p => p[0])
   .forEach((factorType) => {
     if(isEqual(
       new Set(selectedIds),
