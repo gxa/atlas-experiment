@@ -58,13 +58,13 @@ const Main = React.createClass({
               isWidget={false}
               isMultiExperiment={false}
               isDifferential={this.props.isDifferential}
-              query={
-                URI(`json/experiments/${this.props.experimentAccession}`)
-                  .addSearch(this.props.accessKey ? {accessKey: this.props.accessKey} : {})
-                  .addSearch((this.props.isDifferential
+              experiment={this.props.experimentAccession}
+              query={Object.assign(
+                  this.props.accessKey ? {accessKey: this.props.accessKey} : {},
+                  (this.props.isDifferential
                     ? toDifferentialRequestPreferences
-                    : toBaselineRequestPreferences)(queryObjects))
-                  .toString()}
+                    : toBaselineRequestPreferences)(queryObjects)
+              )}
             />
         </div>
       </div>
