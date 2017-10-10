@@ -1,4 +1,4 @@
-import {isEqual, intersection, isEmpty, sortBy} from 'lodash'
+import {isEqual, intersection,union, isEmpty, sortBy, uniq} from 'lodash'
 
 /*
 1) filterFactors -> selectedColumnIds
@@ -60,6 +60,10 @@ const selectedColumnIdsFromInitialGroups = (initialFilters) => (
   intersection.apply([],initialFilters.map(idsSelectedInInitialFilter))
 )
 
+const allColumnIdsFromInitialGroups = (initialFilters) => (
+  intersection.apply([],initialFilters.map(idsSelectedInInitialFilter))
+)
+
 
 const copyWithOnePropertyDifferent = (objectToCopy, newPropertyName, newPropertyValue) => {
   const result = Object.assign({}, objectToCopy)
@@ -114,14 +118,11 @@ const makeFilterFactorsGivenSelectedIds = (filters, selectedIds) => {
 const decode = (encodedV, defaultV, validateV) => {
   const fallback = typeof defaultV === 'function' ? defaultV : () => defaultV
   const precondition = typeof validateV === 'function' ? validateV : (v) => !!v
-
   const s = encodedV ? decodeURIComponent(encodedV) : ""
 
   if (precondition(s)) {
     try {
-      return (
-        JSON.parse(s)
-      )
+      return JSON.parse(s)
     } catch (err) {
       return fallback(s)
     }
@@ -182,16 +183,38 @@ const makeIntoGeneQueryFormat = (v) => {
     : []
   )
 }
-const looksLikeEncodedArray =   (v) => v.match(/\[.*\]/)
+
+const makeIntoArray = (v) => {
+  const strippedV = v.replace(/\W/g, '')
+  return (
+    strippedV
+    ? [strippedV]
+    : []
+  )
+}
+
+const _validateOrElse = (condition, defaultValue, value) => (
+    condition(value) ? value : defaultValue
+)
+const looksLikeEncodedArray = (v) => v.match(/\[.*\]/)
 
 const fromConfigAndQuery = (config, query) => ({
   specific: decode(query.specific , true),
   geneQuery: decode(query.geneQuery , makeIntoGeneQueryFormat , looksLikeEncodedArray),
   selectedColumnIds:
-      isEmpty(query.filterFactors)
-        ? selectedColumnIdsFromInitialGroups(config.groups)
-        : selectedIdsFromFilterFactors(config.groups,decode(query.filterFactors))
-      ,
+    uniq(
+        _validateOrElse(
+            (ids) => Array.isArray(ids) && ids.length && uniq(ids).length === intersection(ids, allColumnIdsFromInitialGroups(config.groups)).length,
+            isEmpty(query.filterFactors)
+                ? selectedColumnIdsFromInitialGroups(config.groups)
+                : selectedIdsFromFilterFactors(config.groups,decode(query.filterFactors)),
+            decode(
+                query.selectedColumnIds,
+                makeIntoArray,
+                looksLikeEncodedArray,
+            )
+        )
+    ),
   cutoff: decode(query.cutoff, defaultCutoff(config)),
   regulation: decode(query.regulation, defaultRegulation(config)),
   unit: decode(query.unit, defaultUnit(config))
