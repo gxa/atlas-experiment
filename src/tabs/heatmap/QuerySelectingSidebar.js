@@ -24,19 +24,18 @@ const prettyName = (name) => (
     .replace(/\w\S*/, (txt) => (txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()))
 )
 
-const OpenerButton = ({
-  onClickButton
-}) => (
-  <Button bsSize="large" onClick={onClickButton}
+
+const OpenerButton = ({onClickButton}) =>
+  <Button bsSize={`large`} onClick={onClickButton}
           style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
-    <Glyphicon glyph="equalizer" />
+    <Glyphicon glyph={`equalizer`} />
     <span style={{verticalAlign: `middle`}}> Select</span>
   </Button>
-)
 
 OpenerButton.propTypes = {
   onClickButton : PropTypes.func.isRequired
 }
+
 
 const ModalWrapper = ({title, show, onCloseModal, onClickApply, children}) =>
   <Modal show={show} onHide={onCloseModal} bsSize="large">
@@ -92,29 +91,19 @@ const Header = ({text}) => (
     </h4>
 )
 
-const SidebarAndModal = React.createClass({
-  propTypes : {
-    isDifferential: PropTypes.bool.isRequired,
-    geneSuggesterUri: PropTypes.instanceOf(URI),
-    defaultQuery: PropTypes.bool.isRequired,
-    genesDistributedByCutoffUrl: PropTypes.string.isRequired,
-    loadingGifUrl: PropTypes.string.isRequired,
-    columnGroups: PropTypes.arrayOf(PropTypes.shape(ColumnGroupPropTypes)).isRequired,
-    availableDataUnits:PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
-    queryObjects: PropTypes.shape(QueryObjectsPropTypes).isRequired,
-    onChangeQueryObjects: PropTypes.func.isRequired
-  },
+class SidebarAndModal extends React.Component {
+  constructor(props) {
+    super(props)
 
-  getInitialState() {
-    return {
+    this.state = {
       showModal: ``,
       geneQuery: this.props.queryObjects.geneQuery,
       selectedColumnIds: this.props.queryObjects.selectedColumnIds,
       initialFilters: true
     }
-  },
+  }
 
-  render(){
+  render() {
     const showRegulation = [`UP`, `DOWN`, `UP_DOWN`].includes(this.props.queryObjects.regulation);
     const availableColumnIds = determineAvailableColumns(this.props.columnGroups);
     const maybeColumnsName =
@@ -126,7 +115,7 @@ const SidebarAndModal = React.createClass({
       columnGroups: this.props.columnGroups,
       selectedColumnIds: this.state.selectedColumnIds,
       availableColumnIds,
-      columnsName: maybeColumnsName || "Sample groups"
+      columnsName: maybeColumnsName || `Sample groups`
     }
 
     const onChangeProperty = (name, newValue) => {
@@ -134,56 +123,53 @@ const SidebarAndModal = React.createClass({
       newQueryObjects[name] = newValue
       return this.props.onChangeQueryObjects(newQueryObjects)
     }
-    const toggleModal = (which) => this.setState({showModal: which || ''})
-    const resetState = () => this.setState(this.getInitialState())
+    const toggleModal = (which) => this.setState({showModal: which || ``})
+
     return (
       <div>
-        <Header text="Genes"/>
-        <Genes
-          geneSuggesterUri={this.props.geneSuggesterUri}
-          geneQuery={this.state.geneQuery}
-          onChangeGeneQuery={(geneQuery) => {
-            this.setState({geneQuery})
-          }}/>
+        <Header text={`Genes`}/>
+        <Genes geneSuggesterUri={this.props.geneSuggesterUri}
+               geneQuery={this.state.geneQuery}
+               onChangeGeneQuery={(geneQuery) => { this.setState({geneQuery}) }}/>
 
-        <div className="row column margin-top-large">
-        <Button onClick={onChangeProperty.bind(null, "geneQuery", this.state.geneQuery)}
+        <div className={`row column margin-top-large`}>
+        <Button onClick={onChangeProperty.bind(null, `geneQuery`, this.state.geneQuery)}
                 style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`, marginRight: `1rem`}}>
           Apply
         </Button>
-        <Button onClick={resetState} style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
-          Reset
+        <Button onClick={() => this.setState({geneQuery: []})} style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
+          Clear
         </Button>
         </div>
 
         <Specificity
           specific={this.props.queryObjects.specific}
-          onChangeSpecific={onChangeProperty.bind(null, "specific")}/>
+          onChangeSpecific={onChangeProperty.bind(null, `specific`)}/>
         {showRegulation &&
           <Regulation
           regulation={this.props.queryObjects.regulation}
-          onChangeRegulation={onChangeProperty.bind(null, "regulation")}/>
+          onChangeRegulation={onChangeProperty.bind(null, `regulation`)}/>
         }
         <Cutoff
           cutoff={this.props.queryObjects.cutoff}
-          onChangeCutoff={onChangeProperty.bind(null, "cutoff")}
+          onChangeCutoff={onChangeProperty.bind(null, `cutoff`)}
         />
         {this.props.genesDistributedByCutoffUrl
           && (
           <div>
-            <a href="#" onClick={toggleModal.bind(null,"cutoff")} style={{marginBottom: `0.5rem`, fontSize: `85%`}}>
+            <a href={`#`} onClick={toggleModal.bind(null, `cutoff`)} style={{marginBottom: `0.5rem`, fontSize: `85%`}}>
               <Glyphicon glyph="stats"/>
               <span style={{marginLeft:"0.25rem"}}>See distribution</span>
             </a>
             <ModalWrapper
               title={`Cutoff - distribution of genes`}
               show={this.state.showModal === `cutoff`}
-              onCloseModal={resetState}>
+              onCloseModal={() => { this.setState({ showModal: `` }) }}>
 
               <CutoffDistribution
                 cutoff={this.props.queryObjects.cutoff}
                 unit={this.props.queryObjects.unit}
-                onChangeCutoff={flow([onChangeProperty.bind(null, "cutoff"), toggleModal.bind(null, "")])}
+                onChangeCutoff={flow([onChangeProperty.bind(null, `cutoff`), toggleModal.bind(null, ``)])}
                 genesDistributedByCutoffUrl={this.props.genesDistributedByCutoffUrl}
               />
             </ModalWrapper>
@@ -194,28 +180,28 @@ const SidebarAndModal = React.createClass({
           !!this.props.availableDataUnits.length && (
             <div>
               <br/>
-              <Header text={"Data units"}/>
+              <Header text={`Data units`}/>
               <Unit
                 unit={this.props.queryObjects.unit}
                 available={this.props.availableDataUnits}
-                onChangeUnit={onChangeProperty.bind(null, "unit")} />
+                onChangeUnit={onChangeProperty.bind(null, `unit`)} />
             </div>
           )
         }
         <br/>
-        <Header text={maybeColumnsName || "Experimental variables"}/>
-        <div className="row column margin-bottom-medium">
-          <OpenerButton onClickButton={toggleModal.bind(null, "columns")} />
+        <Header text={maybeColumnsName || `Experimental variables`}/>
+        <div className={`row column margin-bottom-medium`}>
+          <OpenerButton onClickButton={toggleModal.bind(null, `columns`)} />
         </div>
         <HeatmapColumnsSummary {...heatmapColumns} />
         <ModalWrapper
-          title={maybeColumnsName || "Experimental variables"}
+          title={maybeColumnsName || `Experimental variables`}
           show={this.state.showModal === `columns`}
-          onCloseModal={resetState}
+          onCloseModal={() => { this.setState({ showModal: ``, selectedColumnIds: this.props.queryObjects.selectedColumnIds }) }}
           onClickApply={flow([
-            toggleModal.bind(null, ""),
+            toggleModal.bind(null, ``),
             this.setState.bind(this, {initialFilters: this.state.initialFilters && xor(this.state.selectedColumnIds, this.props.queryObjects.selectedColumnIds).length === 0}),
-            onChangeProperty.bind(null, "selectedColumnIds", this.state.selectedColumnIds)
+            onChangeProperty.bind(null, `selectedColumnIds`, this.state.selectedColumnIds)
           ])} >
 
           <HeatmapColumnsChoice {...heatmapColumns}
@@ -226,9 +212,9 @@ const SidebarAndModal = React.createClass({
         </ModalWrapper>
 
         {this.props.defaultQuery && this.state.initialFilters &&
-          <div className="margin-top-medium">
-            <p className="margin-bottom-small">Initially showing:</p>
-            <ul className="small">
+          <div className={`margin-top-medium`}>
+            <p className={`margin-bottom-small`}>Initially showing:</p>
+            <ul className={`small`}>
               {this.props.columnGroups.filter(group => group.groupings.length > 1)
                 .map(group => <li key={group.name}>{prettyName(group.name)}: {group.selected}</li>)}
             </ul>
@@ -237,6 +223,18 @@ const SidebarAndModal = React.createClass({
     </div>
     )
   }
-})
+}
+
+SidebarAndModal.propTypes = {
+  isDifferential: PropTypes.bool.isRequired,
+  geneSuggesterUri: PropTypes.instanceOf(URI),
+  defaultQuery: PropTypes.bool.isRequired,
+  genesDistributedByCutoffUrl: PropTypes.string.isRequired,
+  loadingGifUrl: PropTypes.string.isRequired,
+  columnGroups: PropTypes.arrayOf(PropTypes.shape(ColumnGroupPropTypes)).isRequired,
+  availableDataUnits:PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
+  queryObjects: PropTypes.shape(QueryObjectsPropTypes).isRequired,
+  onChangeQueryObjects: PropTypes.func.isRequired
+}
 
 export default SidebarAndModal
