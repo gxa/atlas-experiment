@@ -4,6 +4,7 @@
   "description": "Expression Atlas experiment page frontend e.g. https://www.ebi.ac.uk/gxa/experiments/E-MTAB-513",
   "main": "lib/index.js",
   "scripts": {
+    "dev": "webpack-dev-server -d",
     "prepublishOnly": "rm -rf lib && babel src -d lib  --ignore '**/*.less' --copy-files",
     "prepack": "rm -rf lib && babel src -d lib  --ignore '**/*.less' --copy-files"
   },
