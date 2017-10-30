@@ -12,19 +12,16 @@ const TRANSITIONS = {
   fetchingSuggestion: 3
 }
 
-const AutocompleteBox = React.createClass({
-  propTypes: {
-    geneSuggesterUri : PropTypes.instanceOf(URI),
-    onGeneChosen: PropTypes.func.isRequired,
-    valuesToSkipInSuggestions: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired
-  },
-  getInitialState () {
-    return {
+class AutocompleteBox extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
       value: ``,
       currentTransition: TRANSITIONS.standBy,
       currentSuggestions: []
     }
-  },
+  }
 
   _requestSuggestions (value) {
     if(this.state.currentTransition === TRANSITIONS.fetchingSuggestion){
@@ -50,48 +47,49 @@ const AutocompleteBox = React.createClass({
       httpRequest.responseType = `json`;
       httpRequest.send();
     }
-  },
+  }
+
   _renderItem (item, isHighlighted) {
     const innerHtml = {__html: item.category ? `${item.value} (${item.category})` : item.value}
 
     // Background colour should match .button.primary colour in theme-atlas.css
     return (
       <div
-        className="menu-element"
-        style={isHighlighted ? {"background": "#3497c5", "color": "white"} : {}}
-        key={item.value + " " + item.category}
+        className={`menu-element`}
+        style={isHighlighted ? {background: `#3497c5`, color: `white`} : {}}
+        key={`${item.value} ${item.category}`}
         id={item.value}
       >
         <span dangerouslySetInnerHTML={innerHtml} />
       </div>
     )
-  },
+  }
 
   _isTooShortToShowHints (value) {
-    return !value || value.length <3
-  },
+    return !value || value.length < 3
+  }
 
   render () {
     return (
-      <div className={"gene-autocomplete "+(
+      <div className={`gene-autocomplete ` + (
           this.state.currentTransition === TRANSITIONS.underEdit
           || this.state.currentTransition === TRANSITIONS.fetchingSuggestion
-          ? "underEdit"
+          ? `underEdit`
           : this.state.currentTransition === TRANSITIONS.standBy
-            ? "standBy"
-            : "")}>
+            ? `standBy`
+            : ``)}>
         <Autocomplete
           open={this.state.currentTransition === TRANSITIONS.underEdit
                 || this.state.currentTransition === TRANSITIONS.fetchingSuggestion}
           onMenuVisibilityChange={()=>{}}
-          inputProps={{name: "Enter gene", id: "gene-autocomplete", type:"text"}}
+          inputProps={{name: `Enter gene`, id: `gene-autocomplete`, type: `text`}}
           value={this.state.value}
           items={this.state.currentSuggestions}
           getItemValue={(item) => item.value}
-          wrapperStyle={{display:"block"}}
+          wrapperStyle={{display: `block`}}
           onSelect={(value, item) => {
             this.setState({
-                value: '',
+                value: ``,
                 currentSuggestions: [],
                 currentTransition: TRANSITIONS.standBy
               },
@@ -108,12 +106,12 @@ const AutocompleteBox = React.createClass({
           }}
           renderMenu={(items, value, style) => {
             return (
-             <div className="menu" style={{ }}>
+             <div className={`menu`} style={{ }}>
                {this._isTooShortToShowHints(value)
                 ? false
                 : this.state.currentTransition === TRANSITIONS.fetchingSuggestion
                   ? (
-                    <div style={{padding: 6, float: "bottom"}}>
+                    <div style={{padding: 6, float: `bottom`}}>
                       Loading...
                     </div>
                   )
@@ -129,6 +127,12 @@ const AutocompleteBox = React.createClass({
       </div>
     )
   }
-})
+}
 
-module.exports = AutocompleteBox;
+AutocompleteBox.propTypes = {
+    geneSuggesterUri : PropTypes.instanceOf(URI),
+    onGeneChosen: PropTypes.func.isRequired,
+    valuesToSkipInSuggestions: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired
+}
+
+export default AutocompleteBox
