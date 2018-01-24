@@ -1,6 +1,6 @@
 {
   "name": "expression-atlas-experiment-page",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "description": "Expression Atlas experiment page frontend e.g. https://www.ebi.ac.uk/gxa/experiments/E-MTAB-513",
   "main": "lib/index.js",
   "scripts": {
@@ -17,7 +17,7 @@
   "repository": "https://github.com/gxa/atlas-experiment",
   "dependencies": {
     "expression-atlas-disclaimers": "latest",
-    "expression-atlas-heatmap-highcharts": "latest",
+    "expression-atlas-heatmap-highcharts": "3.9.0",
     "lodash": "^4.17.4",
     "pluralize": "^6.0.0",
     "prop-types": "^15.5.10",
