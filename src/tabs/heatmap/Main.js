@@ -16,7 +16,7 @@ const Main = (props) => {
 
   return (
     <div className={`row expanded column margin-top-large`}>
-      <div className={`small-3 medium-2 columns padding-left-none`} >
+      <div className={`small-3 medium-2 columns padding-left-none`} style={{overflowX: `hidden`}} >
         <Sidebar
           isDifferential={props.isDifferential}
           geneSuggesterUri={URI(`json/suggestions`, props.atlasUrl).addSearch(props.species ? {species: props.species} : {})}
