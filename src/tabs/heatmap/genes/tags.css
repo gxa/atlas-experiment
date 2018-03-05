@@ -1,6 +1,10 @@
+/* Different from ebi-global.css tag to wrap long lines */
 .gxaTag {
-  overflow: hidden;
-  white-space: pre-wrap;
-  display: inline-flex;
-  margin: 0 0.2rem 0.2rem 0;
+  margin: 0 0.2rem 0.5rem 0;
+  padding: 0.5rem 0.5rem;
+  font-size: 0.8rem;
+  line-height: 2.5;
+  color: white;
+  background-color: #3497c5;
+  border-bottom: none;
 }

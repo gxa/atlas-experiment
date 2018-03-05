@@ -71,7 +71,7 @@ class AutocompleteBox extends React.Component {
 
   render () {
     return (
-      <div className={`gene-autocomplete ` + (
+      <div className={`padding-top-large gene-autocomplete ` + (
           this.state.currentTransition === TRANSITIONS.underEdit
           || this.state.currentTransition === TRANSITIONS.fetchingSuggestion
           ? `underEdit`

@@ -14,9 +14,9 @@ const noTags = {
 }
 
 const Main = ({geneQuery, onChangeGeneQuery, geneSuggesterUri}) => (
-  <div>
+  <div style={{overflowWrap: `break-word`}}>
     {geneQuery.map( ({value, category}) =>
-      <span key={value + "" + category} className="tag gxaTag">
+      <span key={value + "" + category} className="gxaTag">
         <span title={
           category
             ? `${value} (${category})`
