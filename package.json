@@ -17,7 +17,7 @@
   "repository": "https://github.com/gxa/atlas-experiment",
   "dependencies": {
     "expression-atlas-disclaimers": "0.0.3",
-    "expression-atlas-heatmap-highcharts": "^3.10.0",
+    "expression-atlas-heatmap-highcharts": "^3.12.0",
     "lodash": "^4.17.4",
     "pluralize": "^7.0.0",
     "prop-types": "^15.6.0",
