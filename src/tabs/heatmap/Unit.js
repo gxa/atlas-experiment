@@ -6,8 +6,8 @@ import Fieldset from './common/Fieldset.js'
 
 const Unit = ({unit, available, onChangeUnit}) => (
   available.length === 1
-  ? <div>{available[0]}</div>
-  : <Fieldset value={unit}
+    ? <div>{available[0]}</div>
+    : <Fieldset value={unit}
       onChangeValue={onChangeUnit}
       options={available.map((n)=> [n,n])} />
 )

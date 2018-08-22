@@ -11,10 +11,10 @@ import {MultipleGroupingsSection, OneGroupingReadOnlySection} from './ColumnFilt
 const sameIds = (xs, ys) => isEqual(new Set(xs), new Set(ys))
 
 const tryAggregateGroupings = (groupings) =>
-    groupIntoPairs(groupings, g => g[1].map(e=>e).sort().join(""))
+  groupIntoPairs(groupings, g => g[1].map(e=>e).sort().join(``))
     .map(p => [
-        p[1].map(g => g[0]).sort().join(", ")
-        , p[1][0][1]
+      p[1].map(g => g[0]).sort().join(`, `)
+      , p[1][0][1]
     ] )
 
 
@@ -27,14 +27,14 @@ const Main = ({isDifferential, columnGroups, selectedColumnIds, onNewSelectedCol
 
   columnGroups.forEach(group => {
     if (group.groupings.length === 1) {
-        oneGroupingColumnGroups.push(group)
+      oneGroupingColumnGroups.push(group)
     } else if (group.groupings.every( g => sameIds(g[1], availableColumnIds)
-        )) {
-        if(isDifferential && group.groupings.length === 2){
-            gottaBeContrastComparisonColumnGroups.push(group)
-        } else {
-            multipleGroupingsEachCoveringAllIdsColumnGroups.push(group)
-        }
+    )) {
+      if(isDifferential && group.groupings.length === 2){
+        gottaBeContrastComparisonColumnGroups.push(group)
+      } else {
+        multipleGroupingsEachCoveringAllIdsColumnGroups.push(group)
+      }
     } else {
       multipleGroupingsColumnGroups.push(group)
     }
@@ -74,12 +74,12 @@ const Main = ({isDifferential, columnGroups, selectedColumnIds, onNewSelectedCol
       {multipleGroupingsAggregatedColumnGroups.length > 0 &&
         <div>
           {multipleGroupingsAggregatedColumnGroups.map(group =>
-              <MultipleGroupingsSection key={group.name}
-                       availableIds={availableColumnIds}
-                       selectedIds={selectedColumnIds}
-                       onNewSelectedIds={onNewSelectedColumnIds}
-                       readOnly={false}
-                       {...group} />
+            <MultipleGroupingsSection key={group.name}
+              availableIds={availableColumnIds}
+              selectedIds={selectedColumnIds}
+              onNewSelectedIds={onNewSelectedColumnIds}
+              readOnly={false}
+              {...group} />
           )}
         </div>
       }
@@ -88,11 +88,11 @@ const Main = ({isDifferential, columnGroups, selectedColumnIds, onNewSelectedCol
       <div className={multipleGroupingsAggregatedColumnGroups.length > 0 ? `margin-top-xlarge` : ``}>
         {gottaBeContrastComparisonColumnGroups.map(group =>
           <OneGroupingReadOnlySection
-                key={group.name}
-                name={group.name}
-                availableIds={availableColumnIds}
-                selectedIds={selectedColumnIds}
-                text={`${group.groupings[0][0]} vs ${group.groupings[1][0]}`}/>
+            key={group.name}
+            name={group.name}
+            availableIds={availableColumnIds}
+            selectedIds={selectedColumnIds}
+            text={`${group.groupings[0][0]} vs ${group.groupings[1][0]}`}/>
         )}
       </div>
       }
@@ -101,31 +101,31 @@ const Main = ({isDifferential, columnGroups, selectedColumnIds, onNewSelectedCol
       <div className={multipleGroupingsAggregatedColumnGroups.length > 0 ? `margin-top-xlarge` : ``}>
         {multipleGroupingsEachCoveringAllIdsColumnGroups.map(group =>
           <OneGroupingReadOnlySection
-                key={group.name}
-                name={group.name}
-                availableIds={availableColumnIds}
-                selectedIds={selectedColumnIds}
-                text={
-                    group.groupings
-                    .map(g=>g[0])
-                    .join(", ")}/>
+            key={group.name}
+            name={group.name}
+            availableIds={availableColumnIds}
+            selectedIds={selectedColumnIds}
+            text={
+              group.groupings
+                .map(g=>g[0])
+                .join(`, `)}/>
         )}
       </div>
       }
 
       {oneGroupingColumnGroups.length > 0 &&
       <div className={
-          multipleGroupingsAggregatedColumnGroups.length
+        multipleGroupingsAggregatedColumnGroups.length
           + gottaBeContrastComparisonColumnGroups.length
           + multipleGroupingsEachCoveringAllIdsColumnGroups.length  > 0 ?
-                      `margin-top-xlarge` : ``}>
+          `margin-top-xlarge` : ``}>
         {oneGroupingColumnGroups.map(group =>
-            <OneGroupingReadOnlySection
-                key={group.name}
-                name={group.name}
-                availableIds={availableColumnIds}
-                selectedIds={selectedColumnIds}
-                text={group.groupings[0][0]} />
+          <OneGroupingReadOnlySection
+            key={group.name}
+            name={group.name}
+            availableIds={availableColumnIds}
+            selectedIds={selectedColumnIds}
+            text={group.groupings[0][0]} />
         )}
       </div>
       }
