@@ -16,7 +16,7 @@ const noTags = {
 const Main = ({geneQuery, onChangeGeneQuery, geneSuggesterUri}) => (
   <div style={{overflowWrap: `break-word`}}>
     {geneQuery.map( ({value, category}) =>
-      <span key={value + "" + category} className="gxaTag">
+      <span key={value + `` + category} className="gxaTag">
         <span title={
           category
             ? `${value} (${category})`
@@ -24,8 +24,8 @@ const Main = ({geneQuery, onChangeGeneQuery, geneSuggesterUri}) => (
         }>
           {value}
         </span>
-        <span style={{marginLeft: "0.2rem", position:"relative", cursor: "pointer"}} aria-hidden="true"
-              onClick={()=>{onChangeGeneQuery(geneQuery.filter(term => term.value !== value))}}>✖</span>
+        <span style={{marginLeft: `0.2rem`, position:`relative`, cursor: `pointer`}} aria-hidden="true"
+          onClick={()=>{onChangeGeneQuery(geneQuery.filter(term => term.value !== value))}}>✖</span>
       </span>
     )}
 
@@ -34,7 +34,7 @@ const Main = ({geneQuery, onChangeGeneQuery, geneSuggesterUri}) => (
       valuesToSkipInSuggestions={geneQuery.map( ({value}) => value )}
       onGeneChosen={
         newGene =>
-            onChangeGeneQuery([...geneQuery, {value: sanitizeHtml(newGene.value, noTags), category: newGene.category}])
+          onChangeGeneQuery([...geneQuery, {value: sanitizeHtml(newGene.value, noTags), category: newGene.category}])
       }
     />
   </div>

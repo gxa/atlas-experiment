@@ -4,14 +4,14 @@ import PropTypes from 'prop-types'
 const MenuItem = ({value, onChangeValue, optionValue, label}) => (
   <div>
     <input
-      style={{margin:"0px"}}
+      style={{margin:`0px`}}
       type="radio"
       name={`menu-item-${optionValue}`}
       value={optionValue}
-      checked={optionValue==value}
+      checked={optionValue===value}
       id={`menu-item-${optionValue}`}
-      onChange={optionValue==value ? ()=>{} : (()=>{onChangeValue(optionValue)})}
-      />
+      onChange={optionValue===value ? ()=>{} : (()=>{onChangeValue(optionValue)})}
+    />
     <label htmlFor={`menu-item-${optionValue}`}>
       {label}
     </label>
@@ -27,7 +27,7 @@ MenuItem.propTypes = {
 
 
 const Fieldset = (props) => (
-  <fieldset className="fieldset" style={{padding:"0.25rem"}}>
+  <fieldset className="fieldset" style={{padding:`0.25rem`}}>
     {
       props.options.map((option) => (
         <MenuItem key={option[1]} optionValue={option[0]} label={option[1]} {...props} />

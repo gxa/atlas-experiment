@@ -7,14 +7,14 @@ import toPlural from 'pluralize'
 import TablePropTypes from './ExperimentDesignTablePropTypes.js'
 
 //http://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript
-const toTitleCase = (str) => str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+const toTitleCase = (str) => str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()})
 
 const aggregateText = (name, vals) => {
   const xs = uniq(vals)
   return (
-    xs.length === 1 || (xs.length < 5 && xs.join(", ").length < 30)
-    ? xs.join(", ")
-    : toPlural(name.toLowerCase() , xs.length, true)
+    xs.length === 1 || (xs.length < 5 && xs.join(`, `).length < 30)
+      ? xs.join(`, `)
+      : toPlural(name.toLowerCase() , xs.length, true)
   )
 }
 
@@ -40,9 +40,9 @@ const ExperimentDesign = ({
     }
     className="-striped"
     style={{
-      fontSize: "small",
-      padding: "7px 0px",
-      height: "80%"
+      fontSize: `small`,
+      padding: `7px 0px`,
+      height: `80%`
     }}
     data={data}
     {...options}
@@ -56,12 +56,12 @@ const BaselineExperimentDesign = ({
   ExperimentDesign({
     data:
       data
-      .map(({properties, values}) => ({
-        values: [[properties.analysed? "Yes" : "No"]].concat(values)
-      })),
+        .map(({properties, values}) => ({
+          values: [[properties.analysed? `Yes` : `No`]].concat(values)
+        })),
     headers:
-      [{name:"", values: ["Analysed"]}].concat(headers)
-    })
+      [{name:``, values: [`Analysed`]}].concat(headers)
+  })
 )
 
 const DifferentialExperimentDesign = ({
@@ -71,9 +71,9 @@ const DifferentialExperimentDesign = ({
   ExperimentDesign({
     data:
       data.map(({properties, values}) => ({
-      values: [[properties.contrastName || "N/A", toTitleCase(properties.referenceOrTest || "")]].concat(values)
-    })),
-    headers: [{name: "", values: ["Comparison", "Reference/Test"]}].concat(headers),
+        values: [[properties.contrastName || `N/A`, toTitleCase(properties.referenceOrTest || ``)]].concat(values)
+      })),
+    headers: [{name: ``, values: [`Comparison`, `Reference/Test`]}].concat(headers),
     options: {
       pivotBy: [1]
     }

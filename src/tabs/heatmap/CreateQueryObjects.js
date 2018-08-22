@@ -1,4 +1,4 @@
-import {isEqual, intersection,union, isEmpty, sortBy, uniq} from 'lodash'
+import {isEqual, intersection, isEmpty, sortBy, uniq} from 'lodash'
 
 /*
 1) filterFactors -> selectedColumnIds
@@ -35,17 +35,17 @@ like they are used to.
 
 const idsSelectedInInitialFilter = ({name, groupings, selected}) => (
   [].concat.apply([],
-    ["all", "ALL"].indexOf(selected) > -1
+    [`all`, `ALL`].indexOf(selected) > -1
       ? groupings
         .map((g) => g[1])
       : groupings
         .filter((g) => selected.indexOf(g[0]) > -1 )
         .map((g) => g[1])
-    )
+  )
 )
 
 const fakeAnInitialFilter = ({name, groupings} , filterFactors) => (
-  {name, groupings, selected: filterFactors[name] || "all"}
+  {name, groupings, selected: filterFactors[name] || `all`}
 )
 
 const selectedIdsFromFilterFactors = (filters, filterFactors) => (
@@ -76,49 +76,49 @@ const makeFilterFactorsGivenSelectedIds = (filters, selectedIds) => {
   const filterFactors = {}
 
   filters
-  .forEach(({name, groupings, values}) => {
-    filterFactors[name] =
+    .forEach(({name, groupings, values}) => {
+      filterFactors[name] =
       groupings
-      .filter((g) => (
-        intersection(selectedIds, g[1]).length
-      ))
-      .map((g) => g[0])
-  })
+        .filter((g) => (
+          intersection(selectedIds, g[1]).length
+        ))
+        .map((g) => g[0])
+    })
   /*
     If a factor value is behaving the same as "all", make it all.
     Sort to try eliminate largest subsets first.
   */
   sortBy(Object.entries(filterFactors),
-    p => -p[1].length + " " + p[0]
+    p => -p[1].length + ` ` + p[0]
   )
-  .map(p => p[0])
-  .forEach((factorType) => {
-    if(isEqual(
-      new Set(selectedIds),
-      new Set(selectedIdsFromFilterFactors(
-        filters,
-        copyWithOnePropertyDifferent(filterFactors, factorType, "all")
-      ))
-    )) {
-      filterFactors[factorType] = "all"
-    }
-  })
+    .map(p => p[0])
+    .forEach((factorType) => {
+      if(isEqual(
+        new Set(selectedIds),
+        new Set(selectedIdsFromFilterFactors(
+          filters,
+          copyWithOnePropertyDifferent(filterFactors, factorType, `all`)
+        ))
+      )) {
+        filterFactors[factorType] = `all`
+      }
+    })
 
   const sparserFilterFactors = {}
   Object.keys(filterFactors)
-  .forEach((factorType) => {
-    if(["all", "ALL"].indexOf(filterFactors[factorType]) == -1){
-      sparserFilterFactors[factorType] = filterFactors[factorType]
-    }
-  })
+    .forEach((factorType) => {
+      if([`all`, `ALL`].indexOf(filterFactors[factorType]) == -1){
+        sparserFilterFactors[factorType] = filterFactors[factorType]
+      }
+    })
 
   return sparserFilterFactors
 }
 
 const decode = (encodedV, defaultV, validateV) => {
-  const fallback = typeof defaultV === 'function' ? defaultV : () => defaultV
-  const precondition = typeof validateV === 'function' ? validateV : (v) => !!v
-  const s = encodedV ? decodeURIComponent(encodedV) : ""
+  const fallback = typeof defaultV === `function` ? defaultV : () => defaultV
+  const precondition = typeof validateV === `function` ? validateV : (v) => !!v
+  const s = encodedV ? decodeURIComponent(encodedV) : ``
 
   if (precondition(s)) {
     try {
@@ -141,60 +141,60 @@ const toQuery = ({groups}, queryObjects) => Object.assign({
   specific: encode(queryObjects.specific),
   geneQuery: encode(queryObjects.geneQuery),
   filterFactors: encode(
-      makeFilterFactorsGivenSelectedIds(groups,queryObjects.selectedColumnIds)
-    ),
+    makeFilterFactorsGivenSelectedIds(groups,queryObjects.selectedColumnIds)
+  ),
   cutoff: encode(queryObjects.cutoff)
-}, ["UP","DOWN","UP_DOWN"].indexOf(queryObjects.regulation)>-1
-    ? {regulation: encode(queryObjects.regulation)}
-    : {},
-    queryObjects.unit
-    ? {unit: encode(queryObjects.unit)}
-    : {}
+}, [`UP`,`DOWN`,`UP_DOWN`].indexOf(queryObjects.regulation)>-1
+  ? {regulation: encode(queryObjects.regulation)}
+  : {},
+queryObjects.unit
+  ? {unit: encode(queryObjects.unit)}
+  : {}
 )
 
 const defaultRegulation = ({isDifferential}) => (
   isDifferential
-  ? "UP_DOWN"
-  : "OFF"
+    ? `UP_DOWN`
+    : `OFF`
 )
 
 const defaultCutoff = ({isDifferential, isRnaSeq}) => (
   isDifferential
-  ? {
-    foldChange: 1.0,
-    pValue: 0.05
-  }
-  : {
-    value: isRnaSeq? 0.5 : 1e-6
-  }
+    ? {
+      foldChange: 1.0,
+      pValue: 0.05
+    }
+    : {
+      value: isRnaSeq? 0.5 : 1e-6
+    }
 )
 
 const defaultUnit = ({isDifferential, isRnaSeq, availableDataUnits}) => (
   (isRnaSeq && !isDifferential && availableDataUnits.length)
-  ? availableDataUnits[0]
-  : ""
+    ? availableDataUnits[0]
+    : ``
 )
 
 const makeIntoGeneQueryFormat = (v) => {
-  const strippedV = v.replace(/\W/g, '')
+  const strippedV = v.replace(/\W/g, ``)
   return (
     strippedV
-    ? [{value:strippedV}]
-    : []
+      ? [{value:strippedV}]
+      : []
   )
 }
 
 const makeIntoArray = (v) => {
-  const strippedV = v.replace(/\W/g, '')
+  const strippedV = v.replace(/\W/g, ``)
   return (
     strippedV
-    ? [strippedV]
-    : []
+      ? [strippedV]
+      : []
   )
 }
 
 const _validateOrElse = (condition, defaultValue, value) => (
-    condition(value) ? value : defaultValue
+  condition(value) ? value : defaultValue
 )
 const looksLikeEncodedArray = (v) => v.match(/\[.*\]/)
 
@@ -203,17 +203,17 @@ const fromConfigAndQuery = (config, query) => ({
   geneQuery: decode(query.geneQuery , makeIntoGeneQueryFormat , looksLikeEncodedArray),
   selectedColumnIds:
     uniq(
-        _validateOrElse(
-            (ids) => Array.isArray(ids) && ids.length && uniq(ids).length === intersection(ids, allColumnIdsFromInitialGroups(config.groups)).length,
-            isEmpty(query.filterFactors)
-                ? selectedColumnIdsFromInitialGroups(config.groups)
-                : selectedIdsFromFilterFactors(config.groups,decode(query.filterFactors)),
-            decode(
-                query.selectedColumnIds,
-                makeIntoArray,
-                looksLikeEncodedArray,
-            )
+      _validateOrElse(
+        (ids) => Array.isArray(ids) && ids.length && uniq(ids).length === intersection(ids, allColumnIdsFromInitialGroups(config.groups)).length,
+        isEmpty(query.filterFactors)
+          ? selectedColumnIdsFromInitialGroups(config.groups)
+          : selectedIdsFromFilterFactors(config.groups,decode(query.filterFactors)),
+        decode(
+          query.selectedColumnIds,
+          makeIntoArray,
+          looksLikeEncodedArray,
         )
+      )
     ),
   cutoff: decode(query.cutoff, defaultCutoff(config)),
   regulation: decode(query.regulation, defaultRegulation(config)),
@@ -234,9 +234,9 @@ const heatmapCallbackParametersFromQueryObjects = ({
   {
     specific,
     geneQuery:JSON.stringify(geneQuery),
-    selectedColumnIds: selectedColumnIds.join(",")
+    selectedColumnIds: selectedColumnIds.join(`,`)
   },
-  isDifferential && regulation!=="OFF"
+  isDifferential && regulation!==`OFF`
     ? {regulation}
     : {},
   isDifferential

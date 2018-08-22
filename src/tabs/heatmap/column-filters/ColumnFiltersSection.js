@@ -7,9 +7,9 @@ import './Components.css'
 
 const headerName = (name) => (
   name
-  .replace(/_/g," ")
-  .replace(/\w\S*/g, (txt) => (txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()))
-  + ": "
+    .replace(/_/g,` `)
+    .replace(/\w\S*/g, (txt) => (txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()))
+  + `: `
 )
 
 const CommonPropTypes = {
@@ -19,14 +19,14 @@ const CommonPropTypes = {
 }
 
 const ManyGroupingsPropTypes = Object.assign({}, CommonPropTypes, {
-    groupings: ColumnGroupPropTypes.groupings,
-    onNewSelectedIds: PropTypes.func.isRequired
+  groupings: ColumnGroupPropTypes.groupings,
+  onNewSelectedIds: PropTypes.func.isRequired
 })
 
 const SELECTION = {
-  UNSELECTED: "unselected",
-  PARTIAL: "partiallySelected",
-  SELECTED: "selected"
+  UNSELECTED: `unselected`,
+  PARTIAL: `partiallySelected`,
+  SELECTED: `selected`
 }
 
 const SELECTION_LIST = [
@@ -42,17 +42,17 @@ const GroupingPropTypes = {
 }
 
 const determineGroupingSelection = ({selectedIds,groupingIds}) => {
-    const idsInGroupingAndSelected = intersection(selectedIds, groupingIds)
-    const idsInGroupingButNotSelected = difference(groupingIds, idsInGroupingAndSelected)
-    const isFullySelected = groupingIds.length > 0 && idsInGroupingButNotSelected.length === 0
-    const isFullyUnselected = idsInGroupingAndSelected.length === 0
-    return (
-        isFullyUnselected
-         ? SELECTION.UNSELECTED
-         : isFullySelected
-           ? SELECTION.SELECTED
-           : SELECTION.PARTIAL
-    )
+  const idsInGroupingAndSelected = intersection(selectedIds, groupingIds)
+  const idsInGroupingButNotSelected = difference(groupingIds, idsInGroupingAndSelected)
+  const isFullySelected = groupingIds.length > 0 && idsInGroupingButNotSelected.length === 0
+  const isFullyUnselected = idsInGroupingAndSelected.length === 0
+  return (
+    isFullyUnselected
+      ? SELECTION.UNSELECTED
+      : isFullySelected
+        ? SELECTION.SELECTED
+        : SELECTION.PARTIAL
+  )
 }
 
 const makeGroupingProps = ({selectedIds,onNewSelectedIds}, grouping) => {
@@ -64,17 +64,17 @@ const makeGroupingProps = ({selectedIds,onNewSelectedIds}, grouping) => {
       groupingSelection,
     onToggle:
       groupingSelection === SELECTION.UNSELECTED
-      ? () => {
-        onNewSelectedIds(union(grouping[1], selectedIds))
-      }
-      : () => {
-        onNewSelectedIds(difference(selectedIds, grouping[1]))
-      }
+        ? () => {
+          onNewSelectedIds(union(grouping[1], selectedIds))
+        }
+        : () => {
+          onNewSelectedIds(difference(selectedIds, grouping[1]))
+        }
   }
 }
 
 const ReadOnlyGrouping = ({text, selection}) => (
-  <span className={"readOnlyGrouping "+selection}>
+  <span className={`readOnlyGrouping `+selection}>
     {
       text
     }
@@ -83,20 +83,20 @@ const ReadOnlyGrouping = ({text, selection}) => (
 ReadOnlyGrouping.propTypes = GroupingPropTypes
 
 const CheckboxGrouping = ({text, selection, onToggle}) => (
-  <div className={"checkboxGrouping " + selection}>
+  <div className={`checkboxGrouping ` + selection}>
     <input type="checkbox"
       value={text}
       onChange={onToggle}
       checked={[SELECTION.SELECTED, SELECTION.PARTIAL].indexOf(selection)>-1}
       ref={checkbox => {checkbox ? checkbox.indeterminate = selection === SELECTION.PARTIAL : null}}
-      />
+    />
     { text
       ? <span>
-          {text}
-        </span>
-      : <span style={{opacity: 0.5, fontStyle:"italic"}}>
+        {text}
+      </span>
+      : <span style={{opacity: 0.5, fontStyle:`italic`}}>
           missing
-        </span>
+      </span>
     }
   </div>
 )
@@ -106,13 +106,13 @@ const PlainSectionBody = ({groupings, selectedIds, onNewSelectedIds}) => (
   <div className="sectionBody">
     {
       groupings
-      .map((e)=>e)
-      .sort((g1, g2)=> (
-        g1[0].localeCompare(g2[0])
-      ))
-      .map((grouping) => (
-        <CheckboxGrouping {...makeGroupingProps({selectedIds,onNewSelectedIds}, grouping)} />
-      ))
+        .map((e)=>e)
+        .sort((g1, g2)=> (
+          g1[0].localeCompare(g2[0])
+        ))
+        .map((grouping) => (
+          <CheckboxGrouping {...makeGroupingProps({selectedIds,onNewSelectedIds}, grouping)} />
+        ))
     }
   </div>
 )
@@ -120,20 +120,20 @@ PlainSectionBody.propTypes = ManyGroupingsPropTypes
 
 const filterGroupingsBySelections = ({selectedIds}, selectionsAllowed, groupings) => (
   groupings
-  .filter((grouping) => (
-    selectionsAllowed.indexOf(makeGroupingProps({selectedIds}, grouping).selection) > -1
-  ))
+    .filter((grouping) => (
+      selectionsAllowed.indexOf(makeGroupingProps({selectedIds}, grouping).selection) > -1
+    ))
 )
 
 const SELECTION_DESCRIPTIONS = {}
-SELECTION_DESCRIPTIONS[SELECTION.UNSELECTED] = "currently not selected"
-SELECTION_DESCRIPTIONS[SELECTION.PARTIAL] = "partially selected"
-SELECTION_DESCRIPTIONS[SELECTION.SELECTED] = ""
+SELECTION_DESCRIPTIONS[SELECTION.UNSELECTED] = `currently not selected`
+SELECTION_DESCRIPTIONS[SELECTION.PARTIAL] = `partially selected`
+SELECTION_DESCRIPTIONS[SELECTION.SELECTED] = ``
 
 const SelectionOption = ({selection,isCurrentlyShown,groupingsForThisSelection}) => (
   <span className="linksForToggleShow">
     {
-      `${groupingsForThisSelection.length} options ${SELECTION_DESCRIPTIONS[selection]} - ${isCurrentlyShown?"hide":"show"} ...`
+      `${groupingsForThisSelection.length} options ${SELECTION_DESCRIPTIONS[selection]} - ${isCurrentlyShown?`hide`:`show`} ...`
     }
   </span>
 )
@@ -183,12 +183,12 @@ class SectionBodyWithCollapsableLinks extends React.Component {
             ),
             groupings
           )
-          .sort((g1, g2)=> (
-            g1[0].localeCompare(g2[0])
-          ))
-          .map((grouping) => (
-            <CheckboxGrouping {...makeGroupingProps({selectedIds,onNewSelectedIds}, grouping)} />
-          ))
+            .sort((g1, g2)=> (
+              g1[0].localeCompare(g2[0])
+            ))
+            .map((grouping) => (
+              <CheckboxGrouping {...makeGroupingProps({selectedIds,onNewSelectedIds}, grouping)} />
+            ))
         }
         { !!unselectedGroupingsCount &&
           <span className="linkForToggleShow" onClick={()=>{
@@ -196,8 +196,8 @@ class SectionBodyWithCollapsableLinks extends React.Component {
           }}>
             {
               showUnselected
-              ? `(hide unselected)`
-              : `${selectedGroupingsCount ? "+ ": ""}${unselectedGroupingsCount} unselected (show...)`
+                ? `(hide unselected)`
+                : `${selectedGroupingsCount ? `+ `: ``}${unselectedGroupingsCount} unselected (show...)`
             }
           </span>
         }
@@ -206,11 +206,11 @@ class SectionBodyWithCollapsableLinks extends React.Component {
           <span className="linkForToggleShow"  onClick={()=>{
             this.setState(({showPartiallySelected})=>({showPartiallySelected:!showPartiallySelected}))
           }}>
-          {
-            showPartiallySelected
-            ? `(hide partially selected)`
-            : `${selectedGroupingsCount ? "+ ": ""}${this._countPartiallySelected()} partially selected (show...)`
-          }
+            {
+              showPartiallySelected
+                ? `(hide partially selected)`
+                : `${selectedGroupingsCount ? `+ `: ``}${this._countPartiallySelected()} partially selected (show...)`
+            }
           </span>
         }
       </div>
@@ -222,18 +222,18 @@ SectionBodyWithCollapsableLinks.propTypes = ManyGroupingsPropTypes
 
 
 const OneGroupingReadOnlySection = ({name, text, availableIds, selectedIds}) => (
-    <div className="margin-top-large gxaSection">
-      <span className="title">
-        {headerName(name)}
-      </span>
-      <ReadOnlyGrouping
-        text={text}
-        selection={determineGroupingSelection({selectedIds, groupingIds: availableIds})}/>
-    </div>
+  <div className="margin-top-large gxaSection">
+    <span className="title">
+      {headerName(name)}
+    </span>
+    <ReadOnlyGrouping
+      text={text}
+      selection={determineGroupingSelection({selectedIds, groupingIds: availableIds})}/>
+  </div>
 )
 
 OneGroupingReadOnlySection.propTypes= Object.assign({}, CommonPropTypes, {
-    text: PropTypes.string
+  text: PropTypes.string
 })
 
 class MultipleGroupingsSection extends React.Component {
@@ -249,23 +249,23 @@ class MultipleGroupingsSection extends React.Component {
     const {name, groupings} = this.props
     const {open} = this.state
     return (
-        <div className="margin-top-large gxaSection">
-          <div className="title openable"
-             onClick={()=>{
-               this.setState(({open})=>({open:!open}))
-             }}
-             href="#">
-             {headerName(name)}
-             {
-               <Glyphicon style={{fontSize: `x-small`, paddingLeft: `5px`}} glyph={open? "menu-up" : "menu-down"}/>
-             }
-          </div>
+      <div className="margin-top-large gxaSection">
+        <div className="title openable"
+          onClick={()=>{
+            this.setState(({open})=>({open:!open}))
+          }}
+          href="#">
+          {headerName(name)}
           {
-            open && (groupings.length > 10
-            ? <SectionBodyWithCollapsableLinks {...this.props} />
-            : <PlainSectionBody {...this.props} />)
+            <Glyphicon style={{fontSize: `x-small`, paddingLeft: `5px`}} glyph={open? `menu-up` : `menu-down`}/>
           }
         </div>
+        {
+          open && (groupings.length > 10
+            ? <SectionBodyWithCollapsableLinks {...this.props} />
+            : <PlainSectionBody {...this.props} />)
+        }
+      </div>
     )
   }
 }
@@ -273,4 +273,4 @@ class MultipleGroupingsSection extends React.Component {
 MultipleGroupingsSection.propTypes = ManyGroupingsPropTypes
 
 
-export {MultipleGroupingsSection, OneGroupingReadOnlySection};
+export {MultipleGroupingsSection, OneGroupingReadOnlySection}

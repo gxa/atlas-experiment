@@ -27,7 +27,7 @@ const prettyName = (name) => (
 
 const OpenerButton = ({onClickButton}) =>
   <Button bsSize={`large`} onClick={onClickButton}
-          style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
+    style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
     <Glyphicon glyph={`equalizer`} />
     <span style={{verticalAlign: `middle`}}> Select</span>
   </Button>
@@ -45,12 +45,12 @@ const ModalWrapper = ({title, show, onCloseModal, onClickApply, children}) =>
 
     <Modal.Footer>
       { onClickApply && <Button bsStyle="primary"
-                                onClick={onClickApply}
-                                style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>Apply
-                        </Button>
+        onClick={onClickApply}
+        style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>Apply
+      </Button>
       }
       <Button onClick={onCloseModal}
-              style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>Close
+        style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>Close
       </Button>
     </Modal.Footer>
   </Modal>
@@ -67,7 +67,7 @@ const determineAvailableColumns = (columnGroups) => (
     columnGroups.map((group) => (
       union.apply([],
         group.groupings
-        .map((g)=> g[1])
+          .map((g)=> g[1])
       )
     ))
   )
@@ -86,9 +86,9 @@ const determineColumnNameFromFirstGroup = (availableColumnIds, group) => {
 }
 
 const Header = ({text}) => (
-    <h4>
-      {text}
-    </h4>
+  <h4>
+    {text}
+  </h4>
 )
 
 class SidebarAndModal extends React.Component {
@@ -104,12 +104,12 @@ class SidebarAndModal extends React.Component {
   }
 
   render() {
-    const showRegulation = [`UP`, `DOWN`, `UP_DOWN`].includes(this.props.queryObjects.regulation);
-    const availableColumnIds = determineAvailableColumns(this.props.columnGroups);
+    const showRegulation = [`UP`, `DOWN`, `UP_DOWN`].includes(this.props.queryObjects.regulation)
+    const availableColumnIds = determineAvailableColumns(this.props.columnGroups)
     const maybeColumnsName =
       this.props.isDifferential
-      ? `Comparisons`
-      : determineColumnNameFromFirstGroup(availableColumnIds, this.props.columnGroups[0])
+        ? `Comparisons`
+        : determineColumnNameFromFirstGroup(availableColumnIds, this.props.columnGroups[0])
 
     const heatmapColumns = {
       columnGroups: this.props.columnGroups,
@@ -119,7 +119,7 @@ class SidebarAndModal extends React.Component {
     }
 
     const onChangeProperty = (name, newValue) => {
-      const newQueryObjects = Object.assign({}, this.props.queryObjects);
+      const newQueryObjects = Object.assign({}, this.props.queryObjects)
       newQueryObjects[name] = newValue
       return this.props.onChangeQueryObjects(newQueryObjects)
     }
@@ -129,17 +129,17 @@ class SidebarAndModal extends React.Component {
       <div>
         <Header text={`Genes`}/>
         <Genes geneSuggesterUri={this.props.geneSuggesterUri}
-               geneQuery={this.state.geneQuery}
-               onChangeGeneQuery={(geneQuery) => { this.setState({geneQuery}) }}/>
+          geneQuery={this.state.geneQuery}
+          onChangeGeneQuery={(geneQuery) => { this.setState({geneQuery}) }}/>
 
         <div className={`row column margin-top-large`}>
-        <Button onClick={onChangeProperty.bind(null, `geneQuery`, this.state.geneQuery)}
-                style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`, marginRight: `1rem`}}>
+          <Button onClick={onChangeProperty.bind(null, `geneQuery`, this.state.geneQuery)}
+            style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`, marginRight: `1rem`}}>
           Apply
-        </Button>
-        <Button onClick={() => this.setState({geneQuery: []})} style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
+          </Button>
+          <Button onClick={() => this.setState({geneQuery: []})} style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
           Clear
-        </Button>
+          </Button>
         </div>
 
         <Specificity
@@ -147,8 +147,8 @@ class SidebarAndModal extends React.Component {
           onChangeSpecific={onChangeProperty.bind(null, `specific`)}/>
         {showRegulation &&
           <Regulation
-          regulation={this.props.queryObjects.regulation}
-          onChangeRegulation={onChangeProperty.bind(null, `regulation`)}/>
+            regulation={this.props.queryObjects.regulation}
+            onChangeRegulation={onChangeProperty.bind(null, `regulation`)}/>
         }
         <Cutoff
           cutoff={this.props.queryObjects.cutoff}
@@ -156,24 +156,24 @@ class SidebarAndModal extends React.Component {
         />
         {this.props.genesDistributedByCutoffUrl
           && (
-          <div>
-            <a href={`#`} onClick={toggleModal.bind(null, `cutoff`)} style={{marginBottom: `0.5rem`, fontSize: `85%`}}>
-              <Glyphicon glyph="stats"/>
-              <span style={{marginLeft:"0.25rem"}}>See distribution</span>
-            </a>
-            <ModalWrapper
-              title={`Cutoff - distribution of genes`}
-              show={this.state.showModal === `cutoff`}
-              onCloseModal={() => { this.setState({ showModal: `` }) }}>
+            <div>
+              <a href={`#`} onClick={toggleModal.bind(null, `cutoff`)} style={{marginBottom: `0.5rem`, fontSize: `85%`}}>
+                <Glyphicon glyph="stats"/>
+                <span style={{marginLeft:`0.25rem`}}>See distribution</span>
+              </a>
+              <ModalWrapper
+                title={`Cutoff - distribution of genes`}
+                show={this.state.showModal === `cutoff`}
+                onCloseModal={() => { this.setState({ showModal: `` }) }}>
 
-              <CutoffDistribution
-                cutoff={this.props.queryObjects.cutoff}
-                unit={this.props.queryObjects.unit}
-                onChangeCutoff={flow([onChangeProperty.bind(null, `cutoff`), toggleModal.bind(null, ``)])}
-                genesDistributedByCutoffUrl={this.props.genesDistributedByCutoffUrl}
-              />
-            </ModalWrapper>
-          </div>
+                <CutoffDistribution
+                  cutoff={this.props.queryObjects.cutoff}
+                  unit={this.props.queryObjects.unit}
+                  onChangeCutoff={flow([onChangeProperty.bind(null, `cutoff`), toggleModal.bind(null, ``)])}
+                  genesDistributedByCutoffUrl={this.props.genesDistributedByCutoffUrl}
+                />
+              </ModalWrapper>
+            </div>
           )
         }
         {
@@ -220,7 +220,7 @@ class SidebarAndModal extends React.Component {
             </ul>
           </div>
         }
-    </div>
+      </div>
     )
   }
 }

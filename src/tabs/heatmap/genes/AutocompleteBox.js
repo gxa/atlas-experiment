@@ -25,27 +25,27 @@ class AutocompleteBox extends React.Component {
 
   _requestSuggestions (value) {
     if(this.state.currentTransition === TRANSITIONS.fetchingSuggestion){
-      let httpRequest = new XMLHttpRequest();
+      let httpRequest = new XMLHttpRequest()
       httpRequest.onload = (e) => {
-        const xhr = e.target;
-        let results;
+        const xhr = e.target
+        let results
         if (xhr.responseType === `json`) {
-          results = xhr.response;
+          results = xhr.response
         } else {
-          results = JSON.parse(xhr.responseText);
+          results = JSON.parse(xhr.responseText)
         }
         this.setState(
           { currentSuggestions:
               results
-              .filter((item)=> (
+                .filter((item)=> (
                   !this.props.valuesToSkipInSuggestions.includes(item.value)
-              ))
+                ))
           ,
-            currentTransition: TRANSITIONS.underEdit})
-      };
-      httpRequest.open(`GET`, this.props.geneSuggesterUri.search({query: value}), true);
-      httpRequest.responseType = `json`;
-      httpRequest.send();
+          currentTransition: TRANSITIONS.underEdit})
+      }
+      httpRequest.open(`GET`, this.props.geneSuggesterUri.search({query: value}), true)
+      httpRequest.responseType = `json`
+      httpRequest.send()
     }
   }
 
@@ -72,7 +72,7 @@ class AutocompleteBox extends React.Component {
   render () {
     return (
       <div className={`padding-top-large gene-autocomplete ` + (
-          this.state.currentTransition === TRANSITIONS.underEdit
+        this.state.currentTransition === TRANSITIONS.underEdit
           || this.state.currentTransition === TRANSITIONS.fetchingSuggestion
           ? `underEdit`
           : this.state.currentTransition === TRANSITIONS.standBy
@@ -89,11 +89,11 @@ class AutocompleteBox extends React.Component {
           wrapperStyle={{display: `block`}}
           onSelect={(value, item) => {
             this.setState({
-                value: ``,
-                currentSuggestions: [],
-                currentTransition: TRANSITIONS.standBy
-              },
-              () => {this.props.onGeneChosen(item)})
+              value: ``,
+              currentSuggestions: [],
+              currentTransition: TRANSITIONS.standBy
+            },
+            () => {this.props.onGeneChosen(item)})
           }}
           onChange={(event, value) => {
             if(this._isTooShortToShowHints(value)){
@@ -106,22 +106,22 @@ class AutocompleteBox extends React.Component {
           }}
           renderMenu={(items, value, style) => {
             return (
-             <div className={`menu`} style={{ }}>
-               {this._isTooShortToShowHints(value)
-                ? false
-                : this.state.currentTransition === TRANSITIONS.fetchingSuggestion
-                  ? (
-                    <div style={{padding: 6, float: `bottom`}}>
+              <div className={`menu`} style={{ }}>
+                {this._isTooShortToShowHints(value)
+                  ? false
+                  : this.state.currentTransition === TRANSITIONS.fetchingSuggestion
+                    ? (
+                      <div style={{padding: 6, float: `bottom`}}>
                       Loading...
-                    </div>
-                  )
-                  : <div>
+                      </div>
+                    )
+                    : <div>
                       {items}
                     </div>
                 }
-             </div>
-           )
-         }}
+              </div>
+            )
+          }}
           renderItem={this._renderItem}
         />
       </div>
@@ -130,9 +130,9 @@ class AutocompleteBox extends React.Component {
 }
 
 AutocompleteBox.propTypes = {
-    geneSuggesterUri : PropTypes.instanceOf(URI),
-    onGeneChosen: PropTypes.func.isRequired,
-    valuesToSkipInSuggestions: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired
+  geneSuggesterUri : PropTypes.instanceOf(URI),
+  onGeneChosen: PropTypes.func.isRequired,
+  valuesToSkipInSuggestions: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired
 }
 
 export default AutocompleteBox

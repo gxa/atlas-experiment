@@ -7,16 +7,16 @@ const settingsFor = (cutoffName) => (
   Object.assign(
     {min: 0}
     ,
-    cutoffName === 'pValue'
-    ? {step: 0.01}
-    : {step: 1.0}
+    cutoffName === `pValue`
+      ? {step: 0.01}
+      : {step: 1.0}
     ,
-    cutoffName === 'pValue'
-    ? {precision: 2}
-    : {precision: 1},
-    cutoffName === 'pValue'
-    ? {max: 1}
-    : {}
+    cutoffName === `pValue`
+      ? {precision: 2}
+      : {precision: 1},
+    cutoffName === `pValue`
+      ? {max: 1}
+      : {}
   )
 )
 
@@ -30,24 +30,24 @@ const keyValuePair = (key, value) => {
 
 const cutoffDisplayName = (cutoffName) => {
   switch(cutoffName){
-    case "value":
-      return (
-        "Expression value"
-      )
-    case "pValue":
-      return (
-        "Adjusted p-value"
-      )
-    case "foldChange":
-      return (
-        <span>
+  case `value`:
+    return (
+      `Expression value`
+    )
+  case `pValue`:
+    return (
+      `Adjusted p-value`
+    )
+  case `foldChange`:
+    return (
+      <span>
           Log<sub>2</sub>-fold change
-        </span>
-      )
-    default:
-      return (
-        cutoffName
-      )
+      </span>
+    )
+  default:
+    return (
+      cutoffName
+    )
   }
 }
 
@@ -60,7 +60,7 @@ const Cutoff = ({cutoff, onChangeCutoff}) => (
         </div>
         <NumericInput
           className="form-control"
-        value={cutoff[cutoffName]}
+          value={cutoff[cutoffName]}
           {...settingsFor(cutoffName)}
           onChange={(valueAsNumber) => (
             valueAsNumber!==null && onChangeCutoff(Object.assign({},

@@ -8,42 +8,42 @@ import {CutoffType, UnitType} from './PropTypes.js'
 const cumulativeDistributionPoints= ({bins, counts}) => {
   return bins
     .map((bin, ix) => ({x: bin, y: counts.slice(ix).reduce((v, acc) => v + acc, 0)}))
-    .filter(v => v.x > 0 && v.y > 0); // Remove first bin for the logarithmic chart, otherwise Highcarts complains
+    .filter(v => v.x > 0 && v.y > 0) // Remove first bin for the logarithmic chart, otherwise Highcarts complains
 }
 
 const CutoffDistribution = ({unit, cutoff, onChangeCutoff, histogram}) => (
   <div>
-  {`Current value: ${cutoff.value}${unit ? ` ${unit}`: ""}` }
-  <ReactHighcharts
-    config={{
-      title: ``,
-      xAxis: {
-        title: {
-          text: `Cutoff value`
+    {`Current value: ${cutoff.value}${unit ? ` ${unit}`: ``}` }
+    <ReactHighcharts
+      config={{
+        title: ``,
+        xAxis: {
+          title: {
+            text: `Cutoff value`
+          },
+          type: `logarithmic`
         },
-        type: `logarithmic`
-      },
-      yAxis: {
-        title: {
-          text: `# genes`
+        yAxis: {
+          title: {
+            text: `# genes`
+          },
         },
-      },
-      type: `line`,
-      series:[{
-        cursor: `pointer`,
-        name: `Genes expressed in this experiment at value higher than cutoff`,
-        data: cumulativeDistributionPoints(histogram),
-      }],
-      tooltip: {
-        useHTML: true,
-        formatter: function() {
-          return `<div>Cutoff: <b> ${this.x}</b> (${this.y} genes past this cutoff)</div>`
-        }
-      },
-      credits: {
-        enabled: false
-      },
-    }} />
+        type: `line`,
+        series:[{
+          cursor: `pointer`,
+          name: `Genes expressed in this experiment at value higher than cutoff`,
+          data: cumulativeDistributionPoints(histogram),
+        }],
+        tooltip: {
+          useHTML: true,
+          formatter: function() {
+            return `<div>Cutoff: <b> ${this.x}</b> (${this.y} genes past this cutoff)</div>`
+          }
+        },
+        credits: {
+          enabled: false
+        },
+      }} />
   </div>
 )
 
@@ -72,8 +72,8 @@ class CutoffDistributionLoader extends Component {
     } else if (genesDistributedByCutoffFetch.fulfilled) {
       return (
         <CutoffDistribution
-        histogram={genesDistributedByCutoffFetch.value}
-        {...{cutoff, onChangeCutoff,unit}} />
+          histogram={genesDistributedByCutoffFetch.value}
+          {...{cutoff, onChangeCutoff,unit}} />
       )
     }
   }
