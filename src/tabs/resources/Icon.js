@@ -3,33 +3,37 @@ import PropTypes from 'prop-types'
 import URI from 'urijs'
 import ResourcePropTypes from './ResourcePropTypes.js'
 
+const RESOURCE_ICONS = [
+  [`icon-gsea-reactome`, require(`./assets/gsea-reactome.png`)],
+  [`icon-gsea-interpro`, require(`./assets/gsea-interpro.png`)],
+  [`icon-gsea-go`, require(`./assets/gsea-go.png`)],
+  [`icon-ma`, require(`./assets/ma-plot.png`)],
+  [`icon-ae`, require(`./assets/ae-logo.png`)],
+  [`icon-experiment-design`, require(`./assets/experiment-design.png`)],
+  [`icon-Rdata`, require(`./assets/r-object.png`)],
+  [`icon-analytics`, require(`./assets/download-analytics.png`)],
+  [`icon-clustered-heatmap`, require(`./assets/download-clustered-heatmap.png`)],
+  [`icon-foldchange`, require(`./assets/download-fc.png`)],
+  [`icon-normalized-expressions`, require(`./assets/download-normalized-expressions.png`)],
+  [`icon-raw-counts`, require(`./assets/download-raw-counts.png`)],
+  [`icon-tsv`, require(`./assets/download-tsv.png`)]
+]
+
 const htmlEntity = (type) => {
   const maybeEntity = [
-    ["link", "&#128279; "]
+    [`link`, `🔗`]
   ].find(e => type.includes(e[0]))
 
   return (
-    !!maybeEntity &&  <span dangerouslySetInnerHTML={{__html: maybeEntity[1]}} />
+    maybeEntity &&  <span>maybeEntity[1]}</span>
   )
 }
 
 const icon = (type, pathToResources) => {
-  const maybeImg = [
-    ["icon-gsea-reactome", require("./assets/gsea_reactome-icon.png")],
-    ["icon-gsea-interpro", require("./assets/gsea_interpro-icon.png")],
-    ["icon-gsea-go", require("./assets/gsea_go-icon.png")],
-    ["icon-ma", require("./assets/ma-plot-icon.png")],
-    ["icon-ae", require("./assets/ae-logo-64.png")],
-    ["icon-experiment-design", require("./assets/experiment_design_icon.png")],
-    ["icon-tsv", require("./assets/download_blue_small.png")],
-    ["icon-Rdata", require("./assets/r-button.png")]
-  ].find((e) => (
-    type === e[0]
-  ))
+  const maybeImg = RESOURCE_ICONS.find(e => (type === e[0]))
 
   return (
-    !! maybeImg && <img style={{marginRight: "0.25rem"}}
-                        src={URI(maybeImg[1], pathToResources)} />
+    maybeImg && <img style={{marginRight: `0.25rem`, height: `28px`, widht: `28px`}} src={URI(maybeImg[1], pathToResources)} />
   )
 }
 
@@ -37,9 +41,8 @@ const Icon = ({type, pathToResources}) => {
   return (
     htmlEntity(type)
     || icon(type, pathToResources)
-    || <span style={{marginLeft: "0.5rem",marginRight: "0.5rem"}}> &middot; </span>
+    || <span style={{marginLeft: `0.5rem`,marginRight: `0.5rem`}}> &middot; </span>
   )
-
 }
 
 Icon.propTypes = {
