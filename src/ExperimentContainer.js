@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {BrowserRouter, Route, Switch, Redirect, NavLink, IndexRedirect, withRouter } from 'react-router-dom'
+import {BrowserRouter, Route, Switch, Redirect, NavLink, withRouter } from 'react-router-dom'
 
 import queryStringUtils from 'qs'
 import URI from 'urijs'
@@ -15,7 +15,7 @@ const TabPropType = PropTypes.shape({
   type: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   props: PropTypes.object.isRequired
-});
+})
 
 //coupled to ExperimentController.java
 const componentsPerTab = {
@@ -31,14 +31,14 @@ const createPageSection = ({type, props}) => {
 
   const Tab = componentsPerTab[type]
   return (
-      <Tab {...props} />
+    <Tab {...props} />
   )
 }
 
 const createPage = ({type, commonProps, tabProps}) => (
   type === `multipart`
-  ? (
-    <div className="row expanded column margin-top-large">
+    ? (
+      <div className="row expanded column margin-top-large">
         {tabProps.sections.map(({type, name, props}) => (
           <div key={name} className="row column expanded">
             <h4>
@@ -48,10 +48,10 @@ const createPage = ({type, commonProps, tabProps}) => (
               createPageSection({type, props: Object.assign({}, commonProps, props)})
             }
           </div>
-      ))}
-    </div>
-  )
-  : createPageSection({type, props: Object.assign({}, commonProps, tabProps)})
+        ))}
+      </div>
+    )
+    : createPageSection({type, props: Object.assign({}, commonProps, tabProps)})
 )
 
 const queryFromRouteDetails = ({location:{search}}) => queryStringUtils.parse(search.replace(/^\?/, ``))
@@ -121,17 +121,17 @@ const ExperimentContainerRouter = ({
       <div>
         <Route path={`/`} component={makeTopRibbon(tabs.map((tab)=>tab.name))} />
         <Switch>
-        {
-          tabs
-          .map((tab)=>
-            <Route
-              key={tab.name}
-              path={`/${tab.name}`}
-              component={makeTab({type:tab.type, commonProps: commonProps, tabProps: tab.props})}
-              />
-          )
-        }
-        <RedirectToTab tabName={tabs[0].name} />
+          {
+            tabs
+              .map((tab)=>
+                <Route
+                  key={tab.name}
+                  path={`/${tab.name}`}
+                  component={makeTab({type:tab.type, commonProps: commonProps, tabProps: tab.props})}
+                />
+              )
+          }
+          <RedirectToTab tabName={tabs[0].name} />
         </Switch>
       </div>
     </BrowserRouter>
@@ -149,4 +149,4 @@ ExperimentContainerRouter.propTypes = {
   disclaimer: PropTypes.string.isRequired
 }
 
-export default ExperimentContainerRouter;
+export default ExperimentContainerRouter

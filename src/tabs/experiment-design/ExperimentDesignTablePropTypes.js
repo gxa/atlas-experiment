@@ -1,16 +1,15 @@
-import React from 'react'
 import PropTypes from 'prop-types'
 
 export default {
   data: PropTypes.arrayOf(PropTypes.shape({
     properties: PropTypes.oneOfType([
       PropTypes.shape({
-          analysed: PropTypes.bool.isRequired
-        }).isRequired,
+        analysed: PropTypes.bool.isRequired
+      }).isRequired,
       PropTypes.shape({
-          contrastName: PropTypes.string.isRequired,
-          referenceOrTest: PropTypes.oneOf(["reference", "test", ""])
-        }).isRequired
+        contrastName: PropTypes.string.isRequired,
+        referenceOrTest: PropTypes.oneOf([`reference`, `test`, ``])
+      }).isRequired
     ]),
     values: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string.isRequired).isRequired).isRequired
   }).isRequired).isRequired,

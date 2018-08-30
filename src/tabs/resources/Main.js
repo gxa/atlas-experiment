@@ -14,22 +14,22 @@ const ResourcesSection = ({values, pathToResources, atlasUrl}) => {
 
   return (
     <div className="row column expanded margin-top-large">
-      <ul style={{listStyle: "none"}}>
+      <ul style={{listStyle: `none`}}>
         {
           subsections.filter(el=>el).length <2
-          ? values.map((value, ix, self) => (
+            ? values.map((value, ix, self) => (
               <li key={ix}>
                 <a href={URI(value.url, atlasUrl)}>
-                <p>
-                  <Icon type={value.type} {...{pathToResources}}  />
-                  {value.description}
-                </p>
+                  <p>
+                    <Icon type={value.type} {...{pathToResources}}  />
+                    {value.description}
+                  </p>
                 </a>
               </li>
             ))
-          : subsections.map((subsectionName, ix) => (
+            : subsections.map((subsectionName, ix) => (
               <li key={ix}>
-                <ul style={{listStyle: "none"}} className="margin-left-none margin-bottom-medium">
+                <ul style={{listStyle: `none`}} className="margin-left-none margin-bottom-medium">
                   <i>{
                     subsectionName}
                   </i>
@@ -37,20 +37,20 @@ const ResourcesSection = ({values, pathToResources, atlasUrl}) => {
                     values.filter((value) => (
                       subsectionName === value.group
                     ))
-                    .map((value, jx, self) => (
-                      <li key={jx} className="margin-left-large">
-                        <a href={URI(value.url, atlasUrl)}>
-                        <div>
-                          <Icon type={value.type} {...{pathToResources}} />
-                          {value.description}
-                        </div>
-                        </a>
-                      </li>
-                    ))
+                      .map((value, jx, self) => (
+                        <li key={jx} className="margin-left-large">
+                          <a href={URI(value.url, atlasUrl)}>
+                            <div>
+                              <Icon type={value.type} {...{pathToResources}} />
+                              {value.description}
+                            </div>
+                          </a>
+                        </li>
+                      ))
                   }
                 </ul>
               </li>
-          ))
+            ))
         }
       </ul>
     </div>
@@ -58,45 +58,45 @@ const ResourcesSection = ({values, pathToResources, atlasUrl}) => {
 }
 
 const DisclaimerWithAgreeButton = ({title, content, onAgree}) => (
-    <div>
-        <h4>
-            {title}
-        </h4>
-        {content}
-        <Button onClick={onAgree}>
+  <div>
+    <h4>
+      {title}
+    </h4>
+    {content}
+    <Button onClick={onAgree}>
             Continue to download
-        </Button>
-    </div>
+    </Button>
+  </div>
 )
 
 class DisclaimerWrapper extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            needsAck : !!this.props.disclaimer && Disclaimers[this.props.disclaimer]
-        }
+  constructor(props) {
+    super(props)
+    this.state = {
+      needsAck : !!this.props.disclaimer && Disclaimers[this.props.disclaimer]
     }
+  }
 
-    render() {
-        if (this.state.needsAck) {
-            return (
-                <DisclaimerWithAgreeButton
-                    onAgree={() => this.setState({needsAck: false})}
-                    {... Disclaimers[this.props.disclaimer]}
-                />
-            )
-        } else {
-            return (
-                <div>
-                    {this.props.children}
-                </div>
-            )
-        }
+  render() {
+    if (this.state.needsAck) {
+      return (
+        <DisclaimerWithAgreeButton
+          onAgree={() => this.setState({needsAck: false})}
+          {... Disclaimers[this.props.disclaimer]}
+        />
+      )
+    } else {
+      return (
+        <div>
+          {this.props.children}
+        </div>
+      )
     }
+  }
 }
 
 DisclaimerWrapper.propTypes = {
-    disclaimer: PropTypes.string.isRequired
+  disclaimer: PropTypes.string.isRequired
 }
 
 class ResourcesTab extends Component {
@@ -118,9 +118,9 @@ class ResourcesTab extends Component {
     } else if (resourcesFetch.fulfilled) {
       return (
         <DisclaimerWrapper disclaimer={disclaimer}>
-            <ResourcesSection
-                values={resourcesFetch.value}
-                {...{ pathToResources, atlasUrl }} />
+          <ResourcesSection
+            values={resourcesFetch.value}
+            {...{ pathToResources, atlasUrl }} />
         </DisclaimerWrapper>
       )
     }

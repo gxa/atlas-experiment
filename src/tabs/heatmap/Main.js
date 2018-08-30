@@ -22,7 +22,7 @@ const Main = (props) => {
           geneSuggesterUri={URI(`json/suggestions`, props.atlasUrl).addSearch(props.species ? {species: props.species} : {})}
           genesDistributedByCutoffUrl={
             props.isDifferential ? `` :
-            URI(props.genesDistributedByCutoffUrl, props.atlasUrl).addSearch(props.isRnaSeq ? {unit: queryObjects.unit} : {}).toString()}
+              URI(props.genesDistributedByCutoffUrl, props.atlasUrl).addSearch(props.isRnaSeq ? {unit: queryObjects.unit} : {}).toString()}
           loadingGifUrl={URI(`resources/images/loading.gif`, props.atlasUrl).toString()}
           columnGroups={props.groups}
           defaultQuery={Object.keys(props.query).length === 0}
@@ -39,18 +39,18 @@ const Main = (props) => {
       </div>
       <div className={`small-9 medium-10 columns padding-right-none`}>
         <ExpressionAtlasHeatmap
-            atlasUrl={props.atlasUrl}
-            isWidget={false}
-            isMultiExperiment={false}
-            isDifferential={props.isDifferential}
-            experiment={props.experimentAccession}
-            query={Object.assign(
-                props.accessKey ? {accessKey: props.accessKey} : {},
-                (props.isDifferential
-                  ? toDifferentialRequestPreferences
-                  : toBaselineRequestPreferences)(queryObjects)
-            )}
-          />
+          atlasUrl={props.atlasUrl}
+          isWidget={false}
+          isMultiExperiment={false}
+          isDifferential={props.isDifferential}
+          experiment={props.experimentAccession}
+          query={Object.assign(
+            props.accessKey ? {accessKey: props.accessKey} : {},
+            (props.isDifferential
+              ? toDifferentialRequestPreferences
+              : toBaselineRequestPreferences)(queryObjects)
+          )}
+        />
       </div>
     </div>
   )

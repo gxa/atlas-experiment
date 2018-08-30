@@ -8,9 +8,9 @@ const Regulation = ({regulation,onChangeRegulation}) => (
   <Fieldset value={regulation}
     onChangeValue={onChangeRegulation}
     options={[
-      ["UP_DOWN", "Up- or downregulated"],
-      ["UP", "Upregulated only"],
-      ["DOWN", "Downregulated only"]
+      [`UP_DOWN`, `Up- or downregulated`],
+      [`UP`, `Upregulated only`],
+      [`DOWN`, `Downregulated only`]
     ]} />
 )
 

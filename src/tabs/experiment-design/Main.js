@@ -10,21 +10,21 @@ const ExperimentDesignTab = ({
   atlasUrl,
   table
 }) => (
-    <div>
-      <div className="row expanded column margin-top-large">
-        <a className="button float-right margin-bottom-none" href={URI(downloadUrl, atlasUrl).toString()}>
-          <span className="glyphicon glyphicon-download-alt margin-right-medium"/>
+  <div>
+    <div className="row expanded column margin-top-large">
+      <a className="button float-right margin-bottom-none" href={URI(downloadUrl, atlasUrl).toString()}>
+        <span className="glyphicon glyphicon-download-alt margin-right-medium"/>
           Download
-        </a>
-      </div>
-      <div className="row expanded column margin-top-large">
-          {
-              isDifferential
-                  ? DifferentialExperimentDesign(table)
-                  : BaselineExperimentDesign(table)
-          }
-      </div>
+      </a>
     </div>
+    <div className="row expanded column margin-top-large">
+      {
+        isDifferential
+          ? DifferentialExperimentDesign(table)
+          : BaselineExperimentDesign(table)
+      }
+    </div>
+  </div>
 )
 
 ExperimentDesignTab.propTypes = {
@@ -34,4 +34,4 @@ ExperimentDesignTab.propTypes = {
   table: PropTypes.shape(TablePropTypes)
 }
 
-export default ExperimentDesignTab;
+export default ExperimentDesignTab

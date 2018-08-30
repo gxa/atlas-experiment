@@ -46,6 +46,8 @@
     "clean-webpack-plugin": "^0.1.17",
     "css-loader": "^0.28.9",
     "enzyme": "^3.3.0",
+    "eslint": "^5.4.0",
+    "eslint-config-gene-expression": "^0.3.0",
     "file-loader": "^1.1.6",
     "image-webpack-loader": "^4.0.0",
     "imports-loader": "^0.7.1",
