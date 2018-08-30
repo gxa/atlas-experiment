@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "dev": "webpack-dev-server -d",
-    "prepublishOnly": "rm -rf lib && babel src -d lib  --ignore '**/*.less' --copy-files"
+    "prepack": "rm -rf lib && babel src -d lib  --ignore '**/*.less' --copy-files"
   },
   "author": "Expression Atlas developers <arrayexpress-atlas@ebi.ac.uk>",
   "collaborators": [
