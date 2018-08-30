@@ -33,7 +33,7 @@ const icon = (type, pathToResources) => {
   const maybeImg = RESOURCE_ICONS.find(e => (type === e[0]))
 
   return (
-    maybeImg && <img style={{marginRight: `0.25rem`, height: `28px`, widht: `28px`}} src={URI(maybeImg[1], pathToResources)} />
+    maybeImg && <img style={{marginRight: `0.25rem`, height: `32px`}} src={URI(maybeImg[1], pathToResources)} />
   )
 }
 
