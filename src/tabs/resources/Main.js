@@ -16,7 +16,7 @@ const ResourcesSection = ({values, pathToResources, atlasUrl}) => {
     <div className="row column expanded margin-top-large">
       <ul style={{listStyle: `none`}}>
         {
-          subsections.filter(el=>el).length <2
+          subsections.filter(el=>el).length < 2
             ? values.map((value, ix, self) => (
               <li key={ix}>
                 <a href={URI(value.url, atlasUrl)}>
@@ -41,8 +41,9 @@ const ResourcesSection = ({values, pathToResources, atlasUrl}) => {
                         <li key={jx} className="margin-left-large">
                           <a href={URI(value.url, atlasUrl)}>
                             <div>
-                              <Icon type={value.type} {...{pathToResources}} />
-                              {value.description}
+                              <p>
+                                <Icon type={value.type} {...{pathToResources}}/> {value.description}
+                              </p>
                             </div>
                           </a>
                         </li>
