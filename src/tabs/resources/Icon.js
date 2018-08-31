@@ -25,7 +25,7 @@ const htmlEntity = (type) => {
   ].find(e => type.includes(e[0]))
 
   return (
-    maybeEntity &&  <span>maybeEntity[1]}</span>
+    maybeEntity &&  <span>{maybeEntity[1]}</span>
   )
 }
 
