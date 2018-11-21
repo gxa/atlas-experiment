@@ -85,7 +85,7 @@ class AutocompleteBox extends React.Component {
           inputProps={{name: `Enter gene`, id: `gene-autocomplete`, type: `text`}}
           value={this.state.value}
           items={this.state.currentSuggestions}
-          getItemValue={(item) => item.value}
+          getItemValue={(item) => item.term}
           wrapperStyle={{display: `block`}}
           onSelect={(value, item) => {
             this.setState({
