@@ -33,15 +33,10 @@ const Main = ({geneQuery, onChangeGeneQuery, geneSuggesterUri}) => (
       geneSuggesterUri={geneSuggesterUri}
       valuesToSkipInSuggestions={geneQuery.map( ({value}) => value )}
       onGeneChosen={
-        newGeneSuggestionItem =>
-          onChangeGeneQuery([
-            ...geneQuery,
-            {
-              value: sanitizeHtml(newGeneSuggestionItem.term, noTags),
-              category: newGeneSuggestionItem.category
-            }
-          ])
-      } />
+        newGene =>
+          onChangeGeneQuery([...geneQuery, {value: sanitizeHtml(newGene.value, noTags), category: newGene.category}])
+      }
+    />
   </div>
 )
 
