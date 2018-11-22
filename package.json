@@ -1,6 +1,6 @@
 {
   "name": "expression-atlas-experiment-page",
-  "version": "1.9.5",
+  "version": "1.9.4",
   "description": "Expression Atlas experiment page frontend e.g. https://www.ebi.ac.uk/gxa/experiments/E-MTAB-513",
   "main": "lib/index.js",
   "scripts": {
