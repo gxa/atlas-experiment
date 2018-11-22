@@ -24,25 +24,22 @@ class AutocompleteBox extends React.Component {
   }
 
   _requestSuggestions (value) {
-    if(this.state.currentTransition === TRANSITIONS.fetchingSuggestion){
-      let httpRequest = new XMLHttpRequest()
+    if (this.state.currentTransition === TRANSITIONS.fetchingSuggestion) {
+      const httpRequest = new XMLHttpRequest()
       httpRequest.onload = (e) => {
         const xhr = e.target
-        let results
-        if (xhr.responseType === `json`) {
-          results = xhr.response
-        } else {
-          results = JSON.parse(xhr.responseText)
-        }
-        this.setState(
-          { currentSuggestions:
-              results
-                .filter((item)=> (
-                  !this.props.valuesToSkipInSuggestions.includes(item.value)
-                ))
-          ,
-          currentTransition: TRANSITIONS.underEdit})
+        const results = xhr.responseType === `json` ?
+          xhr.response :
+          JSON.parse(xhr.responseText)
+
+        this.setState({
+          currentSuggestions:
+            results
+              .filter(item => !this.props.valuesToSkipInSuggestions.includes(item.term)),
+          currentTransition: TRANSITIONS.underEdit
+        })
       }
+
       httpRequest.open(`GET`, this.props.geneSuggesterUri.search({query: value}), true)
       httpRequest.responseType = `json`
       httpRequest.send()
@@ -50,16 +47,15 @@ class AutocompleteBox extends React.Component {
   }
 
   _renderItem (item, isHighlighted) {
-    const innerHtml = {__html: item.category ? `${item.value} (${item.category})` : item.value}
+    const innerHtml = {__html: item.category ? `${item.term} (${item.category})` : item.term}
 
     // Background colour should match .button.primary colour in theme-atlas.css
     return (
       <div
         className={`menu-element`}
         style={isHighlighted ? {background: `#3497c5`, color: `white`} : {}}
-        key={`${item.value} ${item.category}`}
-        id={item.value}
-      >
+        key={`${item.term} ${item.category}`}
+        id={item.term}>
         <span dangerouslySetInnerHTML={innerHtml} />
       </div>
     )
@@ -81,11 +77,11 @@ class AutocompleteBox extends React.Component {
         <Autocomplete
           open={this.state.currentTransition === TRANSITIONS.underEdit
                 || this.state.currentTransition === TRANSITIONS.fetchingSuggestion}
-          onMenuVisibilityChange={()=>{}}
+          onMenuVisibilityChange={() => {}}
           inputProps={{name: `Enter gene`, id: `gene-autocomplete`, type: `text`}}
           value={this.state.value}
           items={this.state.currentSuggestions}
-          getItemValue={(item) => item.value}
+          getItemValue={item => item.term}
           wrapperStyle={{display: `block`}}
           onSelect={(value, item) => {
             this.setState({
@@ -104,26 +100,18 @@ class AutocompleteBox extends React.Component {
               })
             }
           }}
-          renderMenu={(items, value, style) => {
-            return (
-              <div className={`menu`} style={{ }}>
-                {this._isTooShortToShowHints(value)
-                  ? false
-                  : this.state.currentTransition === TRANSITIONS.fetchingSuggestion
-                    ? (
-                      <div style={{padding: 6, float: `bottom`}}>
-                      Loading...
-                      </div>
-                    )
-                    : <div>
-                      {items}
-                    </div>
-                }
-              </div>
-            )
-          }}
-          renderItem={this._renderItem}
-        />
+          renderMenu={(items, value, style) =>
+            <div className={`menu`} style={{ }}>
+              {
+                this._isTooShortToShowHints(value) ?
+                  false :
+                  this.state.currentTransition === TRANSITIONS.fetchingSuggestion ?
+                    <div style={{padding: 6, float: `bottom`}}>Loading...</div> :
+                    <div>{items}</div>
+              }
+            </div>
+          }
+          renderItem={this._renderItem} />
       </div>
     )
   }
