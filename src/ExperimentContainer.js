@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {BrowserRouter, Route, Switch, Redirect, NavLink, withRouter } from 'react-router-dom'
+import { BrowserRouter, Route, Switch, Redirect, NavLink, withRouter } from 'react-router-dom'
 
 import queryStringUtils from 'qs'
 import URI from 'urijs'
@@ -117,7 +117,7 @@ const ExperimentContainerRouter = ({
   )
 
   return (
-    <BrowserRouter basename={URI(`experiments/${experimentAccession}`, URI(atlasUrl).path()).toString()}>
+    <BrowserRouter basename={URI(`experiments/${experimentAccession}`).toString()}>
       <div>
         <Route path={`/`} component={makeTopRibbon(tabs.map((tab)=>tab.name))} />
         <Switch>
