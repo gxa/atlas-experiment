@@ -117,7 +117,7 @@ const ExperimentContainerRouter = ({
   )
 
   return (
-    <BrowserRouter basename={URI(`experiments/${experimentAccession}`).toString()}>
+    <BrowserRouter basename={URI(`experiments/${experimentAccession}`, atlasUrl).toString()}>
       <div>
         <Route path={`/`} component={makeTopRibbon(tabs.map((tab)=>tab.name))} />
         <Switch>
