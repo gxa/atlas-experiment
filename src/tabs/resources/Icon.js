@@ -9,6 +9,7 @@ const RESOURCE_ICONS = [
   [`icon-gsea-go`, require(`./assets/gsea-go.png`)],
   [`icon-ma`, require(`./assets/ma-plot.png`)],
   [`icon-ae`, require(`./assets/ae-logo.png`)],
+  [`icon-pride`, require(`./assets/pride-new-logo.png`)],
   [`icon-experiment-design`, require(`./assets/experiment-design.png`)],
   [`icon-Rdata`, require(`./assets/r-object.png`)],
   [`icon-analytics`, require(`./assets/download-analytics.png`)],
