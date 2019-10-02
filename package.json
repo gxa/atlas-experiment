@@ -1,5 +1,5 @@
 {
-  "name": "expression-atlas-experiment-page",
+  "name": "@ebi-gene-expression-group/expression-atlas-experiment-page",
   "version": "1.14.0",
   "description": "Expression Atlas experiment page frontend e.g. https://www.ebi.ac.uk/gxa/experiments/E-MTAB-513",
   "main": "lib/index.js",
@@ -16,7 +16,10 @@
     "Alfonso Muñoz-Pomer Fuentes <amunoz@ebi.ac.uk>"
   ],
   "license": "Apache-2.0",
-  "repository": "https://github.com/gxa/atlas-experiment",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gxa/atlas-experiment.git"
+  },
   "dependencies": {
     "expression-atlas-disclaimers": "1.1.0",
     "expression-atlas-heatmap-highcharts": "^5.3.1",
@@ -60,5 +63,12 @@
     "webpack": "^4.30.0",
     "webpack-dev-server": "^3.3.1",
     "whatwg-fetch": "^3.0.0"
+  },
+  "bugs": {
+    "url": "https://github.com/gxa/atlas-experiment/issues"
+  },
+  "homepage": "https://github.com/gxa/atlas-experiment#readme",
+  "directories": {
+    "lib": "lib"
   }
 }
