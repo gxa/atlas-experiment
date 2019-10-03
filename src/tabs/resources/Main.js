@@ -58,46 +58,36 @@ const ResourcesSection = ({values, pathToResources, atlasUrl}) => {
   )
 }
 
-const DisclaimerWithAgreeButton = ({title, content, onAgree}) => (
-  <div>
-    <h4>
-      {title}
-    </h4>
-    {content}
-    <Button onClick={onAgree}>
-            Continue to download
-    </Button>
-  </div>
-)
-
 class DisclaimerWrapper extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      needsAck : !!this.props.disclaimer && Disclaimers[this.props.disclaimer]
+      needsAck : Boolean(this.props.disclaimer && Disclaimers[this.props.disclaimer])
     }
   }
 
   render() {
-    if (this.state.needsAck) {
-      return (
-        <DisclaimerWithAgreeButton
-          onAgree={() => this.setState({needsAck: false})}
-          {... Disclaimers[this.props.disclaimer]}
-        />
-      )
-    } else {
-      return (
-        <div>
-          {this.props.children}
-        </div>
-      )
-    }
+    const Disclaimer = Disclaimers[this.props.disclaimer]
+    return (
+      <div>
+        { this.state.needsAck ? (
+          <>
+            <Disclaimer/>
+            <Button onClick={ () => this.setState({ needsAck: false }) }>
+              Continue to download
+            </Button>
+          </>
+        ) : (
+          this.props.children
+        )}
+      </div>
+    )
   }
 }
 
 DisclaimerWrapper.propTypes = {
-  disclaimer: PropTypes.string.isRequired
+  disclaimer: PropTypes.string,
+  children: PropTypes.element.isRequired
 }
 
 class ResourcesTab extends Component {
