@@ -4,7 +4,7 @@ import {connect} from 'react-refetch'
 import Icon from './Icon.js'
 import {uniq} from 'lodash'
 import URI from 'urijs'
-import Disclaimers from 'expression-atlas-disclaimers'
+import Disclaimers from '@ebi-gene-expression-group/expression-atlas-disclaimers'
 import {Button} from 'react-bootstrap/lib'
 
 const ResourcesSection = ({values, pathToResources, atlasUrl}) => {
